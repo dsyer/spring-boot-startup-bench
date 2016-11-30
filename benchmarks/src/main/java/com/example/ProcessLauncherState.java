@@ -98,6 +98,7 @@ public class ProcessLauncherState {
 			}
 		}
 	}
+
 	public static String jarFile(String coordinates) {
 		Pattern p = Pattern.compile("([^: ]+):([^: ]+)(:([^: ]*)(:([^: ]+))?)?:([^: ]+)");
 		Matcher m = p.matcher(coordinates);
@@ -105,15 +106,17 @@ public class ProcessLauncherState {
 			throw new IllegalArgumentException("Bad artifact coordinates " + coordinates
 					+ ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>");
 		}
-		String groupId = m.group(1);
 		String artifactId = m.group(2);
 		String extension = get(m.group(4), "jar");
 		String classifier = get(m.group(6), null);
 		classifier = classifier == null ? "" : "-" + classifier;
 		String version = m.group(7);
-		String groupDir = groupId.replaceAll("\\.", "/");
-		return System.getProperty("user.home") + "/.m2/repository/" + groupDir + "/" + artifactId + "/" + version + "/" + artifactId + "-"
-				+ version + classifier + "." + extension;
+		String path = ".."; // always run in benchmarks folder
+		try {
+			return new File(path).getAbsoluteFile().getCanonicalPath() + "/" + artifactId + "/target/" + artifactId + "-" + version + classifier + "." + extension;
+		} catch (IOException e) {
+			throw new IllegalStateException("Cannot find benchmarks", e);
+		}
 	}
 
 	private static String get(String value, String defaultValue) {

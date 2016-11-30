@@ -3,8 +3,8 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.springframework.samples</groupId>
-  <artifactId>springboot-petclinic</artifactId>
+  <groupId>com.example</groupId>
+  <artifactId>petclinic</artifactId>
   <version>1.4.2</version>
 
   <parent>

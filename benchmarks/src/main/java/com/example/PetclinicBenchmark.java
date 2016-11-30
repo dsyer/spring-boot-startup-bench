@@ -72,7 +72,7 @@ public class PetclinicBenchmark {
 	@State(Scope.Benchmark)
 	public static class BasicState extends ProcessLauncherState {
 		public BasicState() {
-			super("target", "-jar", jarFile("org.springframework.samples:springboot-petclinic:1.4.2"), "--server.port=0");
+			super("target", "-jar", jarFile("com.example:petclinic:1.4.2"), "--server.port=0");
 		}
 
 		@TearDown(Level.Iteration)
@@ -87,7 +87,7 @@ public class PetclinicBenchmark {
 			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*", "-Dspring.devtools.livereload.enabled=false",
 					"-Dspring.devtools.restart.pollInterval=100", "-Dspring.devtools.restart.quietPeriod=10",
 					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");
-			unpack("target/demo", jarFile("org.springframework.samples:springboot-petclinic:1.4.2"), "petclinic");
+			unpack("target/demo", jarFile("com.example:petclinic:1.4.2"), "petclinic");
 		}
 
 		@Setup(Level.Trial)

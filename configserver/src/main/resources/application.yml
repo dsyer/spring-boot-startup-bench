@@ -1,0 +1,41 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: configserver
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/spring-cloud-samples/config-repo
+        encrypt:
+          enabled: false
+
+---
+spring:
+  profiles: encrypt
+  cloud:
+    config:
+      server:
+        overrides:
+          info.bar: '\{cipher}762c11829d517b203ac94a0180f1950b133b83cde34296549d8fed611a9b2fb5'
+
+encrypt:
+  key: ${SECRET_KEY:foo} # normally this would be an environment variable
+
+---
+spring:
+  profiles: rsa
+  cloud:
+    config:
+      server:
+        overrides:
+          info.bar: '\{cipher}AQAj4tMJizMZS9sBvGjqRz4e6hxKpYXBA3CdtNMBeqS8UaLc8uiy4iydcD8C9z3cDMVprUYXjonCYarwU+13ggtxBUXuNAR1HAzCKWgkB+h8oAtYhBFb3+6gAFb4dFV+9h+DUID6OpAWmFfXj0QI0cuOMx7CXecLSflFAOtF1YUz2y9eQLp2bF8aDx8R/0TEYAYWjLGfibxOXRxRVKH3qLO4YQwQTmnHn5jtIVHtzsmo2ywJq4ySpuRZysy5gxWJwv4ogzVhk46gSesjhfX5Ysbwz6ZP4dQmzGWt8dNrzI99wBUzUXppNv5xtO/E8tUtD6TVJ/CpZuXvmuV5gpZ1Ni2w+ZDBpQfDjs74rqUdUWhnYc6KEj8hM2FaBUESqu7yweQ='
+
+encrypt:
+  failOnError: false
+  keyStore:
+    location: classpath:keystore.jks
+    password: ${KEYSTORE_PASSWORD:foobar} # don't use a default in production
+    alias: test
+

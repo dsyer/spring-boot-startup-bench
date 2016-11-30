@@ -76,8 +76,12 @@ public class ConfigServerBenchmark {
 
 	public static void main(String[] args) throws Exception {
 		ExplodedDevtoolsState state = new ExplodedDevtoolsState();
-		while (true) {
-			state.run();
+		state.setup();
+		try {
+			while (true) {
+				state.run();
+			}
+		} finally {
 			state.stop();
 		}
 	}

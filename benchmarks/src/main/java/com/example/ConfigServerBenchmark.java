@@ -129,7 +129,7 @@ public class ConfigServerBenchmark {
 		public MainState() {
 			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*", "demo.ConfigServerApplication",
 					"--server.port=0");
-			unpack("target/demo", jarFile("com.example:configserver:jar:138:0.0.1-SNAPSHOT"));
+			unpack("target/demo", jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"));
 		}
 
 		@TearDown(Level.Iteration)

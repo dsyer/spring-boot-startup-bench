@@ -60,6 +60,11 @@ public class PetclinicBenchmark {
 	}
 
 	@Benchmark
+	public void explodedJarMain(MainState state) throws Exception {
+		state.run();
+	}
+
+	@Benchmark
 	public void devtoolsRestart(ExplodedDevtoolsState state) throws Exception {
 		state.run();
 	}
@@ -94,12 +99,26 @@ public class PetclinicBenchmark {
 	}
 
 	@State(Scope.Benchmark)
+	public static class MainState extends ProcessLauncherState {
+		public MainState() {
+			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*",
+					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");
+			unpack("target/demo", jarFile("com.example:petclinic:1.4.2"));
+		}
+
+		@TearDown(Level.Iteration)
+		public void stop() throws Exception {
+			super.after();
+		}
+	}
+
+	@State(Scope.Benchmark)
 	public static class ExplodedDevtoolsState extends DevToolsLauncherState {
 
 		public ExplodedDevtoolsState() {
-			super("target/demo", "/BOOT-INF/classes/.restart", jarFile("com.example:petclinic:1.4.2"), "-cp", "BOOT-INF/classes:BOOT-INF/lib/*",
-					"-Dspring.devtools.livereload.enabled=false", "-Dspring.devtools.restart.pollInterval=100",
-					"-Dspring.devtools.restart.quietPeriod=10",
+			super("target/demo", "/BOOT-INF/classes/.restart", jarFile("com.example:petclinic:1.4.2"), "-cp",
+					"BOOT-INF/classes:BOOT-INF/lib/*", "-Dspring.devtools.livereload.enabled=false",
+					"-Dspring.devtools.restart.pollInterval=100", "-Dspring.devtools.restart.quietPeriod=10",
 					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");
 		}
 

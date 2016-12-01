@@ -1,11 +1,80 @@
 # Benchmarks for Spring Boot Start Up
 
+## Running Locally
+
 ```
 $ mvn clean install
 $ (cd benchmarks/; java -jar target/benchmarks.jar)
 ```
 
+If you see odd (longer than expected) results in the `devtoolsRestart`
+benchmarks, check that you don't have a
+`﻿⁠⁠⁠⁠~/.spring-boot-devtools.properties` overriding the polling properties.
+
+## Running in EC2
+
+Install vagrant and the AWS plugin
+(https://github.com/mitchellh/vagrant-aws). Then make sure you have an
+EC2 security group called "vagrant" that allows ssh (open it up for
+all traffic to be on the safe side). The way the `Vagrantfile` is
+configured you need a default VPC in us-east-2 (an account that was
+created recently will have one by default).
+
+To provide your AWS credentials, define some environment variables:
+
+```
+$ export AWS_ACCESS_KEY=...
+$ export AWS_SECRET_KEY=...
+$ export AWS_KEYPAIR=...
+```
+
+where `AWS_KEYPAIR` is the AWS name of the key pair that you have
+already registered with Amazon. For the configuration to work without
+changes you also need the private key in a file with read-only (600)
+permissions called `~/.ssh/id_rsa.${AWS_KEYPAIR}`. Then you can
+
+```
+$ mvn clean install
+$ cd vagrant
+$ vagrant up --provider aws
+$ vagrant ssh
+> cd /build/benchmarks
+> java -jar target/benchmarks.jar
+```
+
+Edit the `Vagrantfile` to change the instance type and repeat the
+process. You have to `vagrant destroy` in between changes of
+https://aws.amazon.com/ec2/instance-types/.[instance type].
+
+If you need to update the benchmarks just `mvn clean install` locally
+and then `vagrant reload` to sync the changes to the remote box.
+
+NOTE: I had a lot of issues getting SSH to work. Had to create my own
+security group, and there was a hiccup with the ssh client wanting to
+prompt me to change my `~/.ssh/known_hosts`. Good luck.
+
 ## Benchmark Results
+
+Summary:
+
+* It is possible to start a non-trivial app in under 2 seconds.
+
+* Spring Boot 1.4 and 1.3 are indistinguishable (1.4 slightly slower
+  but within the error bars)
+
+* Devtools restart is **much** faster than a cold start.
+
+* Running the app's main method from an exploded jar is marginally
+  faster.
+
+* Hardware matters a lot, but affects all apps roughly the same.
+
+N.B. the times reported by the Spring Boot stop watch on the console
+are always shorter than those measured by the benchmark. The
+difference is a feature of the hardware used (200ms on faster
+platforms, 1700ms on slowest) and also the test ("thin" jars have a
+wider margin because they do a little bit of work checking caches
+before Spring Boot actually starts).
 
 ### Host: tower, i7, 3.4GHz, 32G RAM, SSD
 
@@ -19,6 +88,7 @@ New Dell desktop
  ConfigServerBenchmark.fatJar142             avgt   10  3.423 ± 0.160   s/op
  PetclinicBenchmark.noverify                 avgt   10  5.942 ± 0.300   s/op
  PetclinicBenchmark.fatJar                   avgt   10  6.641 ± 0.248   s/op
+ PetclinicBenchmark.explodedJarMain          avgt   10  5.225 ± 0.202   s/op
  PetclinicBenchmark.basicThin                avgt   10  6.007 ± 0.359   s/op
  PetclinicBenchmark.devtoolsRestart          avgt   10  1.437 ± 0.226   s/op
  SpringBoot138Benchmark.explodedJarLauncher  avgt   10  2.832 ± 0.099   s/op
@@ -60,11 +130,11 @@ One year old Lenovo X1 laptop.
 
 ```
 Benchmark                                   Mode  Cnt  Score   Error  Units
-ConfigServerBenchmark.devtoolsRestart       avgt   10  6.007 ± 0.313   s/op
+ConfigServerBenchmark.devtoolsRestart       avgt   10  1.458 ± 0.256   s/op
 ConfigServerBenchmark.explodedJarMain       avgt   10  5.217 ± 0.280   s/op
 ConfigServerBenchmark.fatJar138             avgt   10  5.651 ± 0.221   s/op
 ConfigServerBenchmark.fatJar142             avgt   10  5.812 ± 0.163   s/op
-PetclinicBenchmark.devtoolsRestart          avgt   10  6.670 ± 0.260   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10  1.952 ± 0.249   s/op
 PetclinicBenchmark.fatJar                   avgt   10  9.973 ± 0.637   s/op
 PetclinicBenchmark.noverify                 avgt   10  9.312 ± 0.350   s/op
 SpringBoot138Benchmark.explodedJarLauncher  avgt   10  4.696 ± 0.242   s/op
@@ -77,17 +147,17 @@ SpringBootThinBenchmark.basic138Thin        avgt   10  4.370 ± 0.200   s/op
 SpringBootThinBenchmark.basic142Thin        avgt   10  4.796 ± 0.165   s/op
 ```
 
-## Host: dsyer, i7, 2.7GHz, 4G RAM, SSD
+### Host: dsyer, i7, 2.7GHz, 4G RAM, SSD
 
 Slightly knackered old Lenovo X220 laptop.
 
 ```
 Benchmark                                   Mode  Cnt   Score   Error  Units
-ConfigServerBenchmark.devtoolsRestart       avgt   10   6.242 ± 0.232   s/op
+ConfigServerBenchmark.devtoolsRestart       avgt   10   1.568 ± 0.253   s/op
 ConfigServerBenchmark.fatJar138             avgt   10   6.267 ± 0.274   s/op
 ConfigServerBenchmark.fatJar142             avgt   10   6.426 ± 0.398   s/op
 ConfigServerBenchmark.explodedJarMain       avgt   10   5.880 ± 0.326   s/op
-PetclinicBenchmark.devtoolsRestart          avgt   10   6.910 ± 0.293   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10   2.053 ± 0.226   s/op
 PetclinicBenchmark.fatJar                   avgt   10  11.241 ± 0.365   s/op
 PetclinicBenchmark.noverify                 avgt   10  10.726 ± 0.526   s/op
 SpringBoot138Benchmark.explodedJarLauncher  avgt   10   5.526 ± 0.341   s/op
@@ -98,6 +168,94 @@ SpringBoot142Benchmark.explodedJarMain      avgt   10   4.589 ± 0.258   s/op
 SpringBoot142Benchmark.fatJar               avgt   10   5.638 ± 0.269   s/op
 SpringBootThinBenchmark.basic138Thin        avgt   10   5.082 ± 0.307   s/op
 SpringBootThinBenchmark.basic142Thin        avgt   10   5.731 ± 0.211   s/op
+```
+
+### Host: t2.small, 1CPU, 1G RAM, SSD
+
+```
+Benchmark                                   Mode  Cnt   Score   Error  Units
+ConfigServerBenchmark.devtoolsRestart       avgt   10   1.760 ± 0.236   s/op
+ConfigServerBenchmark.explodedJarMain       avgt   10   8.597 ± 0.218   s/op
+ConfigServerBenchmark.fatJar138             avgt   10   9.114 ± 0.387   s/op
+ConfigServerBenchmark.fatJar142             avgt   10   9.092 ± 0.358   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10   2.709 ± 0.180   s/op
+PetclinicBenchmark.fatJar                   avgt   10  15.277 ± 0.414   s/op
+PetclinicBenchmark.noverify                 avgt   10  14.011 ± 0.340   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10   7.327 ± 0.223   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10   5.684 ± 0.099   s/op
+SpringBoot138Benchmark.fatJar               avgt   10   7.017 ± 0.218   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10   7.825 ± 0.193   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10   6.150 ± 0.160   s/op
+SpringBoot142Benchmark.fatJar               avgt   10   7.372 ± 0.204   s/op
+SpringBootThinBenchmark.basic138Thin        avgt   10   7.055 ± 0.175   s/op
+SpringBootThinBenchmark.basic142Thin        avgt   10   7.553 ± 0.255   s/op
+```
+
+### Host: t2.large, 2CPU, 8G RAM, SSD
+
+```
+Benchmark                                   Mode  Cnt  Score   Error  Units
+ConfigServerBenchmark.devtoolsRestart       avgt   10  1.071 ± 0.170   s/op
+ConfigServerBenchmark.explodedJarMain       avgt   10  4.504 ± 0.250   s/op
+ConfigServerBenchmark.fatJar138             avgt   10  4.706 ± 0.110   s/op
+ConfigServerBenchmark.fatJar142             avgt   10  4.730 ± 0.159   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10  1.555 ± 0.198   s/op
+PetclinicBenchmark.fatJar                   avgt   10  8.181 ± 0.396   s/op
+PetclinicBenchmark.noverify                 avgt   10  7.393 ± 0.304   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10  3.857 ± 0.141   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10  3.113 ± 0.145   s/op
+SpringBoot138Benchmark.fatJar               avgt   10  3.729 ± 0.088   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10  4.074 ± 0.170   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10  3.468 ± 0.159   s/op
+SpringBoot142Benchmark.fatJar               avgt   10  3.916 ± 0.207   s/op
+SpringBootThinBenchmark.basic138Thin        avgt   10  3.935 ± 0.176   s/op
+SpringBootThinBenchmark.basic142Thin        avgt   10  4.250 ± 0.208   s/op
+```
+
+### Host: m4.large, 2CPU, 8G RAM, SSD
+
+
+```
+Benchmark                                   Mode  Cnt   Score   Error  Units
+ConfigServerBenchmark.devtoolsRestart       avgt   10   1.638 ± 0.255   s/op
+ConfigServerBenchmark.explodedJarMain       avgt   10   7.222 ± 0.153   s/op
+ConfigServerBenchmark.fatJar138             avgt   10   7.641 ± 0.212   s/op
+ConfigServerBenchmark.fatJar142             avgt   10   7.616 ± 0.182   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10   2.502 ± 0.314   s/op
+PetclinicBenchmark.explodedJarMain          avgt   10  11.447 ± 0.209   s/op
+PetclinicBenchmark.fatJar                   avgt   10  12.835 ± 0.341   s/op
+PetclinicBenchmark.noverify                 avgt   10  11.833 ± 0.438   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10   6.195 ± 0.193   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10   4.939 ± 0.217   s/op
+SpringBoot138Benchmark.fatJar               avgt   10   5.893 ± 0.190   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10   6.471 ± 0.126   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10   5.360 ± 0.209   s/op
+SpringBoot142Benchmark.fatJar               avgt   10   6.302 ± 0.199   s/op
+SpringBootThinBenchmark.basic138Thin        avgt   10   6.013 ± 0.159   s/op
+SpringBootThinBenchmark.basic142Thin        avgt   10   6.437 ± 0.301   s/op
+```
+
+### Host: r3.large, 2CPU, 15G RAM, SSD
+
+
+```
+Benchmark                                   Mode  Cnt   Score   Error  Units
+ConfigServerBenchmark.devtoolsRestart       avgt   10   1.874 ± 0.344   s/op
+ConfigServerBenchmark.explodedJarMain       avgt   10   7.967 ± 0.270   s/op
+ConfigServerBenchmark.fatJar138             avgt   10   8.375 ± 0.229   s/op
+ConfigServerBenchmark.fatJar142             avgt   10   8.541 ± 0.317   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10   2.707 ± 0.333   s/op
+PetclinicBenchmark.explodedJarMain          avgt   10  12.403 ± 0.385   s/op
+PetclinicBenchmark.fatJar                   avgt   10  13.956 ± 0.439   s/op
+PetclinicBenchmark.noverify                 avgt   10  13.023 ± 0.382   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10   6.802 ± 0.272   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10   5.370 ± 0.341   s/op
+SpringBoot138Benchmark.fatJar               avgt   10   6.609 ± 0.328   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10   7.157 ± 0.233   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10   5.946 ± 0.133   s/op
+SpringBoot142Benchmark.fatJar               avgt   10   6.855 ± 0.173   s/op
+SpringBootThinBenchmark.basic138Thin        avgt   10   6.527 ± 0.262   s/op
+SpringBootThinBenchmark.basic142Thin        avgt   10   7.175 ± 0.286   s/op
 ```
 
 ## Finer Grained Timing

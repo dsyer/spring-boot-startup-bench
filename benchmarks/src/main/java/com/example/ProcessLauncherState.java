@@ -25,7 +25,7 @@ public class ProcessLauncherState {
 	public ProcessLauncherState(String dir, String... args) {
 		this.args = new ArrayList<>(Arrays.asList(args));
 		this.args.add(0, System.getProperty("java.home") + "/bin/java");
-		this.args.add(1, "-Xmx64m");
+		this.args.add(1, "-Xmx128m");
 		this.args.add(2, "-Djava.security.egd=file:/dev/./urandom");
 		this.home = new File(dir);
 	}

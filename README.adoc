@@ -37,20 +37,21 @@ New Dell desktop
 
 ```
 Benchmark                                   Mode  Cnt   Score   Error  Units
-ConfigServerBenchmark.devtoolsRestart       avgt   10   2.150 ± 0.151   s/op
-ConfigServerBenchmark.explodedJarMain       avgt   10   7.539 ± 0.976   s/op
-ConfigServerBenchmark.fatJar138             avgt   10   7.781 ± 0.493   s/op
-ConfigServerBenchmark.fatJar142             avgt   10   8.049 ± 0.478   s/op
-PetclinicBenchmark.devtoolsRestart          avgt   10   3.000 ± 0.201   s/op
-PetclinicBenchmark.basicThin                avgt   10  12.863 ± 0.940   s/op
-SpringBoot138Benchmark.explodedJarLauncher  avgt   10   6.575 ± 1.005   s/op
-SpringBoot138Benchmark.explodedJarMain      avgt   10   5.728 ± 1.199   s/op
-SpringBoot138Benchmark.fatJar               avgt   10   6.893 ± 1.470   s/op
-SpringBoot142Benchmark.explodedJarLauncher  avgt   10   6.688 ± 0.521   s/op
-SpringBoot142Benchmark.explodedJarMain      avgt   10   5.501 ± 0.897   s/op
-SpringBoot142Benchmark.fatJar               avgt   10   6.467 ± 0.664   s/op
-SpringBootThinBenchmark.basic138Thin        avgt   10   6.554 ± 1.458   s/op
-SpringBootThinBenchmark.basic142Thin        avgt   10   6.167 ± 0.776   s/op
+ConfigServerBenchmark.devtoolsRestart       avgt   10   2.041 ± 0.173   s/op
+ConfigServerBenchmark.explodedJarMain       avgt   10   6.930 ± 0.228   s/op
+ConfigServerBenchmark.fatJar138             avgt   10   7.395 ± 0.203   s/op
+ConfigServerBenchmark.fatJar142             avgt   10   7.439 ± 0.247   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10   2.868 ± 0.195   s/op
+PetclinicBenchmark.fatJar                   avgt   10  13.579 ± 0.222   s/op
+PetclinicBenchmark.noverify                 avgt   10  12.186 ± 0.373   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10   5.821 ± 0.191   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10   4.365 ± 0.117   s/op
+SpringBoot138Benchmark.fatJar               avgt   10   5.550 ± 0.132   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10   6.238 ± 0.225   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10   4.840 ± 0.137   s/op
+SpringBoot142Benchmark.fatJar               avgt   10   6.238 ± 0.560   s/op
+SpringBootThinBenchmark.basic138Thin        avgt   10   5.248 ± 0.130   s/op
+SpringBootThinBenchmark.basic142Thin        avgt   10   5.715 ± 0.115   s/op
 ```
 
 ### Host: carbon, i7, 2.6GHz, 4G RAM, SSD
@@ -58,20 +59,22 @@ SpringBootThinBenchmark.basic142Thin        avgt   10   6.167 ± 0.776   s/op
 One year old Lenovo X1 laptop.
 
 ```
-ConfigServerBenchmark.devtoolsRestart       avgt   10  6.045 ± 0.249   s/op
-ConfigServerBenchmark.explodedJarMain       avgt   10  5.307 ± 0.396   s/op
-ConfigServerBenchmark.fatJar138             avgt   10  5.481 ± 0.152   s/op
-ConfigServerBenchmark.fatJar142             avgt   10  5.777 ± 0.283   s/op
-PetclinicBenchmark.basicThin                avgt   10  9.651 ± 0.403   s/op
-PetclinicBenchmark.devtoolsRestart          avgt   10  6.778 ± 0.245   s/op
-SpringBoot138Benchmark.explodedJarLauncher  avgt   10  4.531 ± 0.231   s/op
-SpringBoot138Benchmark.explodedJarMain      avgt   10  3.627 ± 0.177   s/op
-SpringBoot138Benchmark.fatJar               avgt   10  4.500 ± 0.221   s/op
-SpringBoot142Benchmark.explodedJarLauncher  avgt   10  5.047 ± 0.255   s/op
-SpringBoot142Benchmark.explodedJarMain      avgt   10  4.013 ± 0.200   s/op
-SpringBoot142Benchmark.fatJar               avgt   10  4.726 ± 0.239   s/op
-SpringBootThinBenchmark.basic138Thin        avgt   10  4.465 ± 0.166   s/op
-SpringBootThinBenchmark.basic142Thin        avgt   10  4.873 ± 0.303   s/op
+Benchmark                                   Mode  Cnt  Score   Error  Units
+ConfigServerBenchmark.devtoolsRestart       avgt   10  6.007 ± 0.313   s/op
+ConfigServerBenchmark.explodedJarMain       avgt   10  5.217 ± 0.280   s/op
+ConfigServerBenchmark.fatJar138             avgt   10  5.651 ± 0.221   s/op
+ConfigServerBenchmark.fatJar142             avgt   10  5.812 ± 0.163   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10  6.670 ± 0.260   s/op
+PetclinicBenchmark.fatJar                   avgt   10  9.973 ± 0.637   s/op
+PetclinicBenchmark.noverify                 avgt   10  9.312 ± 0.350   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10  4.696 ± 0.242   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10  3.599 ± 0.192   s/op
+SpringBoot138Benchmark.fatJar               avgt   10  4.427 ± 0.249   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10  4.926 ± 0.313   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10  3.824 ± 0.150   s/op
+SpringBoot142Benchmark.fatJar               avgt   10  4.814 ± 0.199   s/op
+SpringBootThinBenchmark.basic138Thin        avgt   10  4.370 ± 0.200   s/op
+SpringBootThinBenchmark.basic142Thin        avgt   10  4.796 ± 0.165   s/op
 ```
 
 ## Host: dsyer, i7, 2.7GHz, 4G RAM, SSD
@@ -80,20 +83,21 @@ Slightly knackered old Lenovo X220 laptop.
 
 ```
 Benchmark                                   Mode  Cnt   Score   Error  Units
-ConfigServerBenchmark.devtoolsRestart       avgt   10   6.301 ± 0.274   s/op
-ConfigServerBenchmark.explodedJarMain       avgt   10   6.284 ± 0.529   s/op
-ConfigServerBenchmark.fatJar138             avgt   10   6.737 ± 1.132   s/op
-ConfigServerBenchmark.fatJar142             avgt   10   7.368 ± 0.805   s/op
-PetclinicBenchmark.basicThin                avgt   10  11.836 ± 0.570   s/op
-PetclinicBenchmark.devtoolsRestart          avgt   10   7.044 ± 0.331   s/op
-SpringBoot138Benchmark.explodedJarLauncher  avgt   10   5.800 ± 0.447   s/op
-SpringBoot138Benchmark.explodedJarMain      avgt   10   4.584 ± 0.246   s/op
-SpringBoot138Benchmark.fatJar               avgt   10   5.673 ± 0.290   s/op
-SpringBoot142Benchmark.explodedJarLauncher  avgt   10   6.374 ± 0.362   s/op
-SpringBoot142Benchmark.explodedJarMain      avgt   10   4.942 ± 0.213   s/op
-SpringBoot142Benchmark.fatJar               avgt   10   5.976 ± 0.415   s/op
-SpringBootThinBenchmark.basic138Thin        avgt   10   5.636 ± 0.265   s/op
-SpringBootThinBenchmark.basic142Thin        avgt   10   6.205 ± 0.230   s/op
+ConfigServerBenchmark.devtoolsRestart       avgt   10   6.242 ± 0.232   s/op
+ConfigServerBenchmark.fatJar138             avgt   10   6.267 ± 0.274   s/op
+ConfigServerBenchmark.fatJar142             avgt   10   6.426 ± 0.398   s/op
+ConfigServerBenchmark.explodedJarMain       avgt   10   5.880 ± 0.326   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10   6.910 ± 0.293   s/op
+PetclinicBenchmark.fatJar                   avgt   10  11.241 ± 0.365   s/op
+PetclinicBenchmark.noverify                 avgt   10  10.726 ± 0.526   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10   5.526 ± 0.341   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10   4.190 ± 0.201   s/op
+SpringBoot138Benchmark.fatJar               avgt   10   5.325 ± 0.206   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10   5.958 ± 0.190   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10   4.589 ± 0.258   s/op
+SpringBoot142Benchmark.fatJar               avgt   10   5.638 ± 0.269   s/op
+SpringBootThinBenchmark.basic138Thin        avgt   10   5.082 ± 0.307   s/op
+SpringBootThinBenchmark.basic142Thin        avgt   10   5.731 ± 0.211   s/op
 ```
 
 ## Finer Grained Timing

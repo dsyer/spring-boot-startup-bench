@@ -1,0 +1,201 @@
+# Anatomy of Spring Boot Start Up Timing
+
+When a Spring Boot app starts up with default (INFO) logging, there are some noticeable gaps (pauses). It's worth focusing on the gaps when looking for efficiency savings because of the amount of time they take, and because no-one bothered to log anything, so the chances are the app is doing something repetitive. We can tweak the logging levels to try and fill in the gaps and find out what is going on in there.
+
+Basic empty web app with actuators has three such gaps:
+
+```
+0                                                                        1410ms
+|------|---------------------------|-----|------|---------|--------|--------|
+       |           578             |     |144(5)|         | 133(6) |
+       |     325     |    299      |
+       |      |      |       |     |
+       |160(1)|165(2)|252(3) |47(4)|
+
+(1) = PropertySourcesPropertyResolver
+(2) = Condition processing
+(3) = bean creation and introspection
+(4) = ???
+(5) = ???, after `FilterRegistrationBean` and before `RequestMappingHandlerAdapter`
+(6) = ???, after `SimpleUrlHandlerMapping` and before `EndpointHandlerMapping`
+```
+
+The 3 gaps together account for 855/1410 (60%) of the startup time. With devtools the same gaps are present on restart, but much smaller. The startup time goes down to 500ms or less, so everything is faster.
+
+Petclinic (Spring Data JPA) has more gaps and they are longer, but on closer inspection the gaps are the same as before, just with some new logs in the middle of them. The first two combined correspond to the early gap in the vanilla app, and the last one corresponds to the last gap in the vanilla app, and the other two combine to form the equivalent of the middle gap in the vanilla app. All are much longer: (2060,791,454) compared to (578,144,133).
+
+```
+0                                                                                                4959ms
+|---|---------------------------------------------|---|-----------------------|--|-------|-----|
+    |                    2060                     |   |      791(7)+736(9)    |   454(11)
+    |              1504             |273(5)|283(6)|   |391(8)|736(9)  |400(10)|
+    |115(1) |333(2)| 800(3) |256(4) |             |
+                    
+    (1) ClassPathBeanDefinitionScanner
+    (2) probably Spring Boot (see 1,2 above)
+    (3) ClassPathScanningCandidateComponentProvider (Spring Data)
+    (4) configuration class processing `ConfigurationClassPostProcessor` and `ConfigurationClassEnhancer`
+    (5) `BeanPostProcessorChecker` (not a gap in the INFO log)
+    (6) ???, after `BeanPostProcessorChecker`, before `TomcatEmbeddedServletContainer`
+    (7) (8 and 10) combined are the same as the second pause in vanilla
+    (8) ???, start of second pause in vanilla case
+    (9) database processing (new logging, not a gap in INFO log)
+    (10) ???, end of second pause in vanilla case, after `QueryTranslatorFactoryInitiator` (Hibernate), before `RequestMappingHandlerAdapter`
+    (11) ???, same as third pause in vanilla case
+```
+
+The 3 gaps together now account for 4041/4959 (80%) of the startup time.
+
+With devtools the startup time goes down to 900ms (so a really significant improvement). Again the same gaps are present but much smaller. For example, the database processing section is 8 times faster on devtools restart (89ms compared to 736ms).
+
+## Vanilla web app with actuators
+
+The first long delay is always here (with Tomcat or Jetty):
+
+```
+2016-11-25 15:04:45.254  INFO 14744 --- [      Thread-19] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@7498cdf0: startup date [Fri Nov 25 15:04:45 GMT 2016]; root of context hierarchy
+2016-11-25 15:04:45.832  INFO 14744 --- [      Thread-19] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 8015 (http)
+```
+
+In this example it was 578ms (out of a total startup time of 1410ms). There are two other appreciable pause (more than 100ms):
+
+```
+2016-11-25 15:04:45.980  INFO 14744 --- [ost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'applicationContextIdFilter' to: [/*]
+2016-11-25 15:04:46.124  INFO 14744 --- [      Thread-19] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@7498cdf0: startup date [Fri Nov 25 15:04:45 GMT 2016]; root of context hierarchy
+```
+
+which is 144ms and:
+
+```
+2016-11-25 15:04:46.190  INFO 14744 --- [      Thread-19] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2016-11-25 15:04:46.323  INFO 14744 --- [      Thread-19] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/health || /health.json],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.HealthMvcEndpoint.invoke(java.security.Principal)
+```
+
+which is 133ms.
+
+### Finer grained logging
+
+We can drill into the first pause using some finer grained logging. With `logging.level.org.springframework.context.annotation=TRACE` there's no appreciable pause here:
+
+```
+2016-11-25 15:40:32.259  INFO 16065 --- [           main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@63355449: startup date [Fri Nov 25 15:40:32 GMT 2016]; root of context hierarchy
+2016-11-25 15:40:32.300 DEBUG 16065 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : JSR-250 'javax.annotation.ManagedBean' found and supported for component scanning
+2016-11-25 15:40:32.305 TRACE 16065 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Scanning file [/home/dsyer/dev/demo/workspace/demo/target/classes/com/example/DemoApplication.class]
+```
+
+but then immediately there's a delay after the last `ClassPathBeanDefinitionScanner` (325ms):
+
+```
+2016-11-25 15:40:32.323 TRACE 16065 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Ignored because not matching any filter: file [/home/dsyer/dev/demo/workspace/demo/target/classes/com/example/DemoApplication.class]
+2016-11-25 15:40:32.648 DEBUG 16065 --- [           main] a.ConfigurationClassBeanDefinitionReader : Registered bean definition for imported class 'org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration'
+```
+
+Followed by a long run of fast, boring stuff with `ConfigurationClassBeanDefinitionReader` and `ConfigurationClassEnhancer`, and then a new phase involving `ConfigurationClassPostProcessor`. When this ends there is a delay (299ms):
+
+```
+2016-11-25 15:40:32.997 DEBUG 16065 --- [           main] o.s.c.a.ConfigurationClassPostProcessor  : Replacing bean definition 'org.springframework.boot.autoconfigure.web.WebClientAutoConfiguration' existing class 'org.springframework.boot.autoconfigure.web.WebClientAutoConfiguration' with enhanced class 'org.springframework.boot.autoconfigure.web.WebClientAutoConfiguration$$EnhancerBySpringCGLIB$$ed8171d6'
+2016-11-25 15:40:33.298  INFO 16065 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 8015 (http)
+```
+
+The `ConfigurationClassPostProcessor` is nothing special (it's just the last one of a long line of similar logs, all of which are fast). So there's something else going on there.
+
+In fact, those 2 measured delays account for pretty much all of the long pause we saw to start with. It's a pause of 2 halves.
+
+### Autoconfiguration
+
+Setting `org.springframework.boot.autoconfigure=TRACE` reveals this:
+
+```
+2016-11-25 15:52:06.989 TRACE 16317 --- [           main] o.s.b.a.condition.OnClassCondition       : Condition OnClassCondition on org.springframework.boot.autoconfigure.websocket.WebSocketMessagingAutoConfiguration did not match due to @ConditionalOnClass did not find required class 'org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer'
+2016-11-25 15:52:06.991 DEBUG 16317 --- [           main] a.ConfigurationClassBeanDefinitionReader : Registered bean definition for imported class 'org.springframework.boot.autoconfigure.PropertyPlaceholderAutoConfiguration'
+```
+
+i.e. no pause between the last condition processing and the end of the first of the 2 half pauses. At the beginning of the first half there's a shorter delay after `ClassPathBeanDefinitionScanner` (160ms):
+
+```
+2016-11-25 15:52:06.644 TRACE 16317 --- [           main] o.s.c.a.ClassPathBeanDefinitionScanner   : Ignored because not matching any filter: file [/home/dsyer/dev/demo/workspace/demo/target/classes/com/example/DemoApplication.class]
+2016-11-25 15:52:06.804 TRACE 16317 --- [           main] o.s.b.a.condition.OnClassCondition       : Condition OnClassCondition on org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration matched due to @ConditionalOnClass found required class 'com.fasterxml.jackson.databind.ObjectMapper'
+```
+
+so about half of the "first half (325ms)" delay we saw above is attributable to condition processing, or something that is happening during condition processing.
+
+There's nothing logged yet in the "second half (299ms)" delay period.
+
+Cranking up to `org.springframework.boot=TRACE` we find some more logs in the second delay. Here's the whole period:
+
+```
+2016-11-25 16:16:06.533 DEBUG 16534 --- [           main] o.s.c.a.ConfigurationClassPostProcessor  : Replacing bean definition 'org.springframework.boot.autoconfigure.web.WebClientAutoConfiguration' existing class 'org.springframework.boot.autoconfigure.web.WebClientAutoConfiguration' with enhanced class 'org.springframework.boot.autoconfigure.web.WebClientAutoConfiguration$$EnhancerBySpringCGLIB$$9272a493'
+2016-11-25 16:16:06.576 DEBUG 16534 --- [           main] ationConfigEmbeddedWebApplicationContext : Unable to locate MessageSource with name 'messageSource': using default [org.springframework.context.support.DelegatingMessageSource@acb0951]
+2016-11-25 16:16:06.576 DEBUG 16534 --- [           main] ationConfigEmbeddedWebApplicationContext : Unable to locate ApplicationEventMulticaster with name 'applicationEventMulticaster': using default [org.springframework.context.event.SimpleApplicationEventMulticaster@5bf22f18]
+
+
+2016-11-25 16:16:06.651 TRACE 16534 --- [           main] o.s.b.b.PropertiesConfigurationFactory   : Property Sources: org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor$FlatPropertySources@e6516e
+2016-11-25 16:16:06.710 TRACE 16534 --- [           main] o.s.b.b.PropertiesConfigurationFactory   : Property Sources: org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor$FlatPropertySources@e6516e
+2016-11-25 16:16:06.726 TRACE 16534 --- [           main] o.s.b.b.PropertiesConfigurationFactory   : Property Sources: org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor$FlatPropertySources@e6516e
+
+
+2016-11-25 16:16:06.785 DEBUG 16534 --- [           main] .t.TomcatEmbeddedServletContainerFactory : Code archive: /home/dsyer/.m2/repository/org/springframework/boot/spring-boot/1.4.2.RELEASE/spring-boot-1.4.2.RELEASE.jar
+2016-11-25 16:16:06.786 DEBUG 16534 --- [           main] .t.TomcatEmbeddedServletContainerFactory : Code archive: /home/dsyer/.m2/repository/org/springframework/boot/spring-boot/1.4.2.RELEASE/spring-boot-1.4.2.RELEASE.jar
+2016-11-25 16:16:06.786 DEBUG 16534 --- [           main] .t.TomcatEmbeddedServletContainerFactory : None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2016-11-25 16:16:06.811  INFO 16534 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 8015 (http)
+```
+
+But even then we haven't got much useful data. There are still two pauses over 50ms, one after the last `AnnotationConfigEmbeddedWebApplicationContext` and one after the last `PropertiesConfigurationFactory` (the logs have been broken up at that point artificially in the snippet above).
+
+There's nothing else showing up in the first half pause, so nothing that Spring Boot autoconfiguration is doing can account for that unless it is doing it without emitting any logs.
+
+### PropertySourcesPropertyResolver
+
+Whack it up to `org.springframework=TRACE` and some gaps are filled in. There's a huge amount of logging coming from Spring Boot, which accounts for about 200ms or so of the "first half".
+
+Most of the 200ms look like `PropertySourcesPropertyResolver` is busy. That's interesting because it's computing stuff that could be cached and read from a file. It's also scanning a lot of system properties, and most of that looks like this:
+
+```
+2016-11-25 16:28:36.197 TRACE 16707 --- [           main] o.s.c.e.PropertySourcesPropertyResolver  : Searching for key 'HOME' in [servletConfigInitParams]
+2016-11-25 16:28:36.197 TRACE 16707 --- [           main] o.s.c.e.PropertySourcesPropertyResolver  : Searching for key 'HOME' in [servletContextInitParams]
+2016-11-25 16:28:36.197 TRACE 16707 --- [           main] o.s.c.e.PropertySourcesPropertyResolver  : Searching for key 'HOME' in [systemProperties]
+2016-11-25 16:28:36.197 TRACE 16707 --- [           main] o.s.c.e.PropertySourcesPropertyResolver  : Searching for key 'HOME' in [systemEnvironment]
+2016-11-25 16:28:36.197 DEBUG 16707 --- [           main] o.s.c.e.PropertySourcesPropertyResolver  : Found key 'HOME' in [systemEnvironment] with type [String]
+```
+
+There's also a noticeable gap (123ms) here:
+
+```
+2016-11-25 16:28:36.208 DEBUG 16707 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Returning cached instance of singleton bean 'org.springframework.boot.autoconfigure.internalCachingMetadataReaderFactory'
+2016-11-25 16:28:36.331 DEBUG 16707 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Returning cached instance of singleton bean 'autoConfigurationReport'
+```
+
+### Spring Bean Factory and the Second Half
+
+The biggest pause I could find in the second half is now down to 47ms:
+
+```
+2016-11-25 16:28:37.317 DEBUG 16707 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Finished creating instance of bean 'tomcatEmbeddedServletContainerFactory'
+2016-11-25 16:28:37.354 DEBUG 16707 --- [           main] .t.TomcatEmbeddedServletContainerFactory : Code archive: /home/dsyer/.m2/repository/org/springframework/boot/spring-boot/1.4.2.RELEASE/spring-boot-1.4.2.RELEASE.jar
+```
+
+The rest of the "second half (299ms)" pause is completely filled in now, and all basically from `org.springframework.beans` (but there are plenty of logs from that package scattered through the rest of the start up as well). Nothing immediately jumps out. It's mainly `CachedIntrospectionResults` and `DefaultListableBeanFactory`, e.g.
+
+```
+2016-11-25 16:28:37.297 DEBUG 16707 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Creating instance of bean 'spring.resources-org.springframework.boot.autoconfigure.web.ResourceProperties'
+2016-11-25 16:28:37.297 DEBUG 16707 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Eagerly caching bean 'spring.resources-org.springframework.boot.autoconfigure.web.ResourceProperties' to allow for resolving potential circular references
+2016-11-25 16:28:37.297 TRACE 16707 --- [           main] o.s.beans.CachedIntrospectionResults     : Getting BeanInfo for class [org.springframework.boot.autoconfigure.web.ResourceProperties]
+2016-11-25 16:28:37.298 TRACE 16707 --- [           main] o.s.beans.CachedIntrospectionResults     : Caching PropertyDescriptors for class [org.springframework.boot.autoconfigure.web.ResourceProperties]
+2016-11-25 16:28:37.298 TRACE 16707 --- [           main] o.s.beans.CachedIntrospectionResults     : Found bean property 'addMappings' of type [boolean]
+2016-11-25 16:28:37.298 TRACE 16707 --- [           main] o.s.beans.CachedIntrospectionResults     : Found bean property 'cachePeriod' of type [java.lang.Integer]
+2016-11-25 16:28:37.298 TRACE 16707 --- [           main] o.s.beans.CachedIntrospectionResults     : Found bean property 'chain' of type [org.springframework.boot.autoconfigure.web.ResourceProperties$Chain]
+2016-11-25 16:28:37.298 TRACE 16707 --- [           main] o.s.beans.CachedIntrospectionResults     : Found bean property 'class' of type [java.lang.Class]
+2016-11-25 16:28:37.298 TRACE 16707 --- [           main] o.s.beans.CachedIntrospectionResults     : Found bean property 'resourceLoader' of type [org.springframework.core.io.ResourceLoader]
+2016-11-25 16:28:37.298 TRACE 16707 --- [           main] o.s.beans.CachedIntrospectionResults     : Found bean property 'staticLocations' of type [[Ljava.lang.String;]
+2016-11-25 16:28:37.298 TRACE 16707 --- [           main] o.s.beans.CachedIntrospectionResults     : Found bean property 'welcomePage' of type [org.springframework.core.io.Resource]
+2016-11-25 16:28:37.298 TRACE 16707 --- [           main] o.s.b.b.PropertiesConfigurationFactory   : Property Sources: org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor$FlatPropertySources@388ffbc2
+2016-11-25 16:28:37.299 DEBUG 16707 --- [           main] o.s.core.env.MutablePropertySources      : Adding [servletConfigInitParams] PropertySource with lowest search precedence
+2016-11-25 16:28:37.299 DEBUG 16707 --- [           main] o.s.core.env.MutablePropertySources      : Adding [servletContextInitParams] PropertySource with lowest search precedence
+2016-11-25 16:28:37.299 DEBUG 16707 --- [           main] o.s.core.env.MutablePropertySources      : Adding [systemProperties] PropertySource with lowest search precedence
+2016-11-25 16:28:37.299 DEBUG 16707 --- [           main] o.s.core.env.MutablePropertySources      : Adding [systemEnvironment] PropertySource with lowest search precedence
+2016-11-25 16:28:37.299 DEBUG 16707 --- [           main] o.s.core.env.MutablePropertySources      : Adding [random] PropertySource with lowest search precedence
+2016-11-25 16:28:37.299 DEBUG 16707 --- [           main] o.s.core.env.MutablePropertySources      : Adding [applicationConfig: [classpath:/application.properties]] PropertySource with lowest search precedence
+2016-11-25 16:28:37.299 DEBUG 16707 --- [           main] o.s.core.env.MutablePropertySources      : Adding [localProperties] PropertySource with lowest search precedence
+2016-11-25 16:28:37.301 TRACE 16707 --- [           main] s.a.ScheduledAnnotationBeanPostProcessor : No @Scheduled annotations found on bean class: class org.springframework.boot.autoconfigure.web.ResourceProperties
+2016-11-25 16:28:37.302 DEBUG 16707 --- [           main] o.s.b.f.s.DefaultListableBeanFactory     : Finished creating instance of bean 'spring.resources-org.springframework.boot.autoconfigure.web.ResourceProperties'
+```

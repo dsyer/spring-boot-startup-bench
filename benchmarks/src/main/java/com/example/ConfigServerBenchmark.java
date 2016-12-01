@@ -31,11 +31,6 @@
 
 package com.example;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Date;
-
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -111,28 +106,16 @@ public class ConfigServerBenchmark {
 	}
 
 	@State(Scope.Benchmark)
-	public static class ExplodedDevtoolsState extends ProcessLauncherState {
+	public static class ExplodedDevtoolsState extends DevToolsLauncherState {
 		public ExplodedDevtoolsState() {
-			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*", "-Dspring.devtools.livereload.enabled=false",
+			super("target/demo", "/BOOT-INF/classes/.restart", jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"), "-cp", "BOOT-INF/classes:BOOT-INF/lib/*", "-Dspring.devtools.livereload.enabled=false",
 					"-Dspring.devtools.restart.pollInterval=100", "-Dspring.devtools.restart.quietPeriod=10",
 					"demo.ConfigServerApplication", "--server.port=0");
-			unpack("target/demo", jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"), "petclinic");
 		}
 
 		@Setup(Level.Trial)
 		public void setup() throws Exception {
-			update();
-			super.run();
-		}
-
-		private void update() throws IOException {
-			Files.write(new File("target/demo/BOOT-INF/classes/.restart").toPath(), new Date().toString().getBytes());
-		}
-
-		@Override
-		public void run() throws Exception {
-			update();
-			monitor();
+			super.setup();
 		}
 
 		@TearDown(Level.Trial)
@@ -146,7 +129,7 @@ public class ConfigServerBenchmark {
 		public MainState() {
 			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*", "demo.ConfigServerApplication",
 					"--server.port=0");
-			unpack("target/demo", jarFile("com.example:configserver:jar:138:0.0.1-SNAPSHOT"), "main");
+			unpack("target/demo", jarFile("com.example:configserver:jar:138:0.0.1-SNAPSHOT"));
 		}
 
 		@TearDown(Level.Iteration)

@@ -62,7 +62,7 @@ public class ProcessLauncherState {
 		return sb.toString();
 	}
 
-	public void unpack(String path, String jar, String name) {
+	public void unpack(String path, String jar) {
 		File home = new File(path);
 		ProcessBuilder builder = new ProcessBuilder(System.getProperty("java.home") + "/../bin/jar", "-xf", jar);
 		Process started = null;

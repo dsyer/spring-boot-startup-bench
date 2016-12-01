@@ -84,7 +84,7 @@ public class SpringBoot142Benchmark {
 	public static class BootState extends ProcessLauncherState {
 		public BootState() {
 			super("target/demo", "-cp", ".", "org.springframework.boot.loader.JarLauncher", "--server.port=0");
-			unpack("target/demo", jarFile("com.example:demo:jar:142:0.0.1-SNAPSHOT"), "basic");
+			unpack("target/demo", jarFile("com.example:demo:jar:142:0.0.1-SNAPSHOT"));
 		}
 
 		@TearDown(Level.Iteration)
@@ -98,7 +98,7 @@ public class SpringBoot142Benchmark {
 		public MainState() {
 			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*", "com.example.DemoApplication",
 					"--server.port=0");
-			unpack("target/demo", jarFile("com.example:demo:jar:142:0.0.1-SNAPSHOT"), "main");
+			unpack("target/demo", jarFile("com.example:demo:jar:142:0.0.1-SNAPSHOT"));
 		}
 
 		@TearDown(Level.Iteration)

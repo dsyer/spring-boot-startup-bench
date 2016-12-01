@@ -5,7 +5,7 @@ $ mvn clean install
 $ (cd benchmarks/; java -jar target/benchmarks.jar)
 ```
 
-## Results
+## Benchmark Results
 
 ### Host: tower, i7, 3.4GHz, 32G RAM, SSD
 
@@ -17,6 +17,8 @@ New Dell desktop
  ConfigServerBenchmark.explodedJarMain       avgt   10  3.271 ± 0.234   s/op 
  ConfigServerBenchmark.fatJar138             avgt   10  3.267 ± 0.173   s/op
  ConfigServerBenchmark.fatJar142             avgt   10  3.423 ± 0.160   s/op
+ PetclinicBenchmark.noverify                 avgt   10  5.942 ± 0.300   s/op
+ PetclinicBenchmark.fatJar                   avgt   10  6.641 ± 0.248   s/op
  PetclinicBenchmark.basicThin                avgt   10  6.007 ± 0.359   s/op
  PetclinicBenchmark.devtoolsRestart          avgt   10  1.437 ± 0.226   s/op
  SpringBoot138Benchmark.explodedJarLauncher  avgt   10  2.832 ± 0.099   s/op
@@ -93,3 +95,51 @@ SpringBoot142Benchmark.fatJar               avgt   10   5.976 ± 0.415   s/op
 SpringBootThinBenchmark.basic138Thin        avgt   10   5.636 ± 0.265   s/op
 SpringBootThinBenchmark.basic142Thin        avgt   10   6.205 ± 0.230   s/op
 ```
+
+## Finer Grained Timing
+
+There's a tool in the JDK called `jcmd` that prints out a load of useful stuff
+about a running process. E.g:
+
+```
+$ jcmd <PID> PerfCounter.print
+```
+
+where `<PID>` is the process id. The petclinic (on "tower") has these
+times in ns (highlights):
+
+```
+...
+sun.classloader.findClassTime=2051631382
+sun.classloader.parentDelegationTime=220795236
+sun.cls.appClassLoadTime=2315218900
+sun.cls.classInitTime=1058084598
+sun.cls.classLinkedTime=1142874583
+sun.cls.classVerifyTime=1037315846
+sun.cls.defineAppClassTime=946831715
+sun.cls.lookupSysClassTime=28253463
+sun.cls.parseClassTime=1055187254
+sun.cls.sharedClassLoadTime=581133
+sun.cls.sysClassLoadTime=223416957
+sun.urlClassLoader.readClassBytesTime=299665148
+...
+```
+
+So you can immediately save up to a second by using `-noverify`
+(probably not advisable in production, but the jury is out on
+that). The benchmark results confirm this the saving is actually only
+700ms, but that's a start.
+
+Other things that stick out are
+
+* `findClassTime` - time spent working out where the damn things are, loading the bytes, parsing the bytes and defining them to build Class instances (2052ms).
+* `readClassBytesTime` - time from when you have a reference to where the bytes are to the time you have read them in (300ms).
+
+Also interesting (not shown above) is `java.cls.loadedClasses`, at
+10660. Perhaps this is over optimistic but maybe some chunk of them is
+being touched by accident that aren't necessary and they can be
+skipped, or deferred.
+
+## Log Analysis
+
+include::startup.adoc[leveloffset=+1]

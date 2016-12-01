@@ -83,7 +83,7 @@ New Dell desktop
 ```
  Benchmark                                   Mode  Cnt  Score   Error  Units
  ConfigServerBenchmark.devtoolsRestart       avgt   10  1.034 ± 0.201   s/op
- ConfigServerBenchmark.explodedJarMain       avgt   10  3.271 ± 0.234   s/op 
+ ConfigServerBenchmark.explodedJarMain       avgt   10  3.271 ± 0.234   s/op
  ConfigServerBenchmark.fatJar138             avgt   10  3.267 ± 0.173   s/op
  ConfigServerBenchmark.fatJar142             avgt   10  3.423 ± 0.160   s/op
  PetclinicBenchmark.noverify                 avgt   10  5.942 ± 0.300   s/op
@@ -256,6 +256,29 @@ SpringBoot142Benchmark.explodedJarMain      avgt   10   5.946 ± 0.133   s/op
 SpringBoot142Benchmark.fatJar               avgt   10   6.855 ± 0.173   s/op
 SpringBootThinBenchmark.basic138Thin        avgt   10   6.527 ± 0.262   s/op
 SpringBootThinBenchmark.basic142Thin        avgt   10   7.175 ± 0.286   s/op
+```
+
+### Host: aw-rmbp, i7, 2.3GHz, 16GB RAM, SSD
+
+MacBook Pro (Retina, 15-inch, Late 2013) running OS X Yosemite (10.10.5) and Java 1.8.0_102
+
+```
+Benchmark                                   Mode  Cnt  Score   Error  Units
+ConfigServerBenchmark.devtoolsRestart       avgt   10  0.999 ± 0.078   s/op
+ConfigServerBenchmark.explodedJarMain       avgt   10  3.747 ± 0.177   s/op
+ConfigServerBenchmark.fatJar138             avgt   10  3.810 ± 0.158   s/op
+ConfigServerBenchmark.fatJar142             avgt   10  3.846 ± 0.049   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10  1.431 ± 0.171   s/op
+PetclinicBenchmark.fatJar                   avgt   10  6.995 ± 0.299   s/op
+PetclinicBenchmark.noverify                 avgt   10  6.292 ± 0.308   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10  3.256 ± 0.104   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10  2.518 ± 0.074   s/op
+SpringBoot138Benchmark.fatJar               avgt   10  3.012 ± 0.046   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10  3.374 ± 0.082   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10  2.738 ± 0.040   s/op
+SpringBoot142Benchmark.fatJar               avgt   10  3.247 ± 0.109   s/op
+SpringBootThinBenchmark.basic138Thin        avgt   10  3.035 ± 0.083   s/op
+SpringBootThinBenchmark.basic142Thin        avgt   10  3.271 ± 0.093   s/op
 ```
 
 ## Finer Grained Timing

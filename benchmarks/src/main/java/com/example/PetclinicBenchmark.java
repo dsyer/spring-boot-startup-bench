@@ -55,12 +55,22 @@ public class PetclinicBenchmark {
 	}
 
 	@Benchmark
+	public void shaded(ShadedState state) throws Exception {
+		state.run();
+	}
+
+	@Benchmark
 	public void noverify(NoVerifyState state) throws Exception {
 		state.run();
 	}
 
 	@Benchmark
 	public void explodedJarMain(MainState state) throws Exception {
+		state.run();
+	}
+
+	@Benchmark
+	public void explodedShadedMain(ShadedMainState state) throws Exception {
 		state.run();
 	}
 
@@ -77,7 +87,19 @@ public class PetclinicBenchmark {
 	@State(Scope.Benchmark)
 	public static class BasicState extends ProcessLauncherState {
 		public BasicState() {
-			super("target", "-jar", jarFile("com.example:petclinic:1.4.2"), "--server.port=0");
+			super("target", "-jar", jarFile("com.example:petclinic:jar:boot:1.4.2"), "--server.port=0");
+		}
+
+		@TearDown(Level.Iteration)
+		public void stop() throws Exception {
+			super.after();
+		}
+	}
+
+	@State(Scope.Benchmark)
+	public static class ShadedState extends ProcessLauncherState {
+		public ShadedState() {
+			super("target", "-jar", jarFile("com.example:petclinic:jar:shade:1.4.2"), "--server.port=0");
 		}
 
 		@TearDown(Level.Iteration)
@@ -89,7 +111,7 @@ public class PetclinicBenchmark {
 	@State(Scope.Benchmark)
 	public static class NoVerifyState extends ProcessLauncherState {
 		public NoVerifyState() {
-			super("target", "-noverify", "-jar", jarFile("com.example:petclinic:1.4.2"), "--server.port=0");
+			super("target", "-noverify", "-jar", jarFile("com.example:petclinic:jar:boot:1.4.2"), "--server.port=0");
 		}
 
 		@TearDown(Level.Iteration)
@@ -103,7 +125,21 @@ public class PetclinicBenchmark {
 		public MainState() {
 			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*",
 					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");
-			unpack("target/demo", jarFile("com.example:petclinic:1.4.2"));
+			unpack("target/demo", jarFile("com.example:petclinic:jar:boot:1.4.2"));
+		}
+
+		@TearDown(Level.Iteration)
+		public void stop() throws Exception {
+			super.after();
+		}
+	}
+
+	@State(Scope.Benchmark)
+	public static class ShadedMainState extends ProcessLauncherState {
+		public ShadedMainState() {
+			super("target/demo", "-cp", ".",
+					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");
+			unpack("target/demo", jarFile("com.example:petclinic:jar:shade:1.4.2"));
 		}
 
 		@TearDown(Level.Iteration)
@@ -116,7 +152,7 @@ public class PetclinicBenchmark {
 	public static class ExplodedDevtoolsState extends DevToolsLauncherState {
 
 		public ExplodedDevtoolsState() {
-			super("target/demo", "/BOOT-INF/classes/.restart", jarFile("com.example:petclinic:1.4.2"), "-cp",
+			super("target/demo", "/BOOT-INF/classes/.restart", jarFile("com.example:petclinic:jar:boot:1.4.2"), "-cp",
 					"BOOT-INF/classes:BOOT-INF/lib/*", "-Dspring.devtools.livereload.enabled=false",
 					"-Dspring.devtools.restart.pollInterval=100", "-Dspring.devtools.restart.quietPeriod=10",
 					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");

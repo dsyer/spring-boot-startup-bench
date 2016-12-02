@@ -86,11 +86,13 @@ New Dell desktop
  ConfigServerBenchmark.explodedJarMain       avgt   10  3.271 ± 0.234   s/op
  ConfigServerBenchmark.fatJar138             avgt   10  3.267 ± 0.173   s/op
  ConfigServerBenchmark.fatJar142             avgt   10  3.423 ± 0.160   s/op
- PetclinicBenchmark.noverify                 avgt   10  5.942 ± 0.300   s/op
- PetclinicBenchmark.fatJar                   avgt   10  6.641 ± 0.248   s/op
- PetclinicBenchmark.explodedJarMain          avgt   10  5.225 ± 0.202   s/op
+ PetclinicBenchmark.devtoolsRestart          avgt   10  1.387 ± 0.399   s/op
+ PetclinicBenchmark.explodedJarMain          avgt   10  5.491 ± 0.357   s/op
+ PetclinicBenchmark.explodedShadedMain       avgt   10  5.266 ± 0.332   s/op
+ PetclinicBenchmark.fatJar                   avgt   10  6.130 ± 0.271   s/op
+ PetclinicBenchmark.noverify                 avgt   10  5.430 ± 0.217   s/op
+ PetclinicBenchmark.shaded                   avgt   10  7.975 ± 0.307   s/op
  PetclinicBenchmark.basicThin                avgt   10  6.007 ± 0.359   s/op
- PetclinicBenchmark.devtoolsRestart          avgt   10  1.437 ± 0.226   s/op
  SpringBoot138Benchmark.explodedJarLauncher  avgt   10  2.832 ± 0.099   s/op
  SpringBoot138Benchmark.explodedJarMain      avgt   10  2.241 ± 0.158   s/op
  SpringBoot138Benchmark.fatJar               avgt   10  2.761 ± 0.200   s/op

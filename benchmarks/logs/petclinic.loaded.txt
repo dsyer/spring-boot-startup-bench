@@ -1,0 +1,133 @@
+Loaded 2554 classes
+2016-12-01 14:28:24.273  INFO 25382 --- [           main] o.s.s.petclinic.PetClinicApplication     : Starting PetClinicApplication v1.4.2 on tower with PID 25382 (/home/dsyer/dev/demo/workspace/startup/petclinic/target/petclinic-1.4.2.jar started by dsyer in /home/dsyer/dev/demo/workspace/startup/benchmarks)
+Loaded 3 classes
+2016-12-01 14:28:24.277  INFO 25382 --- [           main] o.s.s.petclinic.PetClinicApplication     : The following profiles are active: production
+Loaded 809 classes
+2016-12-01 14:28:24.471  INFO 25382 --- [           main] ationConfigEmbeddedWebApplicationContext : Refreshing org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@7591083d: startup date [Thu Dec 01 14:28:24 GMT 2016]; root of context hierarchy
+Loaded 1760 classes
+2016-12-01 14:28:25.863  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration' of type [class org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration$$EnhancerBySpringCGLIB$$582af4bf] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 40 classes
+2016-12-01 14:28:25.895  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.cache.jcache.config.ProxyJCacheConfiguration' of type [class org.springframework.cache.jcache.config.ProxyJCacheConfiguration$$EnhancerBySpringCGLIB$$7a72b73d] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 40 classes
+2016-12-01 14:28:25.930  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.cache.annotation.ProxyCachingConfiguration' of type [class org.springframework.cache.annotation.ProxyCachingConfiguration$$EnhancerBySpringCGLIB$$a13d2add] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 20 classes
+2016-12-01 14:28:25.946  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration' of type [class org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration$$EnhancerBySpringCGLIB$$95b0ef81] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 225 classes
+2016-12-01 14:28:26.042  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'spring.cache-org.springframework.boot.autoconfigure.cache.CacheProperties' of type [class org.springframework.boot.autoconfigure.cache.CacheProperties] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 3 classes
+2016-12-01 14:28:26.046  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.boot.autoconfigure.cache.CacheManagerCustomizers' of type [class org.springframework.boot.autoconfigure.cache.CacheManagerCustomizers] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 4 classes
+2016-12-01 14:28:26.051  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'cacheConfig' of type [class org.springframework.samples.petclinic.system.CacheConfig$$EnhancerBySpringCGLIB$$b314ef7c] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 5 classes
+2016-12-01 14:28:26.056  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'cacheManagerCustomizer' of type [class org.springframework.samples.petclinic.system.CacheConfig$1] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 6 classes
+2016-12-01 14:28:26.059  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'org.springframework.boot.autoconfigure.cache.JCacheCacheConfiguration' of type [class org.springframework.boot.autoconfigure.cache.JCacheCacheConfiguration$$EnhancerBySpringCGLIB$$26741f28] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 368 classes
+2016-12-01 14:28:26.176  INFO 25382 --- [           main] org.ehcache.core.EhcacheManager          : Cache 'vets' created in EhcacheManager.
+Loaded 38 classes
+2016-12-01 14:28:26.191  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'jCacheCacheManager' of type [class org.ehcache.jsr107.Eh107CacheManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 2 classes
+2016-12-01 14:28:26.198  INFO 25382 --- [           main] org.ehcache.jsr107.Eh107CacheManager     : Registering Ehcache MBean javax.cache:type=CacheStatistics,CacheManager=urn.X-ehcache.jsr107-default-config,Cache=vets
+Loaded 5 classes
+2016-12-01 14:28:26.200  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'cacheManager' of type [class org.springframework.cache.jcache.JCacheCacheManager] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2016-12-01 14:28:26.201  INFO 25382 --- [           main] trationDelegate$BeanPostProcessorChecker : Bean 'cacheAutoConfigurationValidator' of type [class org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration$CacheManagerValidator] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+Loaded 377 classes
+2016-12-01 14:28:26.461  INFO 25382 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat initialized with port(s): 8080 (http)
+Loaded 15 classes
+2016-12-01 14:28:26.472  INFO 25382 --- [           main] o.apache.catalina.core.StandardService   : Starting service Tomcat
+Loaded 1 classes
+2016-12-01 14:28:26.472  INFO 25382 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet Engine: Apache Tomcat/8.5.6
+Loaded 89 classes
+2016-12-01 14:28:26.533  INFO 25382 --- [ost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2016-12-01 14:28:26.534  INFO 25382 --- [ost-startStop-1] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 2065 ms
+Loaded 77 classes
+2016-12-01 14:28:26.747  INFO 25382 --- [ost-startStop-1] o.s.b.w.servlet.ServletRegistrationBean  : Mapping servlet: 'dispatcherServlet' to [/]
+Loaded 3 classes
+2016-12-01 14:28:26.752  INFO 25382 --- [ost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'metricsFilter' to: [/*]
+2016-12-01 14:28:26.752  INFO 25382 --- [ost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'characterEncodingFilter' to: [/*]
+2016-12-01 14:28:26.752  INFO 25382 --- [ost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+2016-12-01 14:28:26.752  INFO 25382 --- [ost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'httpPutFormContentFilter' to: [/*]
+2016-12-01 14:28:26.752  INFO 25382 --- [ost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'requestContextFilter' to: [/*]
+2016-12-01 14:28:26.752  INFO 25382 --- [ost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'webRequestLoggingFilter' to: [/*]
+2016-12-01 14:28:26.752  INFO 25382 --- [ost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'applicationContextIdFilter' to: [/*]
+2016-12-01 14:28:26.752  INFO 25382 --- [ost-startStop-1] o.s.b.w.servlet.FilterRegistrationBean   : Mapping filter: 'resourceUrlEncodingFilter' to: [/*]
+Loaded 391 classes
+2016-12-01 14:28:27.274  INFO 25382 --- [           main] o.s.jdbc.datasource.init.ScriptUtils     : Executing SQL script from URL [jar:file:/home/dsyer/dev/demo/workspace/startup/petclinic/target/petclinic-1.4.2.jar!/BOOT-INF/classes!/db/hsqldb/schema.sql]
+Loaded 5 classes
+2016-12-01 14:28:27.281  INFO 25382 --- [           main] o.s.jdbc.datasource.init.ScriptUtils     : Executed SQL script from URL [jar:file:/home/dsyer/dev/demo/workspace/startup/petclinic/target/petclinic-1.4.2.jar!/BOOT-INF/classes!/db/hsqldb/schema.sql] in 7 ms.
+Loaded 2 classes
+2016-12-01 14:28:27.284  INFO 25382 --- [           main] o.s.jdbc.datasource.init.ScriptUtils     : Executing SQL script from URL [jar:file:/home/dsyer/dev/demo/workspace/startup/petclinic/target/petclinic-1.4.2.jar!/BOOT-INF/classes!/db/hsqldb/data.sql]
+2016-12-01 14:28:27.292  INFO 25382 --- [           main] o.s.jdbc.datasource.init.ScriptUtils     : Executed SQL script from URL [jar:file:/home/dsyer/dev/demo/workspace/startup/petclinic/target/petclinic-1.4.2.jar!/BOOT-INF/classes!/db/hsqldb/data.sql] in 8 ms.
+Loaded 97 classes
+2016-12-01 14:28:27.361  INFO 25382 --- [           main] j.LocalContainerEntityManagerFactoryBean : Building JPA container EntityManagerFactory for persistence unit 'default'
+Loaded 20 classes
+2016-12-01 14:28:27.378  INFO 25382 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [
+Loaded 194 classes
+2016-12-01 14:28:27.459  INFO 25382 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate Core {5.0.11.Final}
+Loaded 1 classes
+2016-12-01 14:28:27.461  INFO 25382 --- [           main] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+Loaded 2 classes
+2016-12-01 14:28:27.462  INFO 25382 --- [           main] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+Loaded 125 classes
+2016-12-01 14:28:27.499  INFO 25382 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.0.1.Final}
+Loaded 367 classes
+2016-12-01 14:28:27.648  INFO 25382 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.HSQLDialect
+Loaded 1304 classes
+2016-12-01 14:28:28.108  INFO 25382 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+Loaded 401 classes
+2016-12-01 14:28:28.352  INFO 25382 --- [           main] o.h.h.i.QueryTranslatorFactoryInitiator  : HHH000397: Using ASTQueryTranslatorFactory
+Loaded 449 classes
+2016-12-01 14:28:28.837  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerAdapter : Looking for @ControllerAdvice: org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@7591083d: startup date [Thu Dec 01 14:28:24 GMT 2016]; root of context hierarchy
+Loaded 111 classes
+2016-12-01 14:28:28.902  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/{ownerId}/edit],methods=[GET]}" onto public java.lang.String org.springframework.samples.petclinic.owner.OwnerController.initUpdateOwnerForm(int,org.springframework.ui.Model)
+Loaded 1 classes
+2016-12-01 14:28:28.903  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/{ownerId}/edit],methods=[POST]}" onto public java.lang.String org.springframework.samples.petclinic.owner.OwnerController.processUpdateOwnerForm(org.springframework.samples.petclinic.owner.Owner,org.springframework.validation.BindingResult,int)
+2016-12-01 14:28:28.903  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/{ownerId}]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.samples.petclinic.owner.OwnerController.showOwner(int)
+2016-12-01 14:28:28.903  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/new],methods=[GET]}" onto public java.lang.String org.springframework.samples.petclinic.owner.OwnerController.initCreationForm(java.util.Map<java.lang.String, java.lang.Object>)
+2016-12-01 14:28:28.903  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/find],methods=[GET]}" onto public java.lang.String org.springframework.samples.petclinic.owner.OwnerController.initFindForm(java.util.Map<java.lang.String, java.lang.Object>)
+2016-12-01 14:28:28.903  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners],methods=[GET]}" onto public java.lang.String org.springframework.samples.petclinic.owner.OwnerController.processFindForm(org.springframework.samples.petclinic.owner.Owner,org.springframework.validation.BindingResult,java.util.Map<java.lang.String, java.lang.Object>)
+2016-12-01 14:28:28.903  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/new],methods=[POST]}" onto public java.lang.String org.springframework.samples.petclinic.owner.OwnerController.processCreationForm(org.springframework.samples.petclinic.owner.Owner,org.springframework.validation.BindingResult)
+Loaded 1 classes
+2016-12-01 14:28:28.906  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/{ownerId}/pets/new],methods=[GET]}" onto public java.lang.String org.springframework.samples.petclinic.owner.PetController.initCreationForm(org.springframework.samples.petclinic.owner.Owner,org.springframework.ui.ModelMap)
+2016-12-01 14:28:28.906  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/{ownerId}/pets/new],methods=[POST]}" onto public java.lang.String org.springframework.samples.petclinic.owner.PetController.processCreationForm(org.springframework.samples.petclinic.owner.Owner,org.springframework.samples.petclinic.owner.Pet,org.springframework.validation.BindingResult,org.springframework.ui.ModelMap)
+2016-12-01 14:28:28.906  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/{ownerId}/pets/{petId}/edit],methods=[GET]}" onto public java.lang.String org.springframework.samples.petclinic.owner.PetController.initUpdateForm(int,org.springframework.ui.ModelMap)
+2016-12-01 14:28:28.906  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/{ownerId}/pets/{petId}/edit],methods=[POST]}" onto public java.lang.String org.springframework.samples.petclinic.owner.PetController.processUpdateForm(org.springframework.samples.petclinic.owner.Pet,org.springframework.validation.BindingResult,org.springframework.samples.petclinic.owner.Owner,org.springframework.ui.ModelMap)
+Loaded 1 classes
+2016-12-01 14:28:28.907  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/*/pets/{petId}/visits/new],methods=[GET]}" onto public java.lang.String org.springframework.samples.petclinic.owner.VisitController.initNewVisitForm(int,java.util.Map<java.lang.String, java.lang.Object>)
+2016-12-01 14:28:28.907  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/owners/{ownerId}/pets/{petId}/visits/new],methods=[POST]}" onto public java.lang.String org.springframework.samples.petclinic.owner.VisitController.processNewVisitForm(org.springframework.samples.petclinic.visit.Visit,org.springframework.validation.BindingResult)
+2016-12-01 14:28:28.907  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/oups],methods=[GET]}" onto public java.lang.String org.springframework.samples.petclinic.system.CrashController.triggerException()
+2016-12-01 14:28:28.907  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/]}" onto public java.lang.String org.springframework.samples.petclinic.system.WelcomeController.welcome()
+Loaded 8 classes
+2016-12-01 14:28:28.909  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/vets.json || /vets.xml]}" onto public org.springframework.samples.petclinic.vet.Vets org.springframework.samples.petclinic.vet.VetController.showResourcesVetList()
+2016-12-01 14:28:28.909  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/vets.html]}" onto public java.lang.String org.springframework.samples.petclinic.vet.VetController.showVetList(java.util.Map<java.lang.String, java.lang.Object>)
+2016-12-01 14:28:28.910  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+2016-12-01 14:28:28.910  INFO 25382 --- [           main] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+Loaded 55 classes
+2016-12-01 14:28:29.010  INFO 25382 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+2016-12-01 14:28:29.010  INFO 25382 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+Loaded 14 classes
+2016-12-01 14:28:29.052  INFO 25382 --- [           main] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+Loaded 433 classes
+2016-12-01 14:28:29.719  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/trace || /manage/trace.json],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter.invoke()
+2016-12-01 14:28:29.720  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/autoconfig || /manage/autoconfig.json],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter.invoke()
+2016-12-01 14:28:29.721  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/beans || /manage/beans.json],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter.invoke()
+2016-12-01 14:28:29.722  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/health || /manage/health.json],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.HealthMvcEndpoint.invoke(java.security.Principal)
+2016-12-01 14:28:29.722  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/metrics/{name:.*}],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.MetricsMvcEndpoint.value(java.lang.String)
+2016-12-01 14:28:29.722  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/metrics || /manage/metrics.json],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter.invoke()
+Loaded 8 classes
+2016-12-01 14:28:29.724  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/mappings || /manage/mappings.json],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter.invoke()
+2016-12-01 14:28:29.724  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/dump || /manage/dump.json],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter.invoke()
+Loaded 12 classes
+2016-12-01 14:28:29.727  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/env/{name:.*}],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EnvironmentMvcEndpoint.value(java.lang.String)
+2016-12-01 14:28:29.727  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/env || /manage/env.json],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter.invoke()
+2016-12-01 14:28:29.727  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/heapdump || /manage/heapdump.json],methods=[GET],produces=[application/octet-stream]}" onto public void org.springframework.boot.actuate.endpoint.mvc.HeapdumpMvcEndpoint.invoke(boolean,javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse) throws java.io.IOException,javax.servlet.ServletException
+2016-12-01 14:28:29.728  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/info || /manage/info.json],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter.invoke()
+2016-12-01 14:28:29.728  INFO 25382 --- [           main] o.s.b.a.e.mvc.EndpointHandlerMapping     : Mapped "{[/manage/configprops || /manage/configprops.json],methods=[GET],produces=[application/json]}" onto public java.lang.Object org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter.invoke()
+Loaded 44 classes
+2016-12-01 14:28:29.851  INFO 25382 --- [           main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+Loaded 8 classes
+2016-12-01 14:28:29.859  INFO 25382 --- [           main] o.s.c.support.DefaultLifecycleProcessor  : Starting beans in phase 0
+Loaded 154 classes
+2016-12-01 14:28:29.962  INFO 25382 --- [           main] s.b.c.e.t.TomcatEmbeddedServletContainer : Tomcat started on port(s): 8080 (http)
+Loaded 6 classes
+2016-12-01 14:28:29.966  INFO 25382 --- [           main] o.s.s.petclinic.PetClinicApplication     : Started PetClinicApplication in 6.121 seconds (JVM running for 6.42)

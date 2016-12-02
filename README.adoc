@@ -69,6 +69,8 @@ Summary:
 
 * Hardware matters a lot, but affects all apps roughly the same.
 
+* Spring Boot (and Spring Data) slow things down.
+
 N.B. the times reported by the Spring Boot stop watch on the console
 are always shorter than those measured by the benchmark. The
 difference is a feature of the hardware used (200ms on faster
@@ -101,6 +103,8 @@ New Dell desktop
  SpringBoot142Benchmark.fatJar               avgt   10  2.814 ± 0.088   s/op
  SpringBootThinBenchmark.basic138Thin        avgt   10  2.550 ± 0.115   s/op
  SpringBootThinBenchmark.basic142Thin        avgt   10  2.783 ± 0.129   s/op
+ MinimalBenchmark.explodedJarMain            avgt   10  1.602 ± 0.120   s/op
+ MinimalBenchmark.fatJar                     avgt   10  1.901 ± 0.089   s/op
 ```
 
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD

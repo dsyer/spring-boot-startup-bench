@@ -17,6 +17,7 @@
 	<modules>
 		<module>configserver</module>
 		<module>demo</module>
+		<module>minimal</module>
 		<module>petclinic</module>
 		<module>alt</module>
 		<module>benchmarks</module>

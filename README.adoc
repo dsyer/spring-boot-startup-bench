@@ -1,9 +1,29 @@
 # Benchmarks for Spring Boot Start Up
 
+This project uses JMH to test and report on various the effect of
+various parameters on Spring Boot startup times. The apps are launched
+in a forked JVM and the measurements below are all "seconds to start
+up", which includes the time from the app being executed to the point
+where it reports "Started" on the console.
+
+Various combinations of things are tested:
+
+* Spring Boot version, 1.4.2 and 1.3.8
+* Some JVM flags (e.g. `-noverify` has an effect `-Xmx` not so much)
+* Fat jar vs thin jar
+* Exploding the archive and running with `JarLauncher` or the application main
+* Shading vs Spring Boot fat jars
+* Different application features: a basic web app with actuator, the petclinic and a Spring Cloud config server
+* Hardware (running on bare metal vs AWS for instance)
+
+The basic webapp also has a "minimal" version with a stripped down
+classpath and handpicked configuration classes (instead of
+`@EnableAutoConfiguration`).
+
 ## Running Locally
 
 ```
-$ mvn clean install
+$ ./mvnw clean install
 $ (cd benchmarks/; java -jar target/benchmarks.jar)
 ```
 
@@ -34,7 +54,7 @@ changes you also need the private key in a file with read-only (600)
 permissions called `~/.ssh/id_rsa.${AWS_KEYPAIR}`. Then you can
 
 ```
-$ mvn clean install
+$ ./mvnw clean install
 $ cd vagrant
 $ vagrant up --provider aws
 $ vagrant ssh
@@ -46,7 +66,7 @@ Edit the `Vagrantfile` to change the instance type and repeat the
 process. You have to `vagrant destroy` in between changes of
 https://aws.amazon.com/ec2/instance-types/.[instance type].
 
-If you need to update the benchmarks just `mvn clean install` locally
+If you need to update the benchmarks just `mvnw clean install` locally
 and then `vagrant reload` to sync the changes to the remote box.
 
 NOTE: I had a lot of issues getting SSH to work. Had to create my own

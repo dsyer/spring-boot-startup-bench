@@ -1,0 +1,23 @@
+Vagrant.configure("2") do |config|
+  config.vm.synced_folder "..", "/build"
+  config.vm.provider :docker do |d|
+    config.vm.box = nil
+    d.image = "frolvlad/alpine-oraclejdk8:slim"
+  end
+  config.vm.provider :aws do |aws,override|
+    config.vm.box = "dummy"
+    aws.access_key_id = ENV['AWS_ACCESS_KEY']
+    aws.secret_access_key = ENV['AWS_SECRET_KEY']
+    aws.keypair_name = ENV['AWS_KEYPAIR']
+    aws.security_groups = ["vagrant"]
+    aws.ami = "ami-153e6470"
+    aws.region = "us-east-2"
+    aws.instance_type = "t2.large"
+    override.ssh.username = "ubuntu"
+    override.ssh.private_key_path = "~/.ssh/id_rsa.#{ENV['AWS_KEYPAIR']}"
+  end
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get install -y openjdk-8-jdk
+  SHELL
+end

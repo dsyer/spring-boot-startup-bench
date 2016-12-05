@@ -1,0 +1,31 @@
+# Changes to Spring Data Commons
+
+Some observations were made from TRACE logging in the
+petclinic. Instead of component scanning we could use
+`spring.factories` for detecting "plugin" behaviour in Spring Data
+Commons. These https://jira.spring.io/browse/DATACMNS-952[changes]
+were made and the petclinic re-tested.
+
+Before:
+
+```
+ PetclinicBenchmark.devtoolsRestart          avgt   10  1.387 ± 0.399   s/op
+ PetclinicBenchmark.explodedJarMain          avgt   10  5.491 ± 0.357   s/op
+ PetclinicBenchmark.fatJar                   avgt   10  6.130 ± 0.271   s/op
+ PetclinicBenchmark.noverify                 avgt   10  5.430 ± 0.217   s/op
+```
+
+After:
+
+```
+Benchmark                           Mode  Cnt  Score   Error  Units
+PetclinicBenchmark.devtoolsRestart  avgt   10  1.261 ± 0.188   s/op
+PetclinicBenchmark.explodedJarMain  avgt   10  5.088 ± 0.207   s/op
+PetclinicBenchmark.fatJar           avgt   10  5.860 ± 0.244   s/op
+PetclinicBenchmark.noverify         avgt   10  5.318 ± 0.180   s/op
+```
+
+The changes are in `RepositoryConfigurationDelegate` and
+`SpringDataWebConfigurationImportSelector` (where the component scan
+is used in each case). The difference is perceptible, but doesn't
+deliver the hoped for 800ms improvement.

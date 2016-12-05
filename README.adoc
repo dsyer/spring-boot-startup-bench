@@ -64,7 +64,7 @@ $ vagrant ssh
 
 Edit the `Vagrantfile` to change the instance type and repeat the
 process. You have to `vagrant destroy` in between changes of
-https://aws.amazon.com/ec2/instance-types/.[instance type].
+https://aws.amazon.com/ec2/instance-types/[instance type].
 
 If you need to update the benchmarks just `mvnw clean install` locally
 and then `vagrant reload` to sync the changes to the remote box.
@@ -354,3 +354,5 @@ skipped, or deferred.
 ## Log Analysis
 
 include::startup.adoc[leveloffset=+1]
+
+include::data.adoc[leveloffset=+1]

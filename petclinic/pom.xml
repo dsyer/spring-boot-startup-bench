@@ -30,8 +30,10 @@
 		<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
 		<thymeleaf-layout-dialect.version>2.0.4</thymeleaf-layout-dialect.version>
 
+		<!-- spring-data-releasetrain.version>Ingalls-BUILD-SNAPSHOT</spring-data-releasetrain.version -->
+
 		<cobertura.version>2.7</cobertura.version>
-		
+
 		<start-class>org.springframework.samples.petclinic.PetClinicApplication</start-class>
 
 	</properties>
@@ -115,6 +117,16 @@
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-commons</artifactId>
+				<version>1.13.0.DATACMNS-952-SNAPSHOT</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<profiles>
 		<profile>

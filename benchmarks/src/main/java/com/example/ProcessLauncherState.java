@@ -62,6 +62,17 @@ public class ProcessLauncherState {
 		return sb.toString();
 	}
 
+	public void copy(String path, String jar) {
+		File dest = new File(path);
+		dest.mkdirs();
+		try {
+			File file = new File(jar);
+			Files.copy(file.toPath(), dest.toPath().resolve(file.getName()));
+		} catch (IOException e) {
+			throw new IllegalStateException("Failed", e);
+		}
+	}
+	
 	public void unpack(String path, String jar) {
 		File home = new File(path);
 		ProcessBuilder builder = new ProcessBuilder(System.getProperty("java.home") + "/../bin/jar", "-xf", jar);

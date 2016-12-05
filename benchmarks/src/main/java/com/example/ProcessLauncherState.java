@@ -40,15 +40,19 @@ public class ProcessLauncherState {
 		ProcessBuilder builder = new ProcessBuilder(args);
 		builder.directory(home);
 		builder.redirectErrorStream(true);
+		customize(builder);
 		started = builder.start();
 		monitor();
+	}
+
+	protected void customize(ProcessBuilder builder) {
 	}
 
 	protected void monitor() throws IOException {
 		System.out.println(output(started.getInputStream(), "Started"));
 	}
 
-	private static String output(InputStream inputStream, String marker) throws IOException {
+	protected static String output(InputStream inputStream, String marker) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		BufferedReader br = null;
 		br = new BufferedReader(new InputStreamReader(inputStream));
@@ -142,5 +146,9 @@ public class ProcessLauncherState {
 
 	private static String get(String value, String defaultValue) {
 		return (value == null || value.length() <= 0) ? defaultValue : value;
+	}
+
+	public File getHome() {
+		return home;
 	}
 }

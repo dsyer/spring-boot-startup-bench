@@ -94,6 +94,29 @@
 							</profiles>
 						</configuration>
 					</execution>
+					<execution>
+						<id>thin</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<pomIncludes>
+								<pomInclude>petclinic/pom.xml</pomInclude>
+							</pomIncludes>
+							<projectsDirectory>..</projectsDirectory>
+							<goals>
+								<goal>install</goal>
+							</goals>
+							<properties>
+								<skipTests/>
+							</properties>
+							<profiles>
+								<profile>thin</profile>
+							</profiles>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>

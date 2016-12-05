@@ -28,4 +28,5 @@ PetclinicBenchmark.noverify         avgt   10  5.318 ± 0.180   s/op
 The changes are in `RepositoryConfigurationDelegate` and
 `SpringDataWebConfigurationImportSelector` (where the component scan
 is used in each case). The difference is perceptible, but doesn't
-deliver the hoped for 800ms improvement.
+deliver the hoped for 800ms improvement. It is now available using
+`spring-data-releasetrain.version=Ingalls-BUILD-SNAPSHOT`.

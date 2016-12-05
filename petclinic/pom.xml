@@ -32,8 +32,6 @@
 
 		<!-- spring-data-releasetrain.version>Ingalls-BUILD-SNAPSHOT</spring-data-releasetrain.version -->
 
-		<cobertura.version>2.7</cobertura.version>
-
 		<start-class>org.springframework.samples.petclinic.PetClinicApplication</start-class>
 
 	</properties>
@@ -180,23 +178,6 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>${cobertura.version}</version>
-				<configuration>
-					<check />
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>clean</goal>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
 			<!-- Spring Boot Actuator displays build-related information if a git.properties 
 				file is present at the classpath -->
 			<plugin>
@@ -247,21 +228,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<reporting>
-		<plugins>
-			<!-- integrate maven-cobertura-plugin to project site -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>${cobertura.version}</version>
-				<configuration>
-					<formats>
-						<format>html</format>
-					</formats>
-					<check />
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
 
 </project>

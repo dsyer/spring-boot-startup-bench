@@ -32,6 +32,8 @@
 package com.example;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -122,8 +124,12 @@ public class PetclinicBenchmark {
 					"BOOT-INF/classes:BOOT-INF/lib/*", "-Dspring.devtools.livereload.enabled=false",
 					"-Dspring.devtools.restart.pollInterval=100", "-Dspring.devtools.restart.quietPeriod=10",
 					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");
-			if (!new File("target/demo/BOOT-INF/lib/spring-boot-devtools-1.4.2.RELEASE.jar").exists()) {
-				copy("target/demo/BOOT-INF/lib", "../alt/target/spring-boot-devtools.jar");
+			try {
+				if (Files.find(new File("target/demo/BOOT-INF/lib/").toPath(), 1, (path,attrs) -> path.getFileName().startsWith("spring-boot-devtools")).count()==0) {
+					copy("target/demo/BOOT-INF/lib", "../alt/target/spring-boot-devtools.jar");
+				}
+			} catch (IOException e) {
+				throw new IllegalStateException("Failed", e);
 			}
 		}
 

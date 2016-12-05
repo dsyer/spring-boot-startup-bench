@@ -127,6 +127,44 @@ New Dell desktop
  MinimalBenchmark.fatJar                     avgt   10  1.901 ± 0.089   s/op
 ```
 
+
+#### Tinkering
+
+Excluding groovy and thymeleaf layout (unused dependencies) from the
+Pet Clinic had a big effect on the startup time, but oddly only in the
+exploded main test:
+
+```
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-thymeleaf</artifactId>
+	<exclusions>
+		<exclusion>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy</artifactId>
+		</exclusion>
+		<exclusion>
+			<groupId>nz.net.ultraq.thymeleaf</groupId>
+			<artifactId>thymeleaf-layout-dialect</artifactId>
+		</exclusion>
+	</exclusions>
+</dependency>
+```
+
+Before:
+
+```
+PetclinicBenchmark.explodedJarMain  avgt   10  5.491 ± 0.357   s/op
+```
+
+and after:
+
+```
+PetclinicBenchmark.explodedJarMain  avgt   10  4.894 ± 0.186   s/op
+```
+
+include::data.adoc[leveloffset=+3]
+
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD
 
 >5 year old Dell desktop
@@ -355,4 +393,3 @@ skipped, or deferred.
 
 include::startup.adoc[leveloffset=+1]
 
-include::data.adoc[leveloffset=+1]

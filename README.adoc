@@ -281,27 +281,6 @@ $ java -Dbench.args='-Dspring.profiles.active=default' -Ddebug \
   -jar target/benchmarks.jar PetclinicBenchmark
 ```
 
-#### Thymeleaf and "Unused Beans"
-
-Initializing a Jackson `ObjectMapper` is the next hotspot after
-EhCache is disabled. It turns out that this is a side effect of
-initializing Thymeleaf. It happens in a class initializer in
-`SpringTemplateEngine`, so there's no way to switch it off with lazy
-beans in Spring, other than to remove Jackson from the classpath.
-
-Even if we removed Thymeleaf, and replaced it with Mustache, for
-instance, Jackson is needed by the actuator. So we would pay the
-startup cost anyway, despite the fact that it isn't used on
-startup. This raises the question of why we need to initialize these
-things at all in order to start up the app. They aren't going to be
-used until a request is processed.
-
-A lot of components in a Spring Boot app are in this category. Another
-one that shows up in YourKit on startup is the Webjars Locator. You
-only get <100ms improvement in startup time by leaving it out (and it
-changes the behaviour of the application, so you need it), but you
-don't need it until after startup.
-
 #### Actuator
 
 Removing the actuator actually changes the features of the
@@ -320,11 +299,10 @@ PetclinicBenchmark.noverify         avgt   10  3.566 ± 0.146   s/op
 #### Hibernate Validator
 
 What if we ditch the validator (also shows up as a hotspot in
-YourKit)? Again this is cutting heavily into application features -
-you even have to edit the Pet Clinic quite heavily to get it to work
-without validation. Results are good though, so maybe we could make it
-lazy somehow:
-
+YourKit)? Again this is cutting into application features - you even
+have to edit the Pet Clinic quite heavily to get it to work without
+validation. Results are good though, so maybe we could make it lazy
+somehow:
 
 ```
 Benchmark                           Mode  Cnt  Score   Error  Units
@@ -333,6 +311,37 @@ PetclinicBenchmark.explodedJarMain  avgt   10  2.670 ± 0.136   s/op
 PetclinicBenchmark.fatJar           avgt   10  3.682 ± 0.097   s/op
 PetclinicBenchmark.noverify         avgt   10  3.213 ± 0.146   s/op
 ```
+
+#### Thymeleaf and "Unused Beans"
+
+Initializing a Jackson `ObjectMapper` is the next hotspot after
+EhCache is disabled. It turns out that this is a side effect of
+initializing Thymeleaf. It happens in a class initializer in
+`SpringTemplateEngine`, so there's no way to switch it off with lazy
+beans in Spring, other than to remove Jackson from the classpath.
+
+Even if we removed Thymeleaf, and replaced it with Mustache for
+instance, Jackson is needed by the actuator. So we would pay the
+startup cost anyway, despite the fact that it isn't used. This raises
+the question of why we need to initialize these things at all. They
+aren't going to be used until a request is processed.
+
+Here's the result of replacing Thymeleaf with Mustache (on top of all
+the other improvements above) and excluding Jackson:
+
+```
+Benchmark                           Mode  Cnt  Score   Error  Units
+PetclinicBenchmark.devtoolsRestart  avgt   10  0.727 ± 0.052   s/op
+PetclinicBenchmark.explodedJarMain  avgt   10  2.577 ± 0.091   s/op
+PetclinicBenchmark.fatJar           avgt   10  3.514 ± 0.107   s/op
+PetclinicBenchmark.noverify         avgt   10  3.046 ± 0.142   s/op
+```
+
+A lot of components in a Spring Boot app are in this category. Another
+one that shows up in YourKit on startup is the Webjars Locator. You
+only get <100ms improvement in startup time by leaving it out (and it
+changes the behaviour of the application, so you want it in there at
+runtime), but you don't need it until after startup.
 
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD
 

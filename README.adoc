@@ -28,6 +28,13 @@ useful to read if you have slow start up times and want some
 company. Very important: check your anti-virus software and make sure
 it isn't slowing down access to jar files.
 
+Spring Boot (and other) issues for follow up:
+
+* `PropertySourcesPropertyResolver`: https://github.com/spring-projects/spring-boot/issues/7571[spring-boot #7572]
+* Condition processing: https://github.com/spring-projects/spring-boot/issues/7572[spring-boot #7573]
+* Cache configuration: https://github.com/spring-projects/spring-boot/issues/7576[spring-boot #7575]
+* Startup JVM args: https://github.com/spring-projects/spring-ide/issues/85[spring-ide #85]
+
 ## Running Locally
 
 ```
@@ -244,6 +251,26 @@ MinimalBenchmark.fatJar                     avgt   10  1.820 ± 0.069   s/op
 Remember there are only about 20 lines of logging in these tests.  It
 might well be that logback or log4j2 performs much better under load,
 and this test is just for initialization time really.
+
+#### EhCache
+
+Stripping everything else back reveals EhCache initialization as a
+hotspot in the Pet Clinic (it shows up in YourKit when you launch in
+"trace" mode). Removing it from the classpath boosts startup by a
+couple of hundred milliseconds:
+
+```
+PetclinicBenchmark.devtoolsRestart  avgt   10  1.095 ± 0.086   s/op
+PetclinicBenchmark.explodedJarMain  avgt   10  3.465 ± 0.145   s/op
+PetclinicBenchmark.fatJar           avgt   10  4.827 ± 0.241   s/op
+PetclinicBenchmark.noverify         avgt   10  4.249 ± 0.116   s/op
+```
+
+If you add `-noverify` as well, you will see the startup time in an
+exploded jar (so in the IDE) at a little more than 3s (down from over
+6s initially). Of note here is that EhCache is not even used by the
+app unless the "production" profile is enabled, which it is not by
+default, and yet it still hits the startup time.
 
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD
 

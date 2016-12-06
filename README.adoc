@@ -23,7 +23,7 @@ classpath and handpicked configuration classes (instead of
 NOTE: There is a
 https://github.com/spring-projects/spring-boot/issues/7493[Spring Boot
 issue] with some comments and more benchmark results. This might be
-useful to read if you have slow sart up times and want some
+useful to read if you have slow start up times and want some
 company. Very important: check your anti-virus software and make sure
 it isn't slowing down access to jar files.
 
@@ -172,6 +172,39 @@ PetclinicBenchmark.explodedJarMain  avgt   10  4.894 ± 0.186   s/op
 ```
 
 include::data.adoc[leveloffset=+3]
+
+#### More Tinkering
+
+Setting `-XX:TieredStopAtLevel=1` was quite a big boost, so we set
+that permanently in the benchmarks (the rest of the results pre-date
+this change):
+
+```Benchmark                                   Mode  Cnt  Score   Error  Units
+ConfigServerBenchmark.devtoolsRestart       avgt   10  0.842 ± 0.047   s/op
+ConfigServerBenchmark.explodedJarMain       avgt   10  2.451 ± 0.100   s/op
+ConfigServerBenchmark.fatJar138             avgt   10  3.002 ± 0.091   s/op
+ConfigServerBenchmark.fatJar142             avgt   10  2.936 ± 0.101   s/op
+MinimalBenchmark.explodedJarMain            avgt   10  1.268 ± 0.077   s/op
+MinimalBenchmark.fatJar                     avgt   10  1.537 ± 0.078   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10  1.107 ± 0.054   s/op
+PetclinicBenchmark.explodedJarMain          avgt   10  3.618 ± 0.149   s/op
+PetclinicBenchmark.fatJar                   avgt   10  5.040 ± 0.229   s/op
+PetclinicBenchmark.noverify                 avgt   10  4.402 ± 0.149   s/op
+ShadedBenchmark.explodedShadedMain          avgt   10  3.764 ± 0.085   s/op
+ShadedBenchmark.shaded                      avgt   10  5.871 ± 0.123   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10  2.224 ± 0.083   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10  1.542 ± 0.044   s/op
+SpringBoot138Benchmark.fatJar               avgt   10  2.102 ± 0.126   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10  2.232 ± 0.067   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10  1.684 ± 0.087   s/op
+SpringBoot142Benchmark.fatJar               avgt   10  2.146 ± 0.080   s/op
+SpringBootThinBenchmark.basic138Thin        avgt   10  1.908 ± 0.120   s/op
+SpringBootThinBenchmark.basic142Thin        avgt   10  2.081 ± 0.088   s/op
+```
+
+This wouldn't be a sensible setting for a long-running process in
+production, but it seems to have a positive effect on startup, so at
+dev time it's a good idea.
 
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD
 

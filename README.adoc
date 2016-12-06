@@ -34,6 +34,7 @@ Spring Boot (and other) issues for follow up:
 * Condition processing: https://github.com/spring-projects/spring-boot/issues/7572[spring-boot #7573]
 * Cache configuration: https://github.com/spring-projects/spring-boot/issues/7576[spring-boot #7576]
 * Lazy Actuator: https://github.com/spring-projects/spring-boot/issues/7578[spring-boot #7578]
+* Lazy Validation: https://github.com/spring-projects/spring-boot/issues/7579[spring-boot 7579]
 * Startup JVM args: https://github.com/spring-projects/spring-ide/issues/85[spring-ide #85]
 
 ## Running Locally
@@ -314,6 +315,23 @@ PetclinicBenchmark.devtoolsRestart  avgt   10  0.781 ± 0.056   s/op
 PetclinicBenchmark.explodedJarMain  avgt   10  2.845 ± 0.089   s/op
 PetclinicBenchmark.fatJar           avgt   10  4.083 ± 0.192   s/op
 PetclinicBenchmark.noverify         avgt   10  3.566 ± 0.146   s/op
+```
+
+#### Hibernate Validator
+
+What if we ditch the validator (also shows up as a hotspot in
+YourKit)? Again this is cutting heavily into application features -
+you even have to edit the Pet Clinic quite heavily to get it to work
+without validation. Results are good though, so maybe we could make it
+lazy somehow:
+
+
+```
+Benchmark                           Mode  Cnt  Score   Error  Units
+PetclinicBenchmark.devtoolsRestart  avgt   10  0.724 ± 0.047   s/op
+PetclinicBenchmark.explodedJarMain  avgt   10  2.670 ± 0.136   s/op
+PetclinicBenchmark.fatJar           avgt   10  3.682 ± 0.097   s/op
+PetclinicBenchmark.noverify         avgt   10  3.213 ± 0.146   s/op
 ```
 
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD

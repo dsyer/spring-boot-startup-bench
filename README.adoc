@@ -32,7 +32,8 @@ Spring Boot (and other) issues for follow up:
 
 * `PropertySourcesPropertyResolver`: https://github.com/spring-projects/spring-boot/issues/7571[spring-boot #7572]
 * Condition processing: https://github.com/spring-projects/spring-boot/issues/7572[spring-boot #7573]
-* Cache configuration: https://github.com/spring-projects/spring-boot/issues/7576[spring-boot #7575]
+* Cache configuration: https://github.com/spring-projects/spring-boot/issues/7576[spring-boot #7576]
+* Lazy Actuator: https://github.com/spring-projects/spring-boot/issues/7578[spring-boot #7578]
 * Startup JVM args: https://github.com/spring-projects/spring-ide/issues/85[spring-ide #85]
 
 ## Running Locally
@@ -271,6 +272,22 @@ exploded jar (so in the IDE) at a little more than 3s (down from over
 6s initially). Of note here is that EhCache is not even used by the
 app unless the "production" profile is enabled, which it is not by
 default, and yet it still hits the startup time.
+
+
+#### Actuator
+
+Removing the actuator actually changes the features of the
+application, so in some ways it's an unfair test, but on the other
+hand, if you only want to test the business features you might not
+care if the actuator was not there on startup. The results are
+promising (cumulative on top of disabling ehcache):
+
+```
+PetclinicBenchmark.devtoolsRestart  avgt   10  0.781 ± 0.056   s/op
+PetclinicBenchmark.explodedJarMain  avgt   10  2.845 ± 0.089   s/op
+PetclinicBenchmark.fatJar           avgt   10  4.083 ± 0.192   s/op
+PetclinicBenchmark.noverify         avgt   10  3.566 ± 0.146   s/op
+```
 
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD
 

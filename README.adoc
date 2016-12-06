@@ -16,10 +16,6 @@ Various combinations of things are tested:
 * Different application features: a basic web app with actuator, the petclinic and a Spring Cloud config server
 * Hardware (running on bare metal vs AWS for instance)
 
-The basic webapp also has a "minimal" version with a stripped down
-classpath and handpicked configuration classes (instead of
-`@EnableAutoConfiguration`).
-
 NOTE: There is a
 https://github.com/spring-projects/spring-boot/issues/7493[Spring Boot
 issue] with some comments and more benchmark results. This might be
@@ -80,14 +76,23 @@ NOTE: I had a lot of issues getting SSH to work. Had to create my own
 security group, and there was a hiccup with the ssh client wanting to
 prompt me to change my `~/.ssh/known_hosts`. Good luck.
 
+## The Minimal Sample
+
+The basic webapp also has a "minimal" version with a stripped down
+classpath and handpicked configuration classes (instead of
+`@EnableAutoConfiguration`). I noticed that logback showed up a lot in
+the `-verbose:class` logs so I took it out of the minimal
+sample. Ditto `hibernate-validator` (lots of classes initialized
+compared to the actual feature set I use).
+
 ## Benchmark Results
 
 Summary:
 
 * It is possible to start a non-trivial app in under 2 seconds.
 
-* Spring Boot 1.4 and 1.3 are indistinguishable (1.4 slightly slower
-  but within the error bars)
+* Spring Boot 1.4 and 1.3 are barely distinguishable (1.4 slightly
+  slower but within the error bars).
 
 * Devtools restart is **much** faster than a cold start.
 
@@ -96,7 +101,7 @@ Summary:
 
 * Hardware matters a lot, but affects all apps roughly the same.
 
-* Spring Boot (and Spring Data) slow things down.
+* Spring Boot (and Spring Data) slow things down (a bit).
 
 N.B. the times reported by the Spring Boot stop watch on the console
 are always shorter than those measured by the benchmark. The
@@ -212,15 +217,28 @@ dev time it's a good idea.
 #### Logback
 
 By switching between Logback and other libraries in the minimal sample
-we can test the effect of the logging library. Logback slows down the
-fat jar compared to plain JDK logging, but not the exploded main. The
-effect is only 100ms. Here are the data (with all the rest of the test
-set up as per the previous section):
+we can test the effect of the logging library. We did this by removing
+the logging starter completely, and adding in `commons-logging` (which
+drops down to plain JDK logging by default). The results show that
+logback slows down the fat jar compared to plain JDK logging, but not
+the exploded main. The effect is only 100ms. Here are the data (with
+all the rest of the test set up as per the previous section):
 
 ```
 MinimalBenchmark.explodedJarMain            avgt   10  1.292 ± 0.105   s/op
 MinimalBenchmark.fatJar                     avgt   10  1.620 ± 0.082   s/op
 ```
+
+Log4j2 is actually slower:
+
+```
+MinimalBenchmark.explodedJarMain            avgt   10  1.425 ± 0.098   s/op
+MinimalBenchmark.fatJar                     avgt   10  1.820 ± 0.069   s/op
+```
+
+Remember there are only about 20 lines of logging in these tests.  It
+might well be that logback or log4j2 performs much better under load,
+and this test is just for initialization time really.
 
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD
 

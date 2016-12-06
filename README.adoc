@@ -154,7 +154,7 @@ New Dell desktop
  JsaBenchmark.thinMain                       avgt   10  4.808 ± 0.161   s/op
 ```
 
-#### Tinkering
+#### Unused Thymeleaf Features
 
 Excluding groovy and thymeleaf layout (unused dependencies) from the
 Pet Clinic had a big effect on the startup time, but oddly only in the
@@ -191,7 +191,7 @@ PetclinicBenchmark.explodedJarMain  avgt   10  4.894 ± 0.186   s/op
 
 include::data.adoc[leveloffset=+3]
 
-#### More Tinkering
+#### More JVM Options
 
 Setting `-XX:TieredStopAtLevel=1` was quite a big boost, so we set
 that permanently in the benchmarks (the rest of the results pre-date
@@ -249,7 +249,7 @@ MinimalBenchmark.explodedJarMain            avgt   10  1.425 ± 0.098   s/op
 MinimalBenchmark.fatJar                     avgt   10  1.820 ± 0.069   s/op
 ```
 
-Remember there are only about 20 lines of logging in these tests.  It
+Remember there are only about 40 lines of logging in these tests.  It
 might well be that logback or log4j2 performs much better under load,
 and this test is just for initialization time really.
 
@@ -269,10 +269,37 @@ PetclinicBenchmark.noverify         avgt   10  4.249 ± 0.116   s/op
 
 If you add `-noverify` as well, you will see the startup time in an
 exploded jar (so in the IDE) at a little more than 3s (down from over
-6s initially). Of note here is that EhCache is not even used by the
-app unless the "production" profile is enabled, which it is not by
-default, and yet it still hits the startup time.
+6s initially). Note that EhCache is not used by the app unless the
+"production" profile is enabled, so you can switch it off just by
+disabling the profile. The benchmarks allow you to do that by setting
+`-Dbench.args`, e.g:
 
+```
+$ cd benchmarks/
+$ java -Dbench.args='-Dspring.profiles.active=default' -Ddebug \
+  -jar target/benchmarks.jar PetclinicBenchmark
+```
+
+#### Thymeleaf and "Unused Beans"
+
+Initializing a Jackson `ObjectMapper` is the next hotspot after
+EhCache is disabled. It turns out that this is a side effect of
+initializing Thymeleaf. It happens in a class initializer in
+`SpringTemplateEngine`, so there's no way to switch it off with lazy
+beans in Spring, other than to remove Jackson from the classpath.
+
+Even if we removed Thymeleaf, and replaced it with Mustache, for
+instance, Jackson is needed by the actuator. So we would pay the
+startup cost anyway, despite the fact that it isn't used on
+startup. This raises the question of why we need to initialize these
+things at all in order to start up the app. They aren't going to be
+used until a request is processed.
+
+A lot of components in a Spring Boot app are in this category. Another
+one that shows up in YourKit on startup is the Webjars Locator. You
+only get <100ms improvement in startup time by leaving it out (and it
+changes the behaviour of the application, so you need it), but you
+don't need it until after startup.
 
 #### Actuator
 

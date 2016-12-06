@@ -209,6 +209,19 @@ This wouldn't be a sensible setting for a long-running process in
 production, but it seems to have a positive effect on startup, so at
 dev time it's a good idea.
 
+#### Logback
+
+By switching between Logback and other libraries in the minimal sample
+we can test the effect of the logging library. Logback slows down the
+fat jar compared to plain JDK logging, but not the exploded main. The
+effect is only 100ms. Here are the data (with all the rest of the test
+set up as per the previous section):
+
+```
+MinimalBenchmark.explodedJarMain            avgt   10  1.292 ± 0.105   s/op
+MinimalBenchmark.fatJar                     avgt   10  1.620 ± 0.082   s/op
+```
+
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD
 
 >5 year old Dell desktop

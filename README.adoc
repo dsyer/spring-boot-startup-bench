@@ -20,6 +20,13 @@ The basic webapp also has a "minimal" version with a stripped down
 classpath and handpicked configuration classes (instead of
 `@EnableAutoConfiguration`).
 
+NOTE: There is a
+https://github.com/spring-projects/spring-boot/issues/7493[Spring Boot
+issue] with some comments and more benchmark results. This might be
+useful to read if you have slow sart up times and want some
+company. Very important: check your anti-virus software and make sure
+it isn't slowing down access to jar files.
+
 ## Running Locally
 
 ```
@@ -129,8 +136,6 @@ New Dell desktop
  JsaBenchmark.thinMain                       avgt   10  4.808 ± 0.161   s/op
 ```
 
-dsyer@tower:~/dev/demo/workspace/startup$ 
-
 #### Tinkering
 
 Excluding groovy and thymeleaf layout (unused dependencies) from the
@@ -181,6 +186,9 @@ ConfigServerBenchmark.fatJar142             avgt   10   7.439 ± 0.247   s/op
 PetclinicBenchmark.devtoolsRestart          avgt   10   2.868 ± 0.195   s/op
 PetclinicBenchmark.fatJar                   avgt   10  13.579 ± 0.222   s/op
 PetclinicBenchmark.noverify                 avgt   10  12.186 ± 0.373   s/op
+JsaBenchmark.basicThin                      avgt   10  10.830 ± 0.443   s/op
+JsaBenchmark.sharedClasses                  avgt   10   8.158 ± 0.217   s/op
+JsaBenchmark.thinMain                       avgt   10   9.568 ± 0.488   s/op
 SpringBoot138Benchmark.explodedJarLauncher  avgt   10   5.821 ± 0.191   s/op
 SpringBoot138Benchmark.explodedJarMain      avgt   10   4.365 ± 0.117   s/op
 SpringBoot138Benchmark.fatJar               avgt   10   5.550 ± 0.132   s/op

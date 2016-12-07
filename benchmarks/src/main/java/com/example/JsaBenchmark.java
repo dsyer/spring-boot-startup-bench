@@ -63,11 +63,6 @@ public class JsaBenchmark {
 	}
 
 	@Benchmark
-	public void basicThin(ThinState state) throws Exception {
-		state.run();
-	}
-
-	@Benchmark
 	public void thinMain(ThinMainState state) throws Exception {
 		state.run();
 	}
@@ -104,18 +99,6 @@ public class JsaBenchmark {
 
 		private void commonArgs(List<String> command) {
 			command.addAll(1, Arrays.asList("-XX:+UnlockCommercialFeatures -XX:+UseAppCDS -noverify".split(" ")));
-		}
-
-		@TearDown(Level.Iteration)
-		public void stop() throws Exception {
-			super.after();
-		}
-	}
-
-	@State(Scope.Benchmark)
-	public static class ThinState extends ProcessLauncherState {
-		public ThinState() {
-			super("target", "-jar", jarFile("com.example:petclinic:jar:thin:1.4.2"), "--server.port=0");
 		}
 
 		@TearDown(Level.Iteration)

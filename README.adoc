@@ -343,6 +343,15 @@ only get <100ms improvement in startup time by leaving it out (and it
 changes the behaviour of the application, so you want it in there at
 runtime), but you don't need it until after startup.
 
+#### Spring 5.0 Component Index
+
+Spring 5.0 has an annotation processor that creates an index of
+components on startup. It is easy to set up (you just put
+`spring-context-indexer` on the classpath), but since it only indexes
+a component scan, which is a pretty small part of a trivial Spring
+Boot application like the ones we are testing, it has no discernable
+effect at runtime.
+
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD
 
 >5 year old Dell desktop

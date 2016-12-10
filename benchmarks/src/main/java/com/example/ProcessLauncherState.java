@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openjdk.jmh.util.Utils;
+
 public class ProcessLauncherState {
 
 	private Process started;
@@ -27,6 +29,10 @@ public class ProcessLauncherState {
 		this.args.add(0, System.getProperty("java.home") + "/bin/java");
 		this.args.add(1, "-Xmx128m");
 		this.args.add(2, "-Djava.security.egd=file:/dev/./urandom");
+		this.args.add(3, "-XX:TieredStopAtLevel=1"); // zoom
+		if (System.getProperty("bench.args") != null) {
+			this.args.addAll(4, Arrays.asList(System.getProperty("bench.args").split(" ")));
+		}
 		this.home = new File(dir);
 	}
 
@@ -41,6 +47,9 @@ public class ProcessLauncherState {
 		builder.directory(home);
 		builder.redirectErrorStream(true);
 		customize(builder);
+		if (!"false".equals(System.getProperty("debug", "false"))) {
+			System.err.println("Running: " + Utils.join(args, " "));
+		}
 		started = builder.start();
 		monitor();
 	}

@@ -58,6 +58,11 @@ public class SpringBootThinBenchmark {
 		state.run();
 	}
 
+	@Benchmark
+	public void petclinicThin(PetclinicThinState state) throws Exception {
+		state.run();
+	}
+
 	public static void main(String[] args) throws Exception {
 		Basic142ThinState state = new Basic142ThinState();
 		state.run();
@@ -79,6 +84,18 @@ public class SpringBootThinBenchmark {
 	public static class Basic138ThinState extends ProcessLauncherState {
 		public Basic138ThinState() {
 			super("target", "-jar", "../src/test/resources/demo-1.3.8-thin.jar", "--server.port=0");
+		}
+
+		@TearDown(Level.Iteration)
+		public void stop() throws Exception {
+			super.after();
+		}
+	}
+
+	@State(Scope.Benchmark)
+	public static class PetclinicThinState extends ProcessLauncherState {
+		public PetclinicThinState() {
+			super("target", "-jar", jarFile("com.example:petclinic:jar:thin:1.4.2"), "--server.port=0");
 		}
 
 		@TearDown(Level.Iteration)

@@ -1,5 +1,10 @@
 # Benchmarks for Spring Boot Start Up
 
+**TL;DR**: if you do nothing else, then make sure you set
+`-XX:TieredStopAtLevel=1` and `-noverify` as default JVM args in your
+IDE. They might not be recommended in a long-running, production
+process, but they have a really big effect on startup time.
+
 This project uses JMH to test and report on various the effect of
 various parameters on Spring Boot startup times. The apps are launched
 in a forked JVM and the measurements below are all "seconds to start
@@ -16,9 +21,21 @@ Various combinations of things are tested:
 * Different application features: a basic web app with actuator, the petclinic and a Spring Cloud config server
 * Hardware (running on bare metal vs AWS for instance)
 
-The basic webapp also has a "minimal" version with a stripped down
-classpath and handpicked configuration classes (instead of
-`@EnableAutoConfiguration`).
+NOTE: There is a
+https://github.com/spring-projects/spring-boot/issues/7493[Spring Boot
+issue] with some comments and more benchmark results. This might be
+useful to read if you have slow start up times and want some
+company. Very important: check your anti-virus software and make sure
+it isn't slowing down access to jar files.
+
+Spring Boot (and other) issues for follow up:
+
+* `PropertySourcesPropertyResolver`: https://github.com/spring-projects/spring-boot/issues/7571[spring-boot #7572]
+* Condition processing: https://github.com/spring-projects/spring-boot/issues/7572[spring-boot #7573]
+* Cache configuration: https://github.com/spring-projects/spring-boot/issues/7576[spring-boot #7576]
+* Lazy Actuator: https://github.com/spring-projects/spring-boot/issues/7578[spring-boot #7578]
+* Lazy Validation: https://github.com/spring-projects/spring-boot/issues/7579[spring-boot 7579]
+* Startup JVM args: https://github.com/spring-projects/spring-ide/issues/85[spring-ide #85]
 
 ## Running Locally
 
@@ -73,14 +90,23 @@ NOTE: I had a lot of issues getting SSH to work. Had to create my own
 security group, and there was a hiccup with the ssh client wanting to
 prompt me to change my `~/.ssh/known_hosts`. Good luck.
 
+## The Minimal Sample
+
+The basic webapp also has a "minimal" version with a stripped down
+classpath and handpicked configuration classes (instead of
+`@EnableAutoConfiguration`). I noticed that logback showed up a lot in
+the `-verbose:class` logs so I took it out of the minimal
+sample. Ditto `hibernate-validator` (lots of classes initialized
+compared to the actual feature set I use).
+
 ## Benchmark Results
 
 Summary:
 
 * It is possible to start a non-trivial app in under 2 seconds.
 
-* Spring Boot 1.4 and 1.3 are indistinguishable (1.4 slightly slower
-  but within the error bars)
+* Spring Boot 1.4 and 1.3 are barely distinguishable (1.4 slightly
+  slower but within the error bars).
 
 * Devtools restart is **much** faster than a cold start.
 
@@ -89,7 +115,7 @@ Summary:
 
 * Hardware matters a lot, but affects all apps roughly the same.
 
-* Spring Boot (and Spring Data) slow things down.
+* Spring Boot (and Spring Data) slow things down (a bit).
 
 N.B. the times reported by the Spring Boot stop watch on the console
 are always shorter than those measured by the benchmark. The
@@ -129,9 +155,7 @@ New Dell desktop
  JsaBenchmark.thinMain                       avgt   10  4.808 ± 0.161   s/op
 ```
 
-dsyer@tower:~/dev/demo/workspace/startup$ 
-
-#### Tinkering
+#### Unused Thymeleaf Features
 
 Excluding groovy and thymeleaf layout (unused dependencies) from the
 Pet Clinic had a big effect on the startup time, but oddly only in the
@@ -168,6 +192,181 @@ PetclinicBenchmark.explodedJarMain  avgt   10  4.894 ± 0.186   s/op
 
 include::data.adoc[leveloffset=+3]
 
+#### More JVM Options
+
+Setting `-XX:TieredStopAtLevel=1` was quite a big boost, so we set
+that permanently in the benchmarks (the rest of the results pre-date
+this change):
+
+```Benchmark                                   Mode  Cnt  Score   Error  Units
+ConfigServerBenchmark.devtoolsRestart       avgt   10  0.842 ± 0.047   s/op
+ConfigServerBenchmark.explodedJarMain       avgt   10  2.451 ± 0.100   s/op
+ConfigServerBenchmark.fatJar138             avgt   10  3.002 ± 0.091   s/op
+ConfigServerBenchmark.fatJar142             avgt   10  2.936 ± 0.101   s/op
+MinimalBenchmark.explodedJarMain            avgt   10  1.268 ± 0.077   s/op
+MinimalBenchmark.fatJar                     avgt   10  1.537 ± 0.078   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10  1.107 ± 0.054   s/op
+PetclinicBenchmark.explodedJarMain          avgt   10  3.618 ± 0.149   s/op
+PetclinicBenchmark.fatJar                   avgt   10  5.040 ± 0.229   s/op
+PetclinicBenchmark.noverify                 avgt   10  4.402 ± 0.149   s/op
+ShadedBenchmark.explodedShadedMain          avgt   10  3.764 ± 0.085   s/op
+ShadedBenchmark.shaded                      avgt   10  5.871 ± 0.123   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10  2.224 ± 0.083   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10  1.542 ± 0.044   s/op
+SpringBoot138Benchmark.fatJar               avgt   10  2.102 ± 0.126   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10  2.232 ± 0.067   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10  1.684 ± 0.087   s/op
+SpringBoot142Benchmark.fatJar               avgt   10  2.146 ± 0.080   s/op
+SpringBootThinBenchmark.basic138Thin        avgt   10  1.908 ± 0.120   s/op
+SpringBootThinBenchmark.basic142Thin        avgt   10  2.081 ± 0.088   s/op
+JsaBenchmark.basicThin                      avgt   10  4.230 ± 0.216   s/op
+JsaBenchmark.sharedClasses                  avgt   10  3.124 ± 0.125   s/op
+JsaBenchmark.thinMain                       avgt   10  3.573 ± 0.229   s/op
+```
+
+This wouldn't be a sensible setting for a long-running process in
+production, but it seems to have a positive effect on startup, so at
+dev time it's a good idea.
+
+#### Logback
+
+By switching between Logback and other libraries in the minimal sample
+we can test the effect of the logging library. We did this by removing
+the logging starter completely, and adding in `commons-logging` (which
+drops down to plain JDK logging by default). The results show that
+logback slows down the fat jar compared to plain JDK logging, but not
+the exploded main. The effect is only 100ms. Here are the data (with
+all the rest of the test set up as per the previous section):
+
+```
+MinimalBenchmark.explodedJarMain            avgt   10  1.292 ± 0.105   s/op
+MinimalBenchmark.fatJar                     avgt   10  1.620 ± 0.082   s/op
+```
+
+Log4j2 is actually slower:
+
+```
+MinimalBenchmark.explodedJarMain            avgt   10  1.425 ± 0.098   s/op
+MinimalBenchmark.fatJar                     avgt   10  1.820 ± 0.069   s/op
+```
+
+Remember there are only about 40 lines of logging in these tests.  It
+might well be that logback or log4j2 performs much better under load,
+and this test is just for initialization time really.
+
+#### EhCache
+
+Stripping everything else back reveals EhCache initialization as a
+hotspot in the Pet Clinic (it shows up in YourKit when you launch in
+"trace" mode). Removing it from the classpath boosts startup by a
+couple of hundred milliseconds:
+
+```
+PetclinicBenchmark.devtoolsRestart  avgt   10  1.095 ± 0.086   s/op
+PetclinicBenchmark.explodedJarMain  avgt   10  3.465 ± 0.145   s/op
+PetclinicBenchmark.fatJar           avgt   10  4.827 ± 0.241   s/op
+PetclinicBenchmark.noverify         avgt   10  4.249 ± 0.116   s/op
+```
+
+If you add `-noverify` as well, you will see the startup time in an
+exploded jar (so in the IDE) at a little more than 3s (down from over
+6s initially). Note that EhCache is not used by the app unless the
+"production" profile is enabled, so you can switch it off just by
+disabling the profile. The benchmarks allow you to do that by setting
+`-Dbench.args`, e.g:
+
+```
+$ cd benchmarks/
+$ java -Dbench.args='-Dspring.profiles.active=default' -Ddebug \
+  -jar target/benchmarks.jar PetclinicBenchmark
+```
+
+#### Actuator
+
+Removing the actuator actually changes the features of the
+application, so in some ways it's an unfair test, but on the other
+hand, if you only want to test the business features you might not
+care if the actuator was not there on startup. The results are
+promising (cumulative on top of disabling ehcache):
+
+```
+PetclinicBenchmark.devtoolsRestart  avgt   10  0.781 ± 0.056   s/op
+PetclinicBenchmark.explodedJarMain  avgt   10  2.845 ± 0.089   s/op
+PetclinicBenchmark.fatJar           avgt   10  4.083 ± 0.192   s/op
+PetclinicBenchmark.noverify         avgt   10  3.566 ± 0.146   s/op
+```
+
+#### Hibernate Validator
+
+What if we ditch the validator (also shows up as a hotspot in
+YourKit)? Again this is cutting into application features - you even
+have to edit the Pet Clinic quite heavily to get it to work without
+validation. Results are good though, so maybe we could make it lazy
+somehow:
+
+```
+Benchmark                           Mode  Cnt  Score   Error  Units
+PetclinicBenchmark.devtoolsRestart  avgt   10  0.724 ± 0.047   s/op
+PetclinicBenchmark.explodedJarMain  avgt   10  2.670 ± 0.136   s/op
+PetclinicBenchmark.fatJar           avgt   10  3.682 ± 0.097   s/op
+PetclinicBenchmark.noverify         avgt   10  3.213 ± 0.146   s/op
+```
+
+#### Thymeleaf and "Unused Beans"
+
+Initializing a Jackson `ObjectMapper` is the next hotspot after
+EhCache is disabled. It turns out that this is a side effect of
+initializing Thymeleaf. It happens in a class initializer in
+`SpringTemplateEngine`, so there's no way to switch it off with lazy
+beans in Spring, other than to remove Jackson from the classpath.
+
+Even if we removed Thymeleaf, and replaced it with Mustache for
+instance, Jackson is needed by the actuator. So we would pay the
+startup cost anyway, despite the fact that it isn't used. This raises
+the question of why we need to initialize these things at all. They
+aren't going to be used until a request is processed.
+
+Here's the result of replacing Thymeleaf with Mustache (on top of all
+the other improvements above) and excluding Jackson:
+
+```
+Benchmark                           Mode  Cnt  Score   Error  Units
+PetclinicBenchmark.devtoolsRestart  avgt   10  0.727 ± 0.052   s/op
+PetclinicBenchmark.explodedJarMain  avgt   10  2.577 ± 0.091   s/op
+PetclinicBenchmark.fatJar           avgt   10  3.514 ± 0.107   s/op
+PetclinicBenchmark.noverify         avgt   10  3.046 ± 0.142   s/op
+```
+
+There is a small improvement, but it's not clear that it has precisely
+the origin we attribute using the reasoning above. The reasoning
+behind that assertion is that if we do a background initialization of
+Thymeleaf in an `ApplicationInitializer` (same pattern as
+`BackgroundPreinitializer` from Spring Boot) then there is no
+improvement in startup time, despite the fact that Jackson and
+Thymeleaf are already initialized. It is interesting that removing
+Thymeleaf completely has an impact, but it must be something other
+than simply the static initializer. Also notable is that we saw an
+improvement above when we removed Hibernate Validator from the
+project, but this is also pre-initialized by Spring Boot, so the
+inefficiency is not in the initialization there either.
+
+A lot of components in a Spring Boot app are in the category of
+"needed at some point, but maybe not even for all requests, and
+definitely not at startup". Another one that shows up in YourKit on
+startup is the Webjars Locator. You only get <100ms improvement in
+startup time by leaving it out (and it changes the behaviour of the
+application, so you want it in there at runtime), but you don't need
+it until after startup.
+
+#### Spring 5.0 Component Index
+
+Spring 5.0 has an annotation processor that creates an index of
+components on startup. It is easy to set up (you just put
+`spring-context-indexer` on the classpath), but since it only indexes
+a component scan, which is a pretty small part of a trivial Spring
+Boot application like the ones we are testing, it has no discernable
+effect at runtime.
+
 ### Host: xerus, Core2 (32bit), 2.66GHz, 4G RAM, HDD
 
 >5 year old Dell desktop
@@ -181,6 +380,9 @@ ConfigServerBenchmark.fatJar142             avgt   10   7.439 ± 0.247   s/op
 PetclinicBenchmark.devtoolsRestart          avgt   10   2.868 ± 0.195   s/op
 PetclinicBenchmark.fatJar                   avgt   10  13.579 ± 0.222   s/op
 PetclinicBenchmark.noverify                 avgt   10  12.186 ± 0.373   s/op
+JsaBenchmark.basicThin                      avgt   10  10.830 ± 0.443   s/op
+JsaBenchmark.sharedClasses                  avgt   10   8.158 ± 0.217   s/op
+JsaBenchmark.thinMain                       avgt   10   9.568 ± 0.488   s/op
 SpringBoot138Benchmark.explodedJarLauncher  avgt   10   5.821 ± 0.191   s/op
 SpringBoot138Benchmark.explodedJarMain      avgt   10   4.365 ± 0.117   s/op
 SpringBoot138Benchmark.fatJar               avgt   10   5.550 ± 0.132   s/op

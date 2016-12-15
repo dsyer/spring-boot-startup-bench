@@ -42,11 +42,15 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
+import java.io.File;
+
 @Measurement(iterations = 5)
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
 public class MinimalBenchmark {
+
+	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator + "BOOT-INF/lib/*";
 
 	@Benchmark
 	public void fatJar(FatJarState state) throws Exception {
@@ -73,7 +77,7 @@ public class MinimalBenchmark {
 	@State(Scope.Benchmark)
 	public static class MainState extends ProcessLauncherState {
 		public MainState() {
-			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*", "com.example.DemoApplication",
+			super("target/demo", "-cp", CLASSPATH, "com.example.DemoApplication",
 					"--server.port=0");
 			unpack("target/demo", jarFile("com.example:minimal:0.0.1-SNAPSHOT"));
 		}

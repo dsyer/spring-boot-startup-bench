@@ -42,11 +42,15 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
+import java.io.File;
+
 @Measurement(iterations = 5)
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
 public class SpringBoot142Benchmark {
+
+	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator + "BOOT-INF/lib/*";
 
 	@Benchmark
 	public void fatJar(BasicState state) throws Exception {
@@ -96,7 +100,7 @@ public class SpringBoot142Benchmark {
 	@State(Scope.Benchmark)
 	public static class MainState extends ProcessLauncherState {
 		public MainState() {
-			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*", "com.example.DemoApplication",
+			super("target/demo", "-cp", CLASSPATH, "com.example.DemoApplication",
 					"--server.port=0");
 			unpack("target/demo", jarFile("com.example:demo:jar:142:0.0.1-SNAPSHOT"));
 		}

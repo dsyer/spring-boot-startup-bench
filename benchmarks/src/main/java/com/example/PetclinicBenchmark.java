@@ -31,10 +31,6 @@
 
 package com.example;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -47,11 +43,17 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 @Measurement(iterations = 5)
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
 public class PetclinicBenchmark {
+
+	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator + "BOOT-INF/lib/*";
 
 	@Benchmark
 	public void fatJar(BasicState state) throws Exception {
@@ -105,7 +107,7 @@ public class PetclinicBenchmark {
 	@State(Scope.Benchmark)
 	public static class MainState extends ProcessLauncherState {
 		public MainState() {
-			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*",
+			super("target/demo", "-cp", CLASSPATH,
 					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");
 			unpack("target/demo", jarFile("com.example:petclinic:jar:boot:1.4.2"));
 		}
@@ -120,8 +122,9 @@ public class PetclinicBenchmark {
 	public static class ExplodedDevtoolsState extends DevToolsLauncherState {
 
 		public ExplodedDevtoolsState() {
-			super("target/demo", "/BOOT-INF/classes/.restart", jarFile("com.example:petclinic:jar:boot:1.4.2"), "-cp",
-					"BOOT-INF/classes:BOOT-INF/lib/*", "-Dspring.devtools.livereload.enabled=false",
+			super("target/demo", "/BOOT-INF/classes/.restart",
+					jarFile("com.example:petclinic:jar:boot:1.4.2"), "-cp",
+					CLASSPATH, "-Dspring.devtools.livereload.enabled=false",
 					"-Dspring.devtools.restart.pollInterval=100", "-Dspring.devtools.restart.quietPeriod=10",
 					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");
 			try {

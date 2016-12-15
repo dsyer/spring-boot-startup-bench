@@ -43,11 +43,15 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
+import java.io.File;
+
 @Measurement(iterations = 5)
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
 public class ConfigServerBenchmark {
+
+	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator + "BOOT-INF/lib/*";
 
 	@Benchmark
 	public void fatJar142(FatJar142State state) throws Exception {
@@ -108,7 +112,9 @@ public class ConfigServerBenchmark {
 	@State(Scope.Benchmark)
 	public static class ExplodedDevtoolsState extends DevToolsLauncherState {
 		public ExplodedDevtoolsState() {
-			super("target/demo", "/BOOT-INF/classes/.restart", jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"), "-cp", "BOOT-INF/classes:BOOT-INF/lib/*", "-Dspring.devtools.livereload.enabled=false",
+			super("target/demo", "/BOOT-INF/classes/.restart",
+					jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"),
+					"-cp", CLASSPATH, "-Dspring.devtools.livereload.enabled=false",
 					"-Dspring.devtools.restart.pollInterval=100", "-Dspring.devtools.restart.quietPeriod=10",
 					"demo.ConfigServerApplication", "--server.port=0");
 		}
@@ -127,8 +133,8 @@ public class ConfigServerBenchmark {
 	@State(Scope.Benchmark)
 	public static class MainState extends ProcessLauncherState {
 		public MainState() {
-			super("target/demo", "-cp", "BOOT-INF/classes:BOOT-INF/lib/*", "demo.ConfigServerApplication",
-					"--server.port=0");
+			super("target/demo", "-cp", CLASSPATH,
+					"demo.ConfigServerApplication", "--server.port=0");
 			unpack("target/demo", jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"));
 		}
 

@@ -88,7 +88,7 @@ public class ProcessLauncherState {
 
 	public void unpack(String path, String jar) {
 		File home = new File(path);
-		ProcessBuilder builder = new ProcessBuilder(getJarExec(), "-xf", jar);
+		ProcessBuilder builder = new ProcessBuilder(getJarExec(), "xf", jar);
 		Process started = null;
 		try {
 			if (home.exists()) {
@@ -129,6 +129,10 @@ public class ProcessLauncherState {
 		if (new File(jar).exists()) {
 			return jar;
 		}
+        jar = home + "/../bin/jar.exe";
+        if (new File(jar).exists()) {
+            return jar;
+        }
 		return home + "/bin/jar";
 	}
 
@@ -146,7 +150,8 @@ public class ProcessLauncherState {
 		String version = m.group(7);
 		String path = ".."; // always run in benchmarks folder
 		try {
-			return new File(path).getAbsoluteFile().getCanonicalPath() + "/" + artifactId + "/target/" + artifactId
+			return new File(path).getAbsoluteFile().getCanonicalPath() + File.separator + artifactId + File.separator
+                    + "target" + File.separator + artifactId
 					+ "-" + version + classifier + "." + extension;
 		} catch (IOException e) {
 			throw new IllegalStateException("Cannot find benchmarks", e);

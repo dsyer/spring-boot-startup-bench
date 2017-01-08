@@ -219,6 +219,7 @@ SpringBoot142Benchmark.explodedJarMain      avgt   10  1.684 ± 0.087   s/op
 SpringBoot142Benchmark.fatJar               avgt   10  2.146 ± 0.080   s/op
 SpringBootThinBenchmark.basic138Thin        avgt   10  1.908 ± 0.120   s/op
 SpringBootThinBenchmark.basic142Thin        avgt   10  2.081 ± 0.088   s/op
+SpringBootThinBenchmark.petclinicThin       avgt   10  4.038 ± 0.267   s/op
 JsaBenchmark.basicThin                      avgt   10  4.230 ± 0.216   s/op
 JsaBenchmark.sharedClasses                  avgt   10  3.124 ± 0.125   s/op
 JsaBenchmark.thinMain                       avgt   10  3.573 ± 0.229   s/op

@@ -75,10 +75,12 @@ public class JsaBenchmark {
 			Process started = exec(
 					"-Xshare:off -XX:DumpLoadedClassList=app.classlist -cp $CLASSPATH:"
 							+ jarFile("com.example:petclinic:jar:thin:1.4.2"),
-					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");
+					"org.springframework.samples.petclinic.PetClinicApplication",
+					"--server.port=0");
 			output(started.getInputStream(), "Started");
 			started.destroyForcibly();
-			Process dump = exec("-Xshare:dump -XX:SharedArchiveFile=app.jsa -XX:SharedClassListFile=app.classlist -cp $CLASSPATH",
+			Process dump = exec(
+					"-Xshare:dump -XX:SharedArchiveFile=app.jsa -XX:SharedClassListFile=app.classlist -cp $CLASSPATH",
 					"", "");
 			FileUtils.readAllLines(dump.getInputStream());
 			dump.waitFor();
@@ -93,14 +95,17 @@ public class JsaBenchmark {
 		@Override
 		protected void customize(ProcessBuilder builder) {
 			commonArgs(builder.command());
-			builder.command().addAll(Arrays.asList("-Xshare:on -XX:SharedArchiveFile=app.jsa".split(" ")));
+			builder.command().addAll(
+					Arrays.asList("-Xshare:on -XX:SharedArchiveFile=app.jsa".split(" ")));
 			super.customize(builder);
 		}
 
 		private void commonArgs(List<String> command) {
-			command.addAll(1, Arrays.asList("-XX:+UnlockCommercialFeatures -XX:+UseAppCDS -noverify".split(" ")));
+			command.addAll(1, Arrays.asList(
+					"-XX:+UnlockCommercialFeatures -XX:+UseAppCDS -noverify".split(" ")));
 		}
 
+		@Override
 		@TearDown(Level.Iteration)
 		public void stop() throws Exception {
 			super.after();
@@ -113,18 +118,23 @@ public class JsaBenchmark {
 		private Map<String, String> environment = new LinkedHashMap<>();
 
 		public ThinMainState() {
-			super("target", "-cp", "$CLASSPATH:" + jarFile("com.example:petclinic:jar:thin:1.4.2"),
-					"org.springframework.samples.petclinic.PetClinicApplication", "--server.port=0");
+			super("target", "-cp",
+					"$CLASSPATH:" + jarFile("com.example:petclinic:jar:thin:1.4.2"),
+					"org.springframework.samples.petclinic.PetClinicApplication",
+					"--server.port=0");
 			environment();
 		}
 
 		private void environment() {
-			Process started = exec("-jar", jarFile("com.example:petclinic:jar:thin:1.4.2"), "--thin.classpath");
+			Process started = exec("-jar",
+					jarFile("com.example:petclinic:jar:thin:1.4.2"), "--thin.classpath");
 			try {
-				Collection<String> lines = FileUtils.readAllLines(started.getInputStream());
+				Collection<String> lines = FileUtils
+						.readAllLines(started.getInputStream());
 				started.waitFor();
 				environment.put("CLASSPATH", lines.iterator().next());
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw new IllegalStateException("Cannot calculate classpath");
 			}
 		}
@@ -132,7 +142,8 @@ public class JsaBenchmark {
 		protected Process exec(String jvmArgs, String main, String progArgs) {
 			List<String> args = new ArrayList<>();
 			args.add(System.getProperty("java.home") + "/bin/java");
-			args.addAll(Arrays.asList("-Xmx128m -Djava.security.egd=file:/dev/./urandom".split(" ")));
+			args.addAll(Arrays.asList(
+					"-Xmx128m -Djava.security.egd=file:/dev/./urandom".split(" ")));
 			args.addAll(Arrays.asList(jvmArgs.split(" ")));
 			if (main.length() > 0) {
 				args.add(main);
@@ -149,7 +160,8 @@ public class JsaBenchmark {
 			try {
 				started = builder.start();
 				return started;
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw new IllegalStateException("Cannot calculate classpath");
 			}
 		}
@@ -168,7 +180,8 @@ public class JsaBenchmark {
 			for (int i = 0; i < builder.command().size(); i++) {
 				String value = builder.command().get(i);
 				for (String key : environment.keySet()) {
-					builder.command().set(i, value.replace("$" + key, environment.get(key)));
+					builder.command().set(i,
+							value.replace("$" + key, environment.get(key)));
 				}
 			}
 		}

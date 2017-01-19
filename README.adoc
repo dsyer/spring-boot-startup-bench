@@ -198,7 +198,8 @@ Setting `-XX:TieredStopAtLevel=1` was quite a big boost, so we set
 that permanently in the benchmarks (the rest of the results pre-date
 this change):
 
-```Benchmark                                   Mode  Cnt  Score   Error  Units
+```
+Benchmark                                   Mode  Cnt  Score   Error  Units
 ConfigServerBenchmark.devtoolsRestart       avgt   10  0.842 ± 0.047   s/op
 ConfigServerBenchmark.explodedJarMain       avgt   10  2.451 ± 0.100   s/op
 ConfigServerBenchmark.fatJar138             avgt   10  3.002 ± 0.091   s/op
@@ -358,6 +359,34 @@ startup is the Webjars Locator. You only get <100ms improvement in
 startup time by leaving it out (and it changes the behaviour of the
 application, so you want it in there at runtime), but you don't need
 it until after startup.
+
+#### Jackson
+
+Removing Jackson means removing the actuators as well, as things
+stand.  But it has quite a dramatic effect (probably Thymeleaf has no
+impact at all and we are just seeing Jackson in the results
+above). Results:
+
+```
+Benchmark                           Mode  Cnt  Score   Error  Units
+PetclinicBenchmark.devtoolsRestart  avgt   10  0.851 ± 0.018   s/op
+PetclinicBenchmark.explodedJarMain  avgt   10  2.823 ± 0.075   s/op
+PetclinicBenchmark.fatJar           avgt   10  3.895 ± 0.039   s/op
+PetclinicBenchmark.noverify         avgt   10  3.397 ± 0.060   s/op
+```
+
+These should be compared with the same thing but fully loaded (not the
+latest result in the previous paragraph). Here's a reminder of what they said:
+
+```
+Benchmark                                   Mode  Cnt  Score   Error  Units
+PetclinicBenchmark.devtoolsRestart          avgt   10  1.107 ± 0.054   s/op
+PetclinicBenchmark.explodedJarMain          avgt   10  3.618 ± 0.149   s/op
+PetclinicBenchmark.fatJar                   avgt   10  5.040 ± 0.229   s/op
+PetclinicBenchmark.noverify                 avgt   10  4.402 ± 0.149   s/op
+```
+
+That's pretty huge!
 
 #### Spring 5.0 Component Index
 

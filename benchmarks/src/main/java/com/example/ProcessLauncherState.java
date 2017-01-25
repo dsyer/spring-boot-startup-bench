@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016-2017 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example;
 
 import java.io.BufferedReader;
@@ -31,7 +46,8 @@ public class ProcessLauncherState {
 		this.args.add(2, "-Djava.security.egd=file:/dev/./urandom");
 		this.args.add(3, "-XX:TieredStopAtLevel=1"); // zoom
 		if (System.getProperty("bench.args") != null) {
-			this.args.addAll(4, Arrays.asList(System.getProperty("bench.args").split(" ")));
+			this.args.addAll(4,
+					Arrays.asList(System.getProperty("bench.args").split(" ")));
 		}
 		this.home = new File(dir);
 	}
@@ -61,7 +77,8 @@ public class ProcessLauncherState {
 		System.out.println(output(started.getInputStream(), "Started"));
 	}
 
-	protected static String output(InputStream inputStream, String marker) throws IOException {
+	protected static String output(InputStream inputStream, String marker)
+			throws IOException {
 		StringBuilder sb = new StringBuilder();
 		BufferedReader br = null;
 		br = new BufferedReader(new InputStreamReader(inputStream));
@@ -81,7 +98,8 @@ public class ProcessLauncherState {
 		try {
 			File file = new File(jar);
 			Files.copy(file.toPath(), dest.toPath().resolve(file.getName()));
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw new IllegalStateException("Failed", e);
 		}
 	}
@@ -94,13 +112,15 @@ public class ProcessLauncherState {
 			if (home.exists()) {
 				Files.walkFileTree(home.toPath(), new SimpleFileVisitor<Path>() {
 					@Override
-					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+							throws IOException {
 						Files.delete(file);
 						return FileVisitResult.CONTINUE;
 					}
 
 					@Override
-					public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+					public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+							throws IOException {
 						Files.delete(dir);
 						return FileVisitResult.CONTINUE;
 					}
@@ -114,9 +134,11 @@ public class ProcessLauncherState {
 			builder.redirectErrorStream(true);
 			started = builder.start();
 			started.waitFor();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new IllegalStateException("Failed", e);
-		} finally {
+		}
+		finally {
 			if (started != null && started.isAlive()) {
 				started.destroy();
 			}
@@ -129,10 +151,10 @@ public class ProcessLauncherState {
 		if (new File(jar).exists()) {
 			return jar;
 		}
-        jar = home + "/../bin/jar.exe";
-        if (new File(jar).exists()) {
-            return jar;
-        }
+		jar = home + "/../bin/jar.exe";
+		if (new File(jar).exists()) {
+			return jar;
+		}
 		return home + "/bin/jar";
 	}
 
@@ -150,10 +172,11 @@ public class ProcessLauncherState {
 		String version = m.group(7);
 		String path = ".."; // always run in benchmarks folder
 		try {
-			return new File(path).getAbsoluteFile().getCanonicalPath() + File.separator + artifactId + File.separator
-                    + "target" + File.separator + artifactId
+			return new File(path).getAbsoluteFile().getCanonicalPath() + File.separator
+					+ artifactId + File.separator + "target" + File.separator + artifactId
 					+ "-" + version + classifier + "." + extension;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw new IllegalStateException("Cannot find benchmarks", e);
 		}
 	}

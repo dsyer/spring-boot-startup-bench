@@ -11,6 +11,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.4.2.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<name>petclinic</name>
 
@@ -20,6 +21,7 @@
 		<java.version>1.8</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<jar.classifier>boot</jar.classifier>
 
 		<!-- Web dependencies -->
 		<webjars-bootstrap.version>3.3.6</webjars-bootstrap.version>
@@ -28,14 +30,13 @@
 		<wro4j.version>1.8.0</wro4j.version>
 
 		<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
-		<thymeleaf-layout-dialect.version>2.0.4</thymeleaf-layout-dialect.version>
 
 		<spring-data-releasetrain.version>Ingalls-BUILD-SNAPSHOT</spring-data-releasetrain.version>
-
 		<start-class>org.springframework.samples.petclinic.PetClinicApplication</start-class>
 
 		<thin-launcher.version>0.0.1.BUILD-SNAPSHOT</thin-launcher.version>
 		<spring-boot-plugin.version>1.5.0.BUILD-SNAPSHOT</spring-boot-plugin.version>
+		<spring-boot.version>1.4.2.RELEASE</spring-boot.version>
 
 	</properties>
 
@@ -179,7 +180,7 @@
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
 					<configuration>
-						<classifier>boot</classifier>
+						<classifier>${jar.classifier}</classifier>
 					</configuration>
 					<executions>
 						<execution>

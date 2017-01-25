@@ -54,6 +54,14 @@
 				<jar.classifier>138</jar.classifier>
 			</properties>
 		</profile>
+		<profile>
+			<id>boot150</id>
+			<properties>
+				<spring-cloud.version>Camden.SR4</spring-cloud.version>
+				<spring-boot.version>1.5.0.BUILD-SNAPSHOT</spring-boot.version>
+				<jar.classifier>150</jar.classifier>
+			</properties>
+		</profile>
 	</profiles>
 
 	<dependencies>

@@ -1,35 +1,21 @@
 /*
- * Copyright (c) 2014, Oracle America, Inc.
- * All rights reserved.
+ * Copyright 2016-2017 the original author or authors.
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- *  * Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *
- *  * Neither the name of Oracle nor the names of its contributors may be used
- *    to endorse or promote products derived from this software without
- *    specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
- * THE POSSIBILITY OF SUCH DAMAGE.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
-
 package com.example;
+
+import java.io.File;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -43,18 +29,22 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
-import java.io.File;
-
 @Measurement(iterations = 5)
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
 public class ConfigServerBenchmark {
 
-	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator + "BOOT-INF/lib/*";
+	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator
+			+ "BOOT-INF/lib/*";
 
 	@Benchmark
 	public void fatJar142(FatJar142State state) throws Exception {
+		state.run();
+	}
+
+	@Benchmark
+	public void fatJar150(FatJar150State state) throws Exception {
 		state.run();
 	}
 
@@ -80,15 +70,32 @@ public class ConfigServerBenchmark {
 			while (true) {
 				state.run();
 			}
-		} finally {
+		}
+		finally {
 			state.stop();
+		}
+	}
+
+	@State(Scope.Benchmark)
+	public static class FatJar150State extends ProcessLauncherState {
+		public FatJar150State() {
+			super("target", "-jar",
+					jarFile("com.example:configserver:jar:150:0.0.1-SNAPSHOT"),
+					"--server.port=0");
+		}
+
+		@TearDown(Level.Iteration)
+		public void stop() throws Exception {
+			super.after();
 		}
 	}
 
 	@State(Scope.Benchmark)
 	public static class FatJar142State extends ProcessLauncherState {
 		public FatJar142State() {
-			super("target", "-jar", jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"), "--server.port=0");
+			super("target", "-jar",
+					jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"),
+					"--server.port=0");
 		}
 
 		@TearDown(Level.Iteration)
@@ -100,7 +107,9 @@ public class ConfigServerBenchmark {
 	@State(Scope.Benchmark)
 	public static class FatJar138State extends ProcessLauncherState {
 		public FatJar138State() {
-			super("target", "-jar", jarFile("com.example:configserver:jar:138:0.0.1-SNAPSHOT"), "--server.port=0");
+			super("target", "-jar",
+					jarFile("com.example:configserver:jar:138:0.0.1-SNAPSHOT"),
+					"--server.port=0");
 		}
 
 		@TearDown(Level.Iteration)
@@ -113,12 +122,14 @@ public class ConfigServerBenchmark {
 	public static class ExplodedDevtoolsState extends DevToolsLauncherState {
 		public ExplodedDevtoolsState() {
 			super("target/demo", "/BOOT-INF/classes/.restart",
-					jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"),
-					"-cp", CLASSPATH, "-Dspring.devtools.livereload.enabled=false",
-					"-Dspring.devtools.restart.pollInterval=100", "-Dspring.devtools.restart.quietPeriod=10",
+					jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"), "-cp",
+					CLASSPATH, "-Dspring.devtools.livereload.enabled=false",
+					"-Dspring.devtools.restart.pollInterval=100",
+					"-Dspring.devtools.restart.quietPeriod=10",
 					"demo.ConfigServerApplication", "--server.port=0");
 		}
 
+		@Override
 		@Setup(Level.Trial)
 		public void setup() throws Exception {
 			super.setup();
@@ -133,9 +144,10 @@ public class ConfigServerBenchmark {
 	@State(Scope.Benchmark)
 	public static class MainState extends ProcessLauncherState {
 		public MainState() {
-			super("target/demo", "-cp", CLASSPATH,
-					"demo.ConfigServerApplication", "--server.port=0");
-			unpack("target/demo", jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"));
+			super("target/demo", "-cp", CLASSPATH, "demo.ConfigServerApplication",
+					"--server.port=0");
+			unpack("target/demo",
+					jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"));
 		}
 
 		@TearDown(Level.Iteration)

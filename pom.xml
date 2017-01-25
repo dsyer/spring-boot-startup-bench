@@ -19,6 +19,7 @@
 		<module>demo</module>
 		<module>minimal</module>
 		<module>petclinic</module>
+		<module>petclinic-latest</module>
 		<module>alt</module>
 		<module>benchmarks</module>
 	</modules>

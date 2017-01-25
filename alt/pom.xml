@@ -48,7 +48,7 @@
 				<artifactId>maven-invoker-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>install</id>
+						<id>138</id>
 						<phase>install</phase>
 						<goals>
 							<goal>run</goal>
@@ -72,6 +72,30 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>150</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<pomIncludes>
+								<pomInclude>configserver/pom.xml</pomInclude>
+								<pomInclude>demo/pom.xml</pomInclude>
+							</pomIncludes>
+							<projectsDirectory>..</projectsDirectory>
+							<goals>
+								<goal>install</goal>
+							</goals>
+							<properties>
+								<skipTests/>
+							</properties>
+							<profiles>
+								<profile>boot150</profile>
+							</profiles>
+						</configuration>
+					</execution>
+					<execution>
 						<id>shaded</id>
 						<phase>install</phase>
 						<goals>
@@ -81,6 +105,7 @@
 						<configuration>
 							<pomIncludes>
 								<pomInclude>petclinic/pom.xml</pomInclude>
+								<pomInclude>petclinic-latest/pom.xml</pomInclude>
 							</pomIncludes>
 							<projectsDirectory>..</projectsDirectory>
 							<goals>
@@ -104,6 +129,7 @@
 						<configuration>
 							<pomIncludes>
 								<pomInclude>petclinic/pom.xml</pomInclude>
+								<pomInclude>petclinic-latest/pom.xml</pomInclude>
 							</pomIncludes>
 							<projectsDirectory>..</projectsDirectory>
 							<goals>

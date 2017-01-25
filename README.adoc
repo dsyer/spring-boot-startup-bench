@@ -124,6 +124,41 @@ platforms, 1700ms on slowest) and also the test ("thin" jars have a
 wider margin because they do a little bit of work checking caches
 before Spring Boot actually starts).
 
+### Spring Boot 1.5
+
+There are a few improvements in Spring 1.5 that affect startup time
+(mainly to do with configuration processing). Here are some
+highlighted results, where "latest" means Pet Clinic with Boot 1.5:
+
+```
+Benchmark                                   Mode  Cnt  Score   Error  Units
+ConfigServerBenchmark.fatJar138             avgt   10  2.959 ± 0.082   s/op
+ConfigServerBenchmark.fatJar142             avgt   10  2.786 ± 0.078   s/op
+ConfigServerBenchmark.fatJar150             avgt   10  2.668 ± 0.084   s/op
+SpringBoot138Benchmark.explodedJarLauncher  avgt   10  2.202 ± 0.111   s/op
+SpringBoot138Benchmark.explodedJarMain      avgt   10  1.516 ± 0.087   s/op
+SpringBoot138Benchmark.fatJar               avgt   10  2.024 ± 0.068   s/op
+SpringBoot142Benchmark.explodedJarLauncher  avgt   10  2.210 ± 0.061   s/op
+SpringBoot142Benchmark.explodedJarMain      avgt   10  1.649 ± 0.089   s/op
+SpringBoot142Benchmark.fatJar               avgt   10  2.138 ± 0.081   s/op
+SpringBoot150Benchmark.explodedJarLauncher  avgt   10  2.210 ± 0.078   s/op
+SpringBoot150Benchmark.explodedJarMain      avgt   10  1.664 ± 0.085   s/op
+SpringBoot150Benchmark.fatJar               avgt   10  2.128 ± 0.112   s/op
+PetclinicBenchmark.devtoolsRestart          avgt   10  1.116 ± 0.070   s/op
+PetclinicBenchmark.explodedJarMain          avgt   10  3.469 ± 0.069   s/op
+PetclinicBenchmark.fatJar                   avgt   10  5.003 ± 0.350   s/op
+PetclinicBenchmark.noverify                 avgt   10  4.358 ± 0.113   s/op
+PetclinicLatestBenchmark.devtoolsRestart    avgt   10  1.056 ± 0.067   s/op
+PetclinicLatestBenchmark.explodedJarMain    avgt   10  3.441 ± 0.106   s/op
+PetclinicLatestBenchmark.fatJar             avgt   10  4.787 ± 0.112   s/op
+PetclinicLatestBenchmark.noverify           avgt   10  4.289 ± 0.070   s/op
+```
+
+The configserver benefits by a few hundred millseconds. The vanilla
+demo (we plus actuator) interstingly does not. The Pet Clinic also
+gets a couple of hundred milliseconds boost, but not so much in the
+exploded jar case (which mimic what people get in the IDE).
+
 ### Host: tower, i7, 3.4GHz, 32G RAM, SSD
 
 New Dell desktop

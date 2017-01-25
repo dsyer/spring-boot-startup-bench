@@ -34,6 +34,13 @@
 				<jar.classifier>138</jar.classifier>
 			</properties>
 		</profile>
+		<profile>
+			<id>boot150</id>
+			<properties>
+				<spring-boot.version>1.4.2.RELEASE</spring-boot.version>
+				<jar.classifier>150</jar.classifier>
+			</properties>
+		</profile>
 	</profiles>
 
 	<dependencies>

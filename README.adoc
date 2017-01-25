@@ -31,10 +31,12 @@ it isn't slowing down access to jar files.
 Spring Boot (and other) issues for follow up:
 
 * `PropertySourcesPropertyResolver`: https://github.com/spring-projects/spring-boot/issues/7571[spring-boot #7572]
-* Condition processing: https://github.com/spring-projects/spring-boot/issues/7572[spring-boot #7573]
+* Condition processing: https://github.com/spring-projects/spring-boot/issues/7573[spring-boot #7573]
 * Cache configuration: https://github.com/spring-projects/spring-boot/issues/7576[spring-boot #7576]
 * Lazy Actuator: https://github.com/spring-projects/spring-boot/issues/7578[spring-boot #7578]
 * Lazy Validation: https://github.com/spring-projects/spring-boot/issues/7579[spring-boot 7579]
+* Jackson: https://github.com/spring-projects/spring-boot/issues/8028[spring-boot 8028]
+* Cache annotation processing: https://github.com/spring-projects/spring-boot/issues/8056[spring-boot 8056]
 * Startup JVM args: https://github.com/spring-projects/spring-ide/issues/85[spring-ide #85]
 
 ## Running Locally
@@ -155,7 +157,7 @@ PetclinicLatestBenchmark.noverify           avgt   10  4.289 ± 0.070   s/op
 ```
 
 The configserver benefits by a few hundred millseconds. The vanilla
-demo (we plus actuator) interstingly does not. The Pet Clinic also
+demo (web plus actuator) interestingly does not. The Pet Clinic also
 gets a couple of hundred milliseconds boost, but not so much in the
 exploded jar case (which mimic what people get in the IDE).
 

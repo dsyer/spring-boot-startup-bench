@@ -42,24 +42,24 @@
 		<java.version>1.7</java.version>
 		<spring-cloud.version>Camden.SR2</spring-cloud.version>
 		<spring-boot.version>1.4.2.RELEASE</spring-boot.version>
-		<jar.classifier>142</jar.classifier>
+		<jar.classifier>14x</jar.classifier>
 	</properties>
 
 	<profiles>
 		<profile>
-			<id>boot138</id>
+			<id>boot13x</id>
 			<properties>
 				<spring-cloud.version>Brixton.SR6</spring-cloud.version>
 				<spring-boot.version>1.3.8.RELEASE</spring-boot.version>
-				<jar.classifier>138</jar.classifier>
+				<jar.classifier>13x</jar.classifier>
 			</properties>
 		</profile>
 		<profile>
-			<id>boot150</id>
+			<id>boot15x</id>
 			<properties>
 				<spring-cloud.version>Camden.SR4</spring-cloud.version>
-				<spring-boot.version>1.5.0.BUILD-SNAPSHOT</spring-boot.version>
-				<jar.classifier>150</jar.classifier>
+				<spring-boot.version>1.5.1.RELEASE</spring-boot.version>
+				<jar.classifier>15x</jar.classifier>
 			</properties>
 		</profile>
 	</profiles>

@@ -16,8 +16,6 @@
 
 package com.example;
 
-import java.io.File;
-
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -33,10 +31,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
-public class SpringBoot142Benchmark {
-
-	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator
-			+ "BOOT-INF/lib/*";
+public class SpringBoot13xBenchmark {
 
 	@Benchmark
 	public void fatJar(BasicState state) throws Exception {
@@ -61,7 +56,7 @@ public class SpringBoot142Benchmark {
 	@State(Scope.Benchmark)
 	public static class BasicState extends ProcessLauncherState {
 		public BasicState() {
-			super(".", "-jar", jarFile("com.example:demo:jar:142:0.0.1-SNAPSHOT"),
+			super(".", "-jar", jarFile("com.example:demo:jar:13x:0.0.1-SNAPSHOT"),
 					"--server.port=0");
 		}
 
@@ -76,7 +71,7 @@ public class SpringBoot142Benchmark {
 		public BootState() {
 			super("target/demo", "-cp", ".",
 					"org.springframework.boot.loader.JarLauncher", "--server.port=0");
-			unpack("target/demo", jarFile("com.example:demo:jar:142:0.0.1-SNAPSHOT"));
+			unpack("target/demo", jarFile("com.example:demo:jar:13x:0.0.1-SNAPSHOT"));
 		}
 
 		@TearDown(Level.Iteration)
@@ -88,9 +83,9 @@ public class SpringBoot142Benchmark {
 	@State(Scope.Benchmark)
 	public static class MainState extends ProcessLauncherState {
 		public MainState() {
-			super("target/demo", "-cp", CLASSPATH, "com.example.DemoApplication",
+			super("target/demo", "-cp", ".:lib/*", "com.example.DemoApplication",
 					"--server.port=0");
-			unpack("target/demo", jarFile("com.example:demo:jar:142:0.0.1-SNAPSHOT"));
+			unpack("target/demo", jarFile("com.example:demo:jar:13x:0.0.1-SNAPSHOT"));
 		}
 
 		@TearDown(Level.Iteration)

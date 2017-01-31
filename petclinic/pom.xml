@@ -31,11 +31,11 @@
 
 		<thymeleaf.version>3.0.2.RELEASE</thymeleaf.version>
 
-		<spring-data-releasetrain.version>Ingalls-BUILD-SNAPSHOT</spring-data-releasetrain.version>
+		<spring-data-releasetrain.version>Ingalls-RELEASE</spring-data-releasetrain.version>
 		<start-class>org.springframework.samples.petclinic.PetClinicApplication</start-class>
 
 		<thin-launcher.version>0.0.1.BUILD-SNAPSHOT</thin-launcher.version>
-		<spring-boot-plugin.version>1.5.0.BUILD-SNAPSHOT</spring-boot-plugin.version>
+		<spring-boot-plugin.version>1.5.1.RELEASE</spring-boot-plugin.version>
 		<spring-boot.version>1.4.2.RELEASE</spring-boot.version>
 
 	</properties>

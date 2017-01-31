@@ -13,7 +13,7 @@ where it reports "Started" on the console.
 
 Various combinations of things are tested:
 
-* Spring Boot version, 1.4.2 and 1.3.8
+* Spring Boot version, 1.5.1, 1.4.2 and 1.3.8
 * Some JVM flags (e.g. `-noverify` has an effect `-Xmx` not so much)
 * Fat jar vs thin jar
 * Exploding the archive and running with `JarLauncher` or the application main

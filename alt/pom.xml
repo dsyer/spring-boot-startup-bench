@@ -48,7 +48,7 @@
 				<artifactId>maven-invoker-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>138</id>
+						<id>13x</id>
 						<phase>install</phase>
 						<goals>
 							<goal>run</goal>
@@ -67,12 +67,12 @@
 								<skipTests/>
 							</properties>
 							<profiles>
-								<profile>boot138</profile>
+								<profile>boot13x</profile>
 							</profiles>
 						</configuration>
 					</execution>
 					<execution>
-						<id>150</id>
+						<id>15x</id>
 						<phase>install</phase>
 						<goals>
 							<goal>run</goal>
@@ -91,7 +91,7 @@
 								<skipTests/>
 							</properties>
 							<profiles>
-								<profile>boot150</profile>
+								<profile>boot15x</profile>
 							</profiles>
 						</configuration>
 					</execution>

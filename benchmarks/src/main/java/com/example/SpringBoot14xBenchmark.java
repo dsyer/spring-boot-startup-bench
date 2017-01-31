@@ -33,7 +33,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
-public class SpringBoot150Benchmark {
+public class SpringBoot14xBenchmark {
 
 	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator
 			+ "BOOT-INF/lib/*";
@@ -61,7 +61,7 @@ public class SpringBoot150Benchmark {
 	@State(Scope.Benchmark)
 	public static class BasicState extends ProcessLauncherState {
 		public BasicState() {
-			super(".", "-jar", jarFile("com.example:demo:jar:150:0.0.1-SNAPSHOT"),
+			super(".", "-jar", jarFile("com.example:demo:jar:14x:0.0.1-SNAPSHOT"),
 					"--server.port=0");
 		}
 
@@ -76,7 +76,7 @@ public class SpringBoot150Benchmark {
 		public BootState() {
 			super("target/demo", "-cp", ".",
 					"org.springframework.boot.loader.JarLauncher", "--server.port=0");
-			unpack("target/demo", jarFile("com.example:demo:jar:150:0.0.1-SNAPSHOT"));
+			unpack("target/demo", jarFile("com.example:demo:jar:14x:0.0.1-SNAPSHOT"));
 		}
 
 		@TearDown(Level.Iteration)
@@ -90,7 +90,7 @@ public class SpringBoot150Benchmark {
 		public MainState() {
 			super("target/demo", "-cp", CLASSPATH, "com.example.DemoApplication",
 					"--server.port=0");
-			unpack("target/demo", jarFile("com.example:demo:jar:150:0.0.1-SNAPSHOT"));
+			unpack("target/demo", jarFile("com.example:demo:jar:14x:0.0.1-SNAPSHOT"));
 		}
 
 		@TearDown(Level.Iteration)

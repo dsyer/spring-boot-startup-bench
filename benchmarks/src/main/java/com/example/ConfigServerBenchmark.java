@@ -39,17 +39,17 @@ public class ConfigServerBenchmark {
 			+ "BOOT-INF/lib/*";
 
 	@Benchmark
-	public void fatJar142(FatJar142State state) throws Exception {
+	public void fatJar14x(FatJar14xState state) throws Exception {
 		state.run();
 	}
 
 	@Benchmark
-	public void fatJar150(FatJar150State state) throws Exception {
+	public void fatJar15x(FatJar15xState state) throws Exception {
 		state.run();
 	}
 
 	@Benchmark
-	public void fatJar138(FatJar138State state) throws Exception {
+	public void fatJar13x(FatJar13xState state) throws Exception {
 		state.run();
 	}
 
@@ -77,10 +77,10 @@ public class ConfigServerBenchmark {
 	}
 
 	@State(Scope.Benchmark)
-	public static class FatJar150State extends ProcessLauncherState {
-		public FatJar150State() {
+	public static class FatJar15xState extends ProcessLauncherState {
+		public FatJar15xState() {
 			super("target", "-jar",
-					jarFile("com.example:configserver:jar:150:0.0.1-SNAPSHOT"),
+					jarFile("com.example:configserver:jar:15x:0.0.1-SNAPSHOT"),
 					"--server.port=0");
 		}
 
@@ -91,10 +91,10 @@ public class ConfigServerBenchmark {
 	}
 
 	@State(Scope.Benchmark)
-	public static class FatJar142State extends ProcessLauncherState {
-		public FatJar142State() {
+	public static class FatJar14xState extends ProcessLauncherState {
+		public FatJar14xState() {
 			super("target", "-jar",
-					jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"),
+					jarFile("com.example:configserver:jar:14x:0.0.1-SNAPSHOT"),
 					"--server.port=0");
 		}
 
@@ -105,10 +105,10 @@ public class ConfigServerBenchmark {
 	}
 
 	@State(Scope.Benchmark)
-	public static class FatJar138State extends ProcessLauncherState {
-		public FatJar138State() {
+	public static class FatJar13xState extends ProcessLauncherState {
+		public FatJar13xState() {
 			super("target", "-jar",
-					jarFile("com.example:configserver:jar:138:0.0.1-SNAPSHOT"),
+					jarFile("com.example:configserver:jar:13x:0.0.1-SNAPSHOT"),
 					"--server.port=0");
 		}
 
@@ -122,7 +122,7 @@ public class ConfigServerBenchmark {
 	public static class ExplodedDevtoolsState extends DevToolsLauncherState {
 		public ExplodedDevtoolsState() {
 			super("target/demo", "/BOOT-INF/classes/.restart",
-					jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"), "-cp",
+					jarFile("com.example:configserver:jar:14x:0.0.1-SNAPSHOT"), "-cp",
 					CLASSPATH, "-Dspring.devtools.livereload.enabled=false",
 					"-Dspring.devtools.restart.pollInterval=100",
 					"-Dspring.devtools.restart.quietPeriod=10",
@@ -147,7 +147,7 @@ public class ConfigServerBenchmark {
 			super("target/demo", "-cp", CLASSPATH, "demo.ConfigServerApplication",
 					"--server.port=0");
 			unpack("target/demo",
-					jarFile("com.example:configserver:jar:142:0.0.1-SNAPSHOT"));
+					jarFile("com.example:configserver:jar:14x:0.0.1-SNAPSHOT"));
 		}
 
 		@TearDown(Level.Iteration)

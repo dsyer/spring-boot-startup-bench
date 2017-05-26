@@ -96,6 +96,30 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>20x</id>
+						<phase>install</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<pomIncludes>
+								<pomInclude>demo/pom.xml</pomInclude>
+							</pomIncludes>
+							<projectsDirectory>..</projectsDirectory>
+							<goals>
+								<goal>clean</goal>
+								<goal>install</goal>
+							</goals>
+							<properties>
+								<skipTests/>
+							</properties>
+							<profiles>
+								<profile>boot20x</profile>
+							</profiles>
+						</configuration>
+					</execution>
+					<execution>
 						<id>shaded</id>
 						<phase>install</phase>
 						<goals>

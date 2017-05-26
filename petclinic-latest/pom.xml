@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.1.RELEASE</version>
+		<version>1.5.3.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<name>petclinic</name>
@@ -33,8 +33,8 @@
 
 		<start-class>org.springframework.samples.petclinic.PetClinicApplication</start-class>
 
-		<thin-launcher.version>0.0.1.BUILD-SNAPSHOT</thin-launcher.version>
-		<spring-boot-plugin.version>1.5.1.RELEASE</spring-boot-plugin.version>
+		<thin-layout.version>1.0.2.RELEASE</thin-layout.version>
+		<spring-boot-plugin.version>1.5.3.RELEASE</spring-boot-plugin.version>
 
 	</properties>
 
@@ -148,8 +148,8 @@
 						<dependencies>
 							<dependency>
 								<groupId>org.springframework.boot.experimental</groupId>
-								<artifactId>spring-boot-thin-launcher</artifactId>
-								<version>${thin-launcher.version}</version>
+								<artifactId>spring-boot-thin-layout</artifactId>
+								<version>${thin-layout.version}</version>
 							</dependency>
 						</dependencies>
 					</plugin>

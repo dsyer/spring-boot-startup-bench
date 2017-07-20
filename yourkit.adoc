@@ -7,8 +7,8 @@ the UI (they filter out Spring classes by default).
 
 ## Hotspots for Vanilla Application
 
-Includes actuator and MVC. Startup time approx 1100ms without the
-profiler.
+Includes actuator and MVC and uses Spring BOot 1.5.4. Startup time
+approx 1100ms without the profiler.
 
 Nothing from Spring Boot makes it into the top 10 hostspots, but
 Spring is there (`ConfigurationClassPostProcessor` and friends). The
@@ -21,76 +21,76 @@ condition evaluation (right down at number 36), accounting for about
 the top two if you follow down th call stack.
 
 |===
-| 1 | Method | Time (ms) | Count
+|  | Method | Time (ms) | Count
 
-| 2 | java.lang.ClassLoader.loadClass(String) ClassLoader.java | 2611 | 8008
+| 1| java.lang.ClassLoader.loadClass(String) ClassLoader.java | 2611 | 8008
 
-| 3| sun.misc.Launcher$AppClassLoader.loadClass(String, boolean) Launcher.java | 2609 | 8006
-
-| 4| java.lang.ClassLoader.loadClass(String, boolean) ClassLoader.java | 2598 | 10800
-
-| 5| java.net.URLClassLoader.findClass(String) URLClassLoader.java | 2397 | 5013
-
-| 6| java.net.URLClassLoader$1.run() URLClassLoader.java | 2359 | 5413
-
-| 7| java.net.URLClassLoader$1.run() URLClassLoader.java | 2357 | 5413
-
-| 8| org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(Collection, BeanDefinitionRegistry) PostProcessorRegistrationDelegate.java | 2241 | 2
-
-| 9| org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(BeanDefinitionRegistry) ConfigurationClassPostProcessor.java | 2241 | 1
-
-| 10|org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(BeanDefinitionRegistry) ConfigurationClassPostProcessor.java | 2241 | 1 
-
-| 11| java.lang.Thread.run() Thread.java | 2048 | 3 
-
-| 12| org.springframework.context.annotation.ConfigurationClassParser.parse(Set) ConfigurationClassParser.java | 1647 | 1 
-
-| 13| org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.run() BackgroundPreinitializer.java | 1492 | 1 
-
-| 14| org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.runSafely(Runnable) BackgroundPreinitializer.java | 1487 | 5 
-
-| 15| org.springframework.context.annotation.ConfigurationClassParser.processDeferredImportSelectors() ConfigurationClassParser.java | 1470 | 1 
-
-| 16| sun.misc.URLClassPath.getResource(String, boolean) URLClassPath.java | 1386 | 5710 
-
-| 17| java.net.URLClassLoader.defineClass(String, Resource) URLClassLoader.java | 1296 | 2412 
-
-| 18| java.security.SecureClassLoader.defineClass(String, byte[], int, int, CodeSource) SecureClassLoader.java | 1021 | 2412 
-
-| 19| java.lang.ClassLoader.defineClass(String, byte[], int, int, ProtectionDomain) ClassLoader.java | 1008 | 2447 
-
-| 20| org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClass) ConfigurationClassParser.java | 992 | 60 
-
-| 21| sun.misc.URLClassPath$JarLoader.getResource(String, boolean) URLClassPath.java | 924 | 100466 
-
-| 22| org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClass, ConfigurationClassParser$SourceClass) ConfigurationClassParser.java | 922 | 41 
-
-| 23| org.springframework.boot.autoconfigure.BackgroundPreinitializer$MBeanFactoryInitializer.run() BackgroundPreinitializer.java | 840 | 1 
-
-| 24| org.apache.catalina.mbeans.MBeanFactory.<clinit>() MBeanFactory.java | 838 | 2 
-
-| 25| org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClass, ConfigurationClassParser$SourceClass, Collection, boolean) ConfigurationClassParser.java | 832 | 55 
-
-| 26| org.apache.catalina.mbeans.MBeanUtils.<clinit>() MBeanUtils.java | 824 | 2 
-
-| 27| org.springframework.core.type.classreading.SimpleMetadataReaderFactory.getMetadataReader(String) SimpleMetadataReaderFactory.java | 708 | 442 
-
-| 28| org.springframework.context.annotation.ConditionEvaluator.shouldSkip(AnnotatedTypeMetadata, ConfigurationCondition$ConfigurationPhase) ConditionEvaluator.java | 705 | 162 
-
-| 29| org.springframework.context.annotation.ConfigurationClassParser.asSourceClass(String) ConfigurationClassParser.java | 675 | 909 
-
-| 30| org.apache.catalina.mbeans.MBeanUtils.createRegistry() MBeanUtils.java | 650 | 2 
-
-| 31| org.apache.tomcat.util.modeler.Registry.loadDescriptors(String, ClassLoader) Registry.java | 647 | 15 
-
-| 32| org.apache.tomcat.util.modeler.Registry.load(String, Object, String) Registry.java | 638 | 13 
-
-| 33| org.apache.tomcat.util.modeler.modules.MbeansDescriptorsDigesterSource.execute() MbeansDescriptorsDigesterSource.java | 629 | 13 
-
-| 34| org.apache.tomcat.util.modeler.modules.MbeansDescriptorsDigesterSource.loadDescriptors(Registry, String, Object) MbeansDescriptorsDigesterSource.java | 629 | 13 
-
-| 35| org.apache.tomcat.util.digester.Digester.parse(InputStream) Digester.java | 608 | 13 
-
-| 36| org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(ConditionContext, AnnotatedTypeMetadata) SpringBootCondition.java | 571 | 144 
-
+| 2| sun.misc.Launcher$AppClassLoader.loadClass(String, boolean) Launcher.java | 2609 | 8006
+    
+| 3| java.lang.ClassLoader.loadClass(String, boolean) ClassLoader.java | 2598 | 10800
+    
+| 4| java.net.URLClassLoader.findClass(String) URLClassLoader.java | 2397 | 5013
+    
+| 5| java.net.URLClassLoader$1.run() URLClassLoader.java | 2359 | 5413
+    
+| 6| java.net.URLClassLoader$1.run() URLClassLoader.java | 2357 | 5413
+    
+| 7| org.springframework.context.support.PostProcessorRegistrationDelegate.invokeBeanDefinitionRegistryPostProcessors(Collection, BeanDefinitionRegistry) PostProcessorRegistrationDelegate.java | 2241 | 2
+    
+| 8| org.springframework.context.annotation.ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry(BeanDefinitionRegistry) ConfigurationClassPostProcessor.java | 2241 | 1
+    
+| 9| org.springframework.context.annotation.ConfigurationClassPostProcessor.processConfigBeanDefinitions(BeanDefinitionRegistry) ConfigurationClassPostProcessor.java | 2241 | 1 
+    
+| 10| java.lang.Thread.run() Thread.java | 2048 | 3 
+    
+| 11| org.springframework.context.annotation.ConfigurationClassParser.parse(Set) ConfigurationClassParser.java | 1647 | 1 
+    
+| 12| org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.run() BackgroundPreinitializer.java | 1492 | 1 
+    
+| 13| org.springframework.boot.autoconfigure.BackgroundPreinitializer$1.runSafely(Runnable) BackgroundPreinitializer.java | 1487 | 5 
+    
+| 14| org.springframework.context.annotation.ConfigurationClassParser.processDeferredImportSelectors() ConfigurationClassParser.java | 1470 | 1 
+    
+| 15| sun.misc.URLClassPath.getResource(String, boolean) URLClassPath.java | 1386 | 5710 
+    
+| 16| java.net.URLClassLoader.defineClass(String, Resource) URLClassLoader.java | 1296 | 2412 
+    
+| 17| java.security.SecureClassLoader.defineClass(String, byte[], int, int, CodeSource) SecureClassLoader.java | 1021 | 2412 
+    
+| 18| java.lang.ClassLoader.defineClass(String, byte[], int, int, ProtectionDomain) ClassLoader.java | 1008 | 2447 
+    
+| 19| org.springframework.context.annotation.ConfigurationClassParser.processConfigurationClass(ConfigurationClass) ConfigurationClassParser.java | 992 | 60 
+    
+| 20| sun.misc.URLClassPath$JarLoader.getResource(String, boolean) URLClassPath.java | 924 | 100466 
+    
+| 21| org.springframework.context.annotation.ConfigurationClassParser.doProcessConfigurationClass(ConfigurationClass, ConfigurationClassParser$SourceClass) ConfigurationClassParser.java | 922 | 41 
+    
+| 22| org.springframework.boot.autoconfigure.BackgroundPreinitializer$MBeanFactoryInitializer.run() BackgroundPreinitializer.java | 840 | 1 
+    
+| 23| org.apache.catalina.mbeans.MBeanFactory.<clinit>() MBeanFactory.java | 838 | 2 
+    
+| 24| org.springframework.context.annotation.ConfigurationClassParser.processImports(ConfigurationClass, ConfigurationClassParser$SourceClass, Collection, boolean) ConfigurationClassParser.java | 832 | 55 
+    
+| 25| org.apache.catalina.mbeans.MBeanUtils.<clinit>() MBeanUtils.java | 824 | 2 
+    
+| 26| org.springframework.core.type.classreading.SimpleMetadataReaderFactory.getMetadataReader(String) SimpleMetadataReaderFactory.java | 708 | 442 
+    
+| 27| org.springframework.context.annotation.ConditionEvaluator.shouldSkip(AnnotatedTypeMetadata, ConfigurationCondition$ConfigurationPhase) ConditionEvaluator.java | 705 | 162 
+    
+| 28| org.springframework.context.annotation.ConfigurationClassParser.asSourceClass(String) ConfigurationClassParser.java | 675 | 909 
+    
+| 29| org.apache.catalina.mbeans.MBeanUtils.createRegistry() MBeanUtils.java | 650 | 2 
+    
+| 30| org.apache.tomcat.util.modeler.Registry.loadDescriptors(String, ClassLoader) Registry.java | 647 | 15 
+    
+| 31| org.apache.tomcat.util.modeler.Registry.load(String, Object, String) Registry.java | 638 | 13 
+    
+| 32| org.apache.tomcat.util.modeler.modules.MbeansDescriptorsDigesterSource.execute() MbeansDescriptorsDigesterSource.java | 629 | 13 
+    
+| 33| org.apache.tomcat.util.modeler.modules.MbeansDescriptorsDigesterSource.loadDescriptors(Registry, String, Object) MbeansDescriptorsDigesterSource.java | 629 | 13 
+    
+| 34| org.apache.tomcat.util.digester.Digester.parse(InputStream) Digester.java | 608 | 13 
+    
+| 35| org.springframework.boot.autoconfigure.condition.SpringBootCondition.matches(ConditionContext, AnnotatedTypeMetadata) SpringBootCondition.java | 571 | 144 
+    
 |===

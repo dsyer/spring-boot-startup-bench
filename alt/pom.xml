@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-build</artifactId>
-		<version>1.2.1.RELEASE</version>
+		<version>1.3.3.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -35,7 +35,7 @@
 								<artifactItem>
 									<groupId>org.springframework.boot</groupId>
 									<artifactId>spring-boot-devtools</artifactId>
-									<version>1.4.2.RELEASE</version>
+									<version>1.5.4.RELEASE</version>
 									<outputDirectory>${project.basedir}/target</outputDirectory>
 									<destFileName>spring-boot-devtools.jar</destFileName>
 								</artifactItem>
@@ -108,7 +108,6 @@
 							</pomIncludes>
 							<projectsDirectory>..</projectsDirectory>
 							<goals>
-								<goal>clean</goal>
 								<goal>install</goal>
 							</goals>
 							<properties>

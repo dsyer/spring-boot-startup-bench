@@ -22,7 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<spring-boot.version>1.4.2.RELEASE</spring-boot.version>
+		<spring-boot.version>1.4.6.RELEASE</spring-boot.version>
 		<jar.classifier>14x</jar.classifier>
 	</properties>
 
@@ -37,7 +37,7 @@
 		<profile>
 			<id>boot15x</id>
 			<properties>
-				<spring-boot.version>1.5.3.RELEASE</spring-boot.version>
+				<spring-boot.version>1.5.4.RELEASE</spring-boot.version>
 				<jar.classifier>15x</jar.classifier>
 			</properties>
 		</profile>
@@ -47,8 +47,45 @@
 				<spring-boot.version>2.0.0.M1</spring-boot.version>
 				<jar.classifier>20x</jar.classifier>
 			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>1.6.0</version>
+						<executions>
+							<execution>
+								<id>clean</id>
+								<phase>generate-sources</phase>
+								<configuration>
+									<executable>rm</executable>
+									<arguments>
+										<argument>-rf</argument>
+										<argument>target/classes</argument>
+									</arguments>
+								</configuration>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>

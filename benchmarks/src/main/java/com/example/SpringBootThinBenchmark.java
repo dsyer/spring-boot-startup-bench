@@ -34,6 +34,11 @@ import org.openjdk.jmh.annotations.Warmup;
 public class SpringBootThinBenchmark {
 
 	@Benchmark
+	public void basic153Thin(Basic153ThinState state) throws Exception {
+		state.run();
+	}
+
+	@Benchmark
 	public void basic142Thin(Basic142ThinState state) throws Exception {
 		state.run();
 	}
@@ -51,6 +56,19 @@ public class SpringBootThinBenchmark {
 	public static void main(String[] args) throws Exception {
 		Basic142ThinState state = new Basic142ThinState();
 		state.run();
+	}
+
+	@State(Scope.Benchmark)
+	public static class Basic153ThinState extends ProcessLauncherState {
+		public Basic153ThinState() {
+			super("target", "-jar", "../src/test/resources/demo-1.5.3-thin.jar",
+					"--server.port=0");
+		}
+
+		@TearDown(Level.Iteration)
+		public void stop() throws Exception {
+			super.after();
+		}
 	}
 
 	@State(Scope.Benchmark)

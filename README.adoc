@@ -101,6 +101,14 @@ the `-verbose:class` logs so I took it out of the minimal
 sample. Ditto `hibernate-validator` (lots of classes initialized
 compared to the actual feature set I use).
 
+I also tried a super-minimal sample, where I included, instead of a
+handpicked set of autoconfiguration, the whole set of configuration
+from the vanilla demo. That's a bit slower (maybe 150ms) to start up,
+but not much in it. Also I copied the config files and manually
+stripped out the `@Conditional` annotations, so there is no condition
+processing. This made no appreciable difference (with Spring Boot
+1.5.4, although I suspect it might have done with 1.3.8).
+
 ## Benchmark Results
 
 Summary:
@@ -176,12 +184,15 @@ PetclinicLatestBenchmark.devtoolsRestart    avgt   10  1.056 ± 0.067   s/op
 PetclinicLatestBenchmark.explodedJarMain    avgt   10  3.441 ± 0.106   s/op
 PetclinicLatestBenchmark.fatJar             avgt   10  4.787 ± 0.112   s/op
 PetclinicLatestBenchmark.noverify           avgt   10  4.289 ± 0.070   s/op
+MinimalBenchmark.explodedJarMain            avgt   10  1.250 ± 0.029   s/op
+MinimalBenchmark.fatJar                     avgt   10  1.579 ± 0.072   s/op
 ```
 
 The configserver benefits by a few hundred millseconds. The vanilla
 demo (web plus actuator) interestingly does not. The Pet Clinic also
 gets a couple of hundred milliseconds boost, but not so much in the
-exploded jar case (which mimic what people get in the IDE).
+exploded jar case (which mimic what people get in the IDE). The minimal
+sample is quite a bit zippier.
 
 ### Host: tower, i7, 3.4GHz, 32G RAM, SSD
 

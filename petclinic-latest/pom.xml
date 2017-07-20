@@ -13,7 +13,7 @@
 		<version>1.5.3.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<name>petclinic</name>
+	<name>petclinic latest</name>
 
 	<properties>
 
@@ -22,6 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<jar.classifier>boot</jar.classifier>
+        <docker.image.prefix>springio</docker.image.prefix>
 
 		<!-- Web dependencies -->
 		<webjars-bootstrap.version>3.3.6</webjars-bootstrap.version>
@@ -131,6 +132,22 @@
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
 					</plugin>
+					<plugin>
+						<groupId>com.spotify</groupId>
+						<artifactId>dockerfile-maven-plugin</artifactId>
+						<version>1.3.4</version>
+						<executions>
+							<execution>
+								<id>default</id>
+								<goals>
+									<goal>build</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<repository>${docker.image.prefix}/${project.artifactId}</repository>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -208,6 +225,7 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
+
 			<!-- Spring Boot Actuator displays build-related information if a git.properties 
 				file is present at the classpath -->
 			<plugin>

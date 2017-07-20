@@ -58,7 +58,7 @@
 			<id>boot15x</id>
 			<properties>
 				<spring-cloud.version>Dalston.SR1</spring-cloud.version>
-				<spring-boot.version>1.5.3.RELEASE</spring-boot.version>
+				<spring-boot.version>1.5.4.RELEASE</spring-boot.version>
 				<jar.classifier>15x</jar.classifier>
 			</properties>
 		</profile>

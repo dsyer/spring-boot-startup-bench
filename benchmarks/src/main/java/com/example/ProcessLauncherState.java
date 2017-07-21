@@ -27,10 +27,12 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openjdk.jmh.util.FileUtils;
 import org.openjdk.jmh.util.Utils;
 
 public class ProcessLauncherState {
@@ -56,6 +58,21 @@ public class ProcessLauncherState {
 		if (started != null && started.isAlive()) {
 			started.destroyForcibly().waitFor();
 		}
+	}
+
+	public Collection<String> capture(String... additional) throws Exception {
+		List<String> args = new ArrayList<>(this.args);
+		args.addAll(Arrays.asList(additional));
+		ProcessBuilder builder = new ProcessBuilder(args);
+		builder.directory(home);
+		builder.redirectErrorStream(true);
+		customize(builder);
+		if (!"false".equals(System.getProperty("debug", "false"))) {
+			System.err.println("Running: " + Utils.join(args, " "));
+		}
+		started = builder.start();
+		started.waitFor();
+		return FileUtils.readAllLines(started.getInputStream());
 	}
 
 	public void run() throws Exception {

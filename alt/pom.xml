@@ -151,6 +151,7 @@
 						<inherited>false</inherited>
 						<configuration>
 							<pomIncludes>
+								<pomInclude>demo/pom.xml</pomInclude>
 								<pomInclude>petclinic/pom.xml</pomInclude>
 								<pomInclude>petclinic-latest/pom.xml</pomInclude>
 							</pomIncludes>

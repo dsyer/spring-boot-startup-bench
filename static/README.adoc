@@ -1,6 +1,10 @@
 
 ```
 Benchmark           Mode  Cnt  Score   Error  Units
+DemoBenchmark.busr  avgt   10  2.758 ± 0.093   s/op
+DemoBenchmark.erka  avgt   10  2.423 ± 0.039   s/op
+DemoBenchmark.conf  avgt   10  1.779 ± 0.018   s/op
+DemoBenchmark.actr  avgt   10  1.430 ± 0.073   s/op
 DemoBenchmark.demo  avgt   10  1.154 ± 0.056   s/op
 DemoBenchmark.slim  avgt   10  1.112 ± 0.024   s/op
 DemoBenchmark.thin  avgt   10  0.968 ± 0.027   s/op
@@ -10,7 +14,11 @@ DemoBenchmark.func  avgt   10  0.742 ± 0.012   s/op
 
 Legend:
 
-* Demo: vanilla Spring Boot MVC app with one endpoint
+* Busr: same as "conf" but adds Spring Cloud Bus and Rabbit
+* Erka: same as "actr" sample but with Eureka client
+* Conf: same as "actr" sample plus config client
+* Actr: same as "demo" sample plus Actuator
+* Demo: vanilla Spring Boot MVC app with one endpoint (no Actuator)
 * Slim: same thing but explicitly `@Imports` all configuration
 * Thin: reduce the `@Imports` down to a set of 4 that are needed for the endpoint
 * Lite: copy the imports from "thin" and make them into hard-coded, unconditional configuration
@@ -21,13 +29,17 @@ and "func" pulled the relevant features of that out into a separate
 class (so a few beans were dropped).
 
 |===
-| sample | configs | beans
+| sample | configs | beans | startup(millis)
 
-| demo | 32 | 108
-| slim | 31 | 103
-| thin | 14 | 60
-| lite | 4  | 30
-| func | 1  | 25
+| busr | 151| 389 | 2758
+| erka | 127| 310 | 2423
+| conf | 100| 245 | 1779
+| actr | 72 | 183 | 1430
+| demo | 32 | 108 | 1154
+| slim | 31 | 103 | 1112
+| thin | 14 | 60  | 968
+| lite | 4  | 30  | 813
+| func | 1  | 25  | 742
 
 |===
 

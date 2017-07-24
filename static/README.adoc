@@ -1,11 +1,11 @@
 
 ```
 Benchmark           Mode  Cnt  Score   Error  Units
-DemoBenchmark.demo  avgt   10  1.697 ± 0.081   s/op
-DemoBenchmark.slim  avgt   10  1.673 ± 0.098   s/op
-DemoBenchmark.thin  avgt   10  1.446 ± 0.061   s/op
-DemoBenchmark.lite  avgt   10  1.203 ± 0.072   s/op
-DemoBenchmark.func  avgt   10  1.150 ± 0.056   s/op
+DemoBenchmark.demo  avgt   10  1.154 ± 0.056   s/op
+DemoBenchmark.slim  avgt   10  1.112 ± 0.024   s/op
+DemoBenchmark.thin  avgt   10  0.968 ± 0.027   s/op
+DemoBenchmark.lite  avgt   10  0.813 ± 0.024   s/op
+DemoBenchmark.func  avgt   10  0.742 ± 0.012   s/op
 ```
 
 Legend:
@@ -15,3 +15,29 @@ Legend:
 * Thin: reduce the `@Imports` down to a set of 4 that are needed for the endpoint
 * Lite: copy the imports from "thin" and make them into hard-coded, unconditional configuration
 * Func: extract the configuration methods from "lite" and register bits of it using the function bean API
+
+N.B. The "thin" sample has `@EnableWebMvc` (implicitly), but "lite"
+and "func" pulled the relevant features of that out into a separate
+class (so a few beans were dropped).
+
+|===
+| sample | configs | beans
+
+| demo | 32 | 108
+| slim | 31 | 103
+| thin | 14 | 60
+| lite | 4  | 30
+| func | 1  | 25
+
+|===
+
+== Laptop (carbon)
+
+```
+Benchmark           Mode  Cnt  Score   Error  Units
+DemoBenchmark.demo  avgt   10  1.697 ± 0.081   s/op
+DemoBenchmark.slim  avgt   10  1.673 ± 0.098   s/op
+DemoBenchmark.thin  avgt   10  1.446 ± 0.061   s/op
+DemoBenchmark.lite  avgt   10  1.203 ± 0.072   s/op
+DemoBenchmark.func  avgt   10  1.150 ± 0.056   s/op
+```

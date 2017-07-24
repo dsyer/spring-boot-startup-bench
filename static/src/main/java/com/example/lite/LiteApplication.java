@@ -30,9 +30,11 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.autoconfigure.web.servlet.DefaultServletWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -90,7 +92,7 @@ public class LiteApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(LiteApplication.class, args);
+		SpringApplication.run(LiteApplication.class, args).registerShutdownHook();
 	}
 }
 
@@ -101,6 +103,17 @@ class EmbeddedTomcat {
 	@Bean
 	public TomcatServletWebServerFactory tomcatServletWebServerFactory() {
 		return new TomcatServletWebServerFactory();
+	}
+
+	@Bean
+	public DefaultServletWebServerFactoryCustomizer serverPropertiesWebServerFactoryCustomizer(
+			ServerProperties serverProperties) {
+		return new DefaultServletWebServerFactoryCustomizer(serverProperties);
+	}
+
+	@Bean
+	public WebServerFactoryCustomizerBeanPostProcessor webServerFactoryCustomizerBeanPostProcessor() {
+		return new WebServerFactoryCustomizerBeanPostProcessor();
 	}
 
 }
@@ -224,7 +237,6 @@ class WebMvcConfiguration implements ApplicationContextAware, ServletContextAwar
 		PathMatcher pathMatcher = getPathMatchConfigurer().getPathMatcher();
 		return (pathMatcher != null ? pathMatcher : new AntPathMatcher());
 	}
-
 
 	@Bean
 	public UrlPathHelper mvcUrlPathHelper() {

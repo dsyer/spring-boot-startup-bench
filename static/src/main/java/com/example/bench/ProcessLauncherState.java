@@ -56,7 +56,7 @@ public class ProcessLauncherState {
 		this.length = args.length;
 		this.home = new File(dir);
 	}
-	
+
 	public void setMainClass(String mainClass) {
 		this.mainClass = mainClass;
 	}
@@ -74,7 +74,8 @@ public class ProcessLauncherState {
 
 	public void after() throws Exception {
 		if (started != null && started.isAlive()) {
-			started.destroyForcibly().waitFor();
+			System.err.println(
+					"Stopped " + mainClass + ": " + started.destroyForcibly().waitFor());
 		}
 	}
 
@@ -89,13 +90,12 @@ public class ProcessLauncherState {
 			System.err.println("Running: " + Utils.join(args, " "));
 		}
 		started = builder.start();
-		started.waitFor();
 		return FileUtils.readAllLines(started.getInputStream());
 	}
 
 	public void run() throws Exception {
 		List<String> args = new ArrayList<>(this.args);
-		args.add(args.size()-this.length, this.mainClass);
+		args.add(args.size() - this.length, this.mainClass);
 		ProcessBuilder builder = new ProcessBuilder(args);
 		builder.directory(home);
 		builder.redirectErrorStream(true);

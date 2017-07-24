@@ -27,10 +27,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.autoconfigure.web.servlet.DefaultServletWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.support.GenericApplicationContext;
@@ -87,6 +89,8 @@ public class FuncApplication {
 class WebAppInitializer
 		implements ApplicationContextInitializer<GenericApplicationContext> {
 
+	public static final String DEFAULT_DISPATCHER_SERVLET_BEAN_NAME = "dispatcherServlet";
+
 	private PathMatchConfigurer pathMatchConfigurer;
 
 	private ContentNegotiationManager contentNegotiationManager;
@@ -101,6 +105,11 @@ class WebAppInitializer
 				() -> new ConfigurationPropertiesBindingPostProcessor());
 		context.registerBean(WebMvcProperties.class, () -> new WebMvcProperties());
 		context.registerBean(ServerProperties.class, () -> new ServerProperties());
+		context.registerBean(DefaultServletWebServerFactoryCustomizer.class,
+				() -> serverPropertiesWebServerFactoryCustomizer(
+						context.getBean(ServerProperties.class)));
+		context.registerBean(WebServerFactoryCustomizerBeanPostProcessor.class,
+				this::webServerFactoryCustomizerBeanPostProcessor);
 		context.registerBean(TomcatServletWebServerFactory.class,
 				this::tomcatServletWebServerFactory);
 		context.registerBean(DispatcherServlet.class,
@@ -128,13 +137,21 @@ class WebAppInitializer
 						context.getBean(RequestMappingHandlerAdapter.class)));
 		context.registerBean(HandlerExceptionResolver.class,
 				this::handlerExceptionResolver);
+		context.registerShutdownHook();
 	}
 
 	public TomcatServletWebServerFactory tomcatServletWebServerFactory() {
 		return new TomcatServletWebServerFactory();
 	}
 
-	public static final String DEFAULT_DISPATCHER_SERVLET_BEAN_NAME = "dispatcherServlet";
+	public DefaultServletWebServerFactoryCustomizer serverPropertiesWebServerFactoryCustomizer(
+			ServerProperties serverProperties) {
+		return new DefaultServletWebServerFactoryCustomizer(serverProperties);
+	}
+
+	public WebServerFactoryCustomizerBeanPostProcessor webServerFactoryCustomizerBeanPostProcessor() {
+		return new WebServerFactoryCustomizerBeanPostProcessor();
+	}
 
 	public DispatcherServlet dispatcherServlet(WebMvcProperties webMvcProperties) {
 		DispatcherServlet dispatcherServlet = new DispatcherServlet();

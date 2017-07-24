@@ -22,6 +22,7 @@
 		<module>petclinic-latest</module>
 		<module>alt</module>
 		<module>benchmarks</module>
+		<module>static</module>
 	</modules>
 
 	<properties>

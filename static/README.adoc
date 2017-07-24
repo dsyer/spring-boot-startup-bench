@@ -1,0 +1,17 @@
+
+```
+Benchmark           Mode  Cnt  Score   Error  Units
+DemoBenchmark.demo  avgt   10  1.697 ± 0.081   s/op
+DemoBenchmark.slim  avgt   10  1.673 ± 0.098   s/op
+DemoBenchmark.thin  avgt   10  1.446 ± 0.061   s/op
+DemoBenchmark.lite  avgt   10  1.203 ± 0.072   s/op
+DemoBenchmark.func  avgt   10  1.150 ± 0.056   s/op
+```
+
+Legend:
+
+* Demo: vanilla Spring Boot MVC app with one endpoint
+* Slim: same thing but explicitly `@Imports` all configuration
+* Thin: reduce the `@Imports` down to a set of 4 that are needed for the endpoint
+* Lite: copy the imports from "thin" and make them into hard-coded, unconditional configuration
+* Func: extract the configuration methods from "lite" and register bits of it using the function bean API

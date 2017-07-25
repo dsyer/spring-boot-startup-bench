@@ -1,6 +1,7 @@
 
 ```
 Benchmark           Mode  Cnt  Score   Error  Units
+DemoBenchmark.slth  avgt   10  5.366 ± 0.088   s/op
 DemoBenchmark.busr  avgt   10  2.758 ± 0.093   s/op
 DemoBenchmark.erka  avgt   10  2.423 ± 0.039   s/op
 DemoBenchmark.conf  avgt   10  1.779 ± 0.018   s/op
@@ -11,6 +12,9 @@ DemoBenchmark.thin  avgt   10  0.968 ± 0.027   s/op
 DemoBenchmark.lite  avgt   10  0.813 ± 0.024   s/op
 DemoBenchmark.func  avgt   10  0.742 ± 0.012   s/op
 ```
+
+.Number of Beans vs. Startup Time
+image::https://docs.google.com/spreadsheets/d/1SqvJ-cjIYVvHUmG61CzwylxwwnjeXark855JEGESbbs/pubchart?oid=2090464856&amp;format=image[]
 
 Legend:
 

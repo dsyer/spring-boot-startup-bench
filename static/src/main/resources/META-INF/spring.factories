@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationListener=\
+com.example.config.RegistryPostProcessor

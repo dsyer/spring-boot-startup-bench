@@ -1,7 +1,6 @@
 
 ```
 Benchmark           Mode  Cnt  Score   Error  Units
-DemoBenchmark.slth  avgt   10  5.366 ± 0.088   s/op
 DemoBenchmark.busr  avgt   10  2.758 ± 0.093   s/op
 DemoBenchmark.erka  avgt   10  2.423 ± 0.039   s/op
 DemoBenchmark.conf  avgt   10  1.779 ± 0.018   s/op
@@ -18,6 +17,8 @@ image::https://docs.google.com/spreadsheets/d/1SqvJ-cjIYVvHUmG61CzwylxwwnjeXark8
 
 Legend:
 
+* Slth: same as "busr" but adds Sleuth
+* Zuul: same as "busr" but with Zuul proxy
 * Busr: same as "conf" but adds Spring Cloud Bus and Rabbit
 * Erka: same as "actr" sample but with Eureka client
 * Conf: same as "actr" sample plus config client
@@ -35,6 +36,8 @@ class (so a few beans were dropped).
 |===
 | sample | configs | beans | startup(millis)
 
+| slth | 176| 460 | 5366
+| zuul | 181| 495 | 4336
 | busr | 151| 389 | 2758
 | erka | 127| 310 | 2423
 | conf | 100| 245 | 1779
@@ -46,6 +49,18 @@ class (so a few beans were dropped).
 | func | 1  | 25  | 742
 
 |===
+
+== Outliers
+
+These samples didn't fit the trend. The must be doing something dumb because they start up way slower than the others.
+
+```
+Benchmark           Mode  Cnt  Score   Error  Units
+DemoBenchmark.slth  avgt   10  5.366 ± 0.088   s/op
+DemoBenchmark.zuul  avgt   10  4.336 ± 0.098   s/op
+```
+
+Here's an explanation for the "slth" result. The difference between the "slth" sample and the "demo" is 460 beans compared to 108, and 4 aspects. The aspects have 5 `@Around` advices between them plus a reflection based hand coded pointcut, that's probably worth 2 `@Arounds` or so. That's enough to account for the difference between the Sleuth sample and the trend line if there is a fixed cost of roughly 600ns per bean per advice.  The cost is reflection used to compute pointcuts on 460 beans: `460*600*7/1000 = 1932 ms`, nearly 2 seconds. If you take the "demo" sample and add an `@Aspect` with 1, 2, 3, 4, 5, 6 etc advice methods, you can measure that the cost of the aspects in that sample is indeed roughly 600ns per bean (the pointcut doesn't have to match anything - it still has to be evaluated for all beans).
 
 == Laptop (carbon)
 

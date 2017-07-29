@@ -1,8 +1,9 @@
 
 ```
 Benchmark           Mode  Cnt  Score   Error  Units Beans
-DemoBenchmark.erka  avgt   10  3.137 ± 0.049   s/op 494
+DemoBenchmark.erkb  avgt   10  3.137 ± 0.049   s/op 494
 DemoBenchmark.busr  avgt   10  2.596 ± 0.071   s/op 409
+DemoBenchmark.erka  avgt   10  2.237 ± 0.071   s/op 313
 DemoBenchmark.conf  avgt   10  1.636 ± 0.029   s/op 250
 DemoBenchmark.acjd  avgt   10  1.540 ± 0.049   s/op 226
 DemoBenchmark.actr  avgt   10  1.316 ± 0.060   s/op 186
@@ -19,8 +20,9 @@ image::https://docs.google.com/spreadsheets/d/1SqvJ-cjIYVvHUmG61CzwylxwwnjeXark8
 
 Legend:
 
-* Erka: same as "busr" sample but with Eureka client
+* Erkb: same as "busr" sample but with Eureka client
 * Busr: same as "conf" but adds Spring Cloud Bus and Rabbit
+* Erka: same as "actr" sample but with Eureka client
 * Conf: same as "actr" sample plus config client
 * Acjd: same as "actr" sample plus JDBC
 * Actr: same as "demo" sample plus Actuator

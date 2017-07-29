@@ -49,6 +49,7 @@ public class ProcessLauncherState {
 		this.args.add(count++, getClasspath());
 		this.args.add(count++, "-Djava.security.egd=file:/dev/./urandom");
 		this.args.add(count++, "-XX:TieredStopAtLevel=1"); // zoom
+		this.args.add(count++, "-noverify");
 		if (System.getProperty("bench.args") != null) {
 			this.args.addAll(count++,
 					Arrays.asList(System.getProperty("bench.args").split(" ")));

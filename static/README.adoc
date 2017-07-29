@@ -1,15 +1,17 @@
 
 ```
-Benchmark           Mode  Cnt  Score   Error  Units
-DemoBenchmark.busr  avgt   10  2.758 ± 0.093   s/op
-DemoBenchmark.erka  avgt   10  2.423 ± 0.039   s/op
-DemoBenchmark.conf  avgt   10  1.779 ± 0.018   s/op
-DemoBenchmark.actr  avgt   10  1.430 ± 0.073   s/op
-DemoBenchmark.demo  avgt   10  1.154 ± 0.056   s/op
-DemoBenchmark.slim  avgt   10  1.112 ± 0.024   s/op
-DemoBenchmark.thin  avgt   10  0.968 ± 0.027   s/op
-DemoBenchmark.lite  avgt   10  0.813 ± 0.024   s/op
-DemoBenchmark.func  avgt   10  0.742 ± 0.012   s/op
+Benchmark           Mode  Cnt  Score   Error  Units Beans
+DemoBenchmark.erka  avgt   10  3.137 ± 0.049   s/op 494
+DemoBenchmark.busr  avgt   10  2.596 ± 0.071   s/op 409
+DemoBenchmark.conf  avgt   10  1.636 ± 0.029   s/op 250
+DemoBenchmark.acjd  avgt   10  1.540 ± 0.049   s/op 226
+DemoBenchmark.actr  avgt   10  1.316 ± 0.060   s/op 186
+DemoBenchmark.jdbc  avgt   10  1.237 ± 0.050   s/op 147
+DemoBenchmark.demo  avgt   10  1.056 ± 0.040   s/op 111
+DemoBenchmark.slim  avgt   10  1.003 ± 0.011   s/op 105
+DemoBenchmark.thin  avgt   10  0.855 ± 0.028   s/op 60
+DemoBenchmark.lite  avgt   10  0.694 ± 0.015   s/op 30
+DemoBenchmark.func  avgt   10  0.652 ± 0.017   s/op 25
 ```
 
 .Number of Beans vs. Startup Time
@@ -17,12 +19,12 @@ image::https://docs.google.com/spreadsheets/d/1SqvJ-cjIYVvHUmG61CzwylxwwnjeXark8
 
 Legend:
 
-* Slth: same as "busr" but adds Sleuth
-* Zuul: same as "busr" but with Zuul proxy
+* Erka: same as "busr" sample but with Eureka client
 * Busr: same as "conf" but adds Spring Cloud Bus and Rabbit
-* Erka: same as "actr" sample but with Eureka client
 * Conf: same as "actr" sample plus config client
+* Acjd: same as "actr" sample plus JDBC
 * Actr: same as "demo" sample plus Actuator
+* Jdbc: same as "demo" sample plus JDBC
 * Demo: vanilla Spring Boot MVC app with one endpoint (no Actuator)
 * Slim: same thing but explicitly `@Imports` all configuration
 * Thin: reduce the `@Imports` down to a set of 4 that are needed for the endpoint
@@ -32,6 +34,10 @@ Legend:
 N.B. The "thin" sample has `@EnableWebMvc` (implicitly), but "lite"
 and "func" pulled the relevant features of that out into a separate
 class (so a few beans were dropped).
+
+== Old Data
+
+(Boot 1.5.4 without `-noverify`)
 
 |===
 | sample | configs | beans | startup(millis)
@@ -55,9 +61,9 @@ class (so a few beans were dropped).
 These samples didn't fit the trend. The must be doing something dumb because they start up way slower than the others.
 
 ```
-Benchmark           Mode  Cnt  Score   Error  Units
-DemoBenchmark.slth  avgt   10  5.366 ± 0.088   s/op
-DemoBenchmark.zuul  avgt   10  4.336 ± 0.098   s/op
+Benchmark           Mode  Cnt  Score   Error  Units Beans
+DemoBenchmark.slth  avgt   10  5.099 ± 0.043   s/op 455
+DemoBenchmark.zuul  avgt   10  4.137 ± 0.173   s/op 481
 ```
 
 Here's an explanation for the "slth" result. The difference between the "slth" sample and the "demo" is 460 beans compared to 108, and 4 aspects. The aspects have 5 `@Around` advices between them plus a reflection based hand coded pointcut, that's probably worth 2 `@Arounds` or so. That's enough to account for the difference between the Sleuth sample and the trend line if there is a fixed cost of roughly 600ns per bean per advice.  The cost is reflection used to compute pointcuts on 460 beans: `460*600*7/1000 = 1932 ms`, nearly 2 seconds. If you take the "demo" sample and add an `@Aspect` with 1, 2, 3, 4, 5, 6 etc advice methods, you can measure that the cost of the aspects in that sample is indeed roughly 600ns per bean (the pointcut doesn't have to match anything - it still has to be evaluated for all beans).

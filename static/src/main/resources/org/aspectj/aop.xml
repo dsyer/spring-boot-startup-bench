@@ -1,0 +1,11 @@
+<!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+	<weaver>
+		<include within="com.example..*" />
+	</weaver>
+
+	<aspects>
+		<aspect name="com.example.demo.Service" />
+	</aspects>
+
+</aspectj>

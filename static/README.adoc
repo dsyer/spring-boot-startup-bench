@@ -73,7 +73,7 @@ class (so a few beans were dropped).
 
 == Outliers
 
-Only 2 samples didn't fit the trend for classes vs. startup. One starts up slower (Sleuth) and one faster (Erka). The JPA samples are outliers for the beans vs. startup correlation, so we include those here again.
+Only 2 samples didn't fit the trend for classes vs. startup. One starts up slower (Sleuth) and one faster (Erka). The JPA and Zuul samples are outliers for the beans vs. startup correlation, so we include those here again.
 
 ```
 Benchmark           Mode  Cnt  Score   Error  Units Beans Trend Delta Classes
@@ -84,6 +84,7 @@ DemoBenchmark.jpae  avgt   10  2.829 ± 0.038   s/op 176    1390  1439    8284
 DemoBenchmark.jpaf  avgt   10  2.865 ± 0.043   s/op 177    1396  1469    8291
 DemoBenchmark.jpag  avgt   10  2.897 ± 0.023   s/op 178    1401  1496    8294
 DemoBenchmark.jpaa  avgt   10  3.232 ± 0.057   s/op 257    1814  1418    8297
+DemoBenchmark.zuul  avgt   10  4.510 ± 0.095   s/op 516    3080  1430    9596
 ```
 
 {empty} +

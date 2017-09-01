@@ -73,7 +73,7 @@ class (so a few beans were dropped).
 
 == Outliers
 
-Only 2 samples didn't fit the trend for classes vs. startup. The must be doing something dumb because they start up way slower than the others. The JPA samples are outliers for the beans vs. startup correlation, so we include those here again.
+Only 2 samples didn't fit the trend for classes vs. startup. One starts up slower (Sleuth) and one faster (Erka). The JPA samples are outliers for the beans vs. startup correlation, so we include those here again.
 
 ```
 Benchmark           Mode  Cnt  Score   Error  Units Beans Trend Delta Classes
@@ -95,17 +95,17 @@ Legend:
 
 The "Trend" number is the best fit prediction of the startup time from the number of classes (or beans for the JPA samples), taken from the non-outlier data. "Delta" is the difference between the actual startup time and the trend value (so it is the extra cost of the features being added).
 
+=== Eureka
+
+The "erka" sample started up _faster_ then predicted, but it also has a suspiciously large number of loaded classes (even more classes than with Eureka and Bus). The loaded classes mesaurements are not stable - you get different answers from run to run - but they don't usually fluctuate by enough to explain the difference here.
+
 === Sleuth
 
-Here's an explanation for the "slth" result. The difference between the "slth" sample and the "demo" is 460 beans compared to 108, and 4 aspects. The aspects have 5 `@Around` advices between them plus a reflection based hand coded pointcut, that's probably worth 2 `@Arounds` or so. That's enough to account for the difference between the Sleuth sample and the trend line if there is a fixed cost of roughly 600ns per bean per advice.  The cost is reflection used to compute pointcuts on 460 beans: `460*600*7/1000 = 1932 ms`, nearly 2 seconds. If you take the "demo" sample and add an `@Aspect` with 1, 2, 3, 4, 5, 6 etc advice methods, you can measure that the cost of the aspects in that sample is indeed roughly 600ns per bean (the pointcut doesn't have to match anything - it still has to be evaluated for all beans).
-
-Here's another theory: Spring processes `@annotation` matchers in `@Pointcuts` extremely inefficiently, so the startup time scales with the number of pointcuts with `@annotations`, not so much the number of beans. If the pointcuts are driving it (as suggested by results in these https://github.com/dsyer/spring-boot-aspectj/tree/master/benchmarks[aspectj benchmarks]), then the 4 pointcuts with `@annotation` matchers would be costing 2403ms or around 600ms each, which is horrendous but consistent with the aspectj benchmarks.
+Here's an explanation for the "slth" result. Spring processes `@annotation` matchers in `@Pointcuts` extremely inefficiently, so the startup time scales with the number of pointcuts with `@annotations`, not so much the number of beans. If the pointcuts are driving it (as suggested by results in these https://github.com/dsyer/spring-boot-aspectj/tree/master/benchmarks[aspectj benchmarks]), then the 4 pointcuts with `@annotation` matchers would be costing 2403ms or around 600ms each, which is horrendous but consistent with the aspectj benchmarks.
 
 === JPA
 
-Hibernate fixed startup cost is about 1300ms (the "delta" on "jpad"), which more or less doubles the startup time for a JPA app compared to the vanilla "demo". Spring Data JPA repository creation seems to have a fixed cost of about 90ms, which isn't nothing but isn't very large in comparison. Adding repositories and entities might cost something, but it isn't a lot - the best estimate would be about 30ms per entity from these data (these were very basic, vanilla `JpaRepositories`, so maybe it would be more for more complex requirements).
-
-The JPA samples (and even Zuul) are a pretty good fit for number of classes loaded versus startup time. So Hibernate isn't necessarily doing a lot of intensive stuff beyond forcing a lot of classes to be loaded.
+Hibernate fixed startup cost is about 1300ms (the "delta" on "jpad"), which more or less doubles the startup time for a JPA app compared to the vanilla "demo". Spring Data JPA repository creation seems to have a fixed cost of about 90ms, which isn't nothing but isn't very large in comparison. Adding repositories and entities might cost something, but it isn't a lot - the best estimate would be about 30ms per entity from these data (these were very basic, vanilla `JpaRepositories`, so maybe it would be more for more complex requirements). The JPA samples (and even Zuul) are a pretty good fit for number of classes loaded versus startup time, so Hibernate isn't doing a lot of intensive stuff beyond forcing a lot of classes to be loaded.
 
 == Old Data
 

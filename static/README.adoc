@@ -15,37 +15,47 @@ Since more beans mean more features, you are paying at startup for actual functi
 
 
 ```
-Benchmark           Mode  Cnt  Score   Error  Units Beans
-DemoBenchmark.erkb  avgt   10  3.137 ± 0.049   s/op 494
-DemoBenchmark.busr  avgt   10  2.525 ± 0.038   s/op 392
-DemoBenchmark.erko  avgt   10  2.237 ± 0.071   s/op 313
-DemoBenchmark.erka  avgt   10  2.183 ± 0.076   s/op 287
-DemoBenchmark.conf  avgt   10  1.636 ± 0.029   s/op 250
-DemoBenchmark.acjd  avgt   10  1.540 ± 0.049   s/op 226
-DemoBenchmark.actr  avgt   10  1.316 ± 0.060   s/op 186
-DemoBenchmark.jdbc  avgt   10  1.237 ± 0.050   s/op 147
-DemoBenchmark.demo  avgt   10  1.056 ± 0.040   s/op 111
-DemoBenchmark.slim  avgt   10  1.003 ± 0.011   s/op 105
-DemoBenchmark.thin  avgt   10  0.855 ± 0.028   s/op 60
-DemoBenchmark.lite  avgt   10  0.694 ± 0.015   s/op 30
-DemoBenchmark.func  avgt   10  0.652 ± 0.017   s/op 25
+Benchmark           Mode  Cnt  Score   Error  Units Beans Classes
+DemoBenchmark.zuul  avgt   10  4.510 ± 0.095   s/op 516   9656
+DemoBenchmark.erkb  avgt   10  3.137 ± 0.049   s/op 494   7654
+DemoBenchmark.busr  avgt   10  2.525 ± 0.038   s/op 392   7129
+DemoBenchmark.erko  avgt   10  2.237 ± 0.071   s/op 313   6392
+DemoBenchmark.jpaa  avgt   10  3.232 ± 0.057   s/op 257   8297
+DemoBenchmark.jpag  avgt   10  2.897 ± 0.023   s/op 178   8294
+DemoBenchmark.jpaf  avgt   10  2.865 ± 0.043   s/op 177   8291
+DemoBenchmark.jpae  avgt   10  2.829 ± 0.038   s/op 176   8284
+DemoBenchmark.jpad  avgt   10  2.739 ± 0.073   s/op 175   7946
+DemoBenchmark.conf  avgt   10  1.636 ± 0.029   s/op 250   6232
+DemoBenchmark.acjd  avgt   10  1.540 ± 0.049   s/op 226   6033
+DemoBenchmark.actr  avgt   10  1.316 ± 0.060   s/op 186   5666
+DemoBenchmark.jdbc  avgt   10  1.237 ± 0.050   s/op 147   5625
+DemoBenchmark.demo  avgt   10  1.056 ± 0.040   s/op 111   5266
+DemoBenchmark.slim  avgt   10  1.003 ± 0.011   s/op 105   5208
+DemoBenchmark.thin  avgt   10  0.855 ± 0.028   s/op 60    4892
+DemoBenchmark.lite  avgt   10  0.694 ± 0.015   s/op 30    4580
+DemoBenchmark.func  avgt   10  0.652 ± 0.017   s/op 25    4378
 ```
-
-.Number of Beans vs. Startup Time
-image::https://docs.google.com/spreadsheets/d/e/2PACX-1vR8B4l5WkWf-9gZWmIYTkmBWM7YWf5bRg852OakrV0G2-vtfM_UkVNRC3cTVk1079HagnMVHYZnvbib/pubchart?oid=2090464856&format=image[]
-
-{empty} +
 
 .Number of Classes vs. Startup Time
 image::https://docs.google.com/spreadsheets/d/e/2PACX-1vR8B4l5WkWf-9gZWmIYTkmBWM7YWf5bRg852OakrV0G2-vtfM_UkVNRC3cTVk1079HagnMVHYZnvbib/pubchart?oid=88442446&amp;format=image[]
 
 {empty} +
 
+.Number of Beans vs. Startup Time
+image::https://docs.google.com/spreadsheets/d/e/2PACX-1vR8B4l5WkWf-9gZWmIYTkmBWM7YWf5bRg852OakrV0G2-vtfM_UkVNRC3cTVk1079HagnMVHYZnvbib/pubchart?oid=2090464856&format=image[]
+
+{empty} +
+
 Legend:
 
+* Zuul: same as "busr" sample but with Zuul proxy
+* Jpad: same as "demo" sample but with 1 JPA entity (and 0 repositories)
+* Jpae: same as "demo" sample but with 1 JPA entity (and 1 repository)
+* Jpaf: same as "demo" sample but with 2 JPA entities (and 2 repositories)
+* Jpag: same as "demo" sample but with 3 JPA entities (and 3 repositories)
+* Jpaa: same as "actr" sample but with 3 JPA entities (and 3 repositories)
 * Erkb: same as "busr" sample but with Eureka client
 * Busr: same as "conf" but adds Spring Cloud Bus and Rabbit
-* Erka: same as "actr" sample but with Eureka client
 * Erko: same as "actr" sample but with Eureka client (disabled)
 * Conf: same as "actr" sample plus config client
 * Acjd: same as "actr" sample plus JDBC
@@ -63,17 +73,17 @@ class (so a few beans were dropped).
 
 == Outliers
 
-These samples didn't fit the trend for beans vs. startup. The must be doing something dumb because they start up way slower than the others.
+Only 2 samples didn't fit the trend for classes vs. startup. The must be doing something dumb because they start up way slower than the others. The JPA samples are outliers for the beans vs. startup correlation, so we include those here again.
 
 ```
-Benchmark           Mode  Cnt  Score   Error  Units Beans Trend Delta
-DemoBenchmark.slth  avgt   10  5.110 ± 0.065   s/op 453    2762  2348
-DemoBenchmark.zuul  avgt   10  4.510 ± 0.095   s/op 516    3080  1430
-DemoBenchmark.jpad  avgt   10  2.739 ± 0.073   s/op 175    1385  1354
-DemoBenchmark.jpae  avgt   10  2.829 ± 0.038   s/op 176    1390  1439
-DemoBenchmark.jpaf  avgt   10  2.865 ± 0.043   s/op 177    1396  1469
-DemoBenchmark.jpag  avgt   10  2.897 ± 0.023   s/op 178    1401  1496
-DemoBenchmark.jpaa  avgt   10  3.232 ± 0.057   s/op 257    1814  1418
+Benchmark           Mode  Cnt  Score   Error  Units Beans Trend Delta Classes
+DemoBenchmark.slth  avgt   10  5.110 ± 0.065   s/op 453    2762  2403    7674
+DemoBenchmark.erka  avgt   10  2.183 ± 0.076   s/op 287    2760  -577    7893
+DemoBenchmark.jpad  avgt   10  2.739 ± 0.073   s/op 175    1385  1354    7946
+DemoBenchmark.jpae  avgt   10  2.829 ± 0.038   s/op 176    1390  1439    8284
+DemoBenchmark.jpaf  avgt   10  2.865 ± 0.043   s/op 177    1396  1469    8291
+DemoBenchmark.jpag  avgt   10  2.897 ± 0.023   s/op 178    1401  1496    8294
+DemoBenchmark.jpaa  avgt   10  3.232 ± 0.057   s/op 257    1814  1418    8297
 ```
 
 {empty} +
@@ -81,26 +91,21 @@ DemoBenchmark.jpaa  avgt   10  3.232 ± 0.057   s/op 257    1814  1418
 Legend:
 
 * Slth: same as "busr" sample but with Sleuth
-* Zuul: same as "busr" sample but with Zuul proxy
-* Jpad: same as "demo" sample but with 1 JPA entity (and 0 repositories)
-* Jpae: same as "demo" sample but with 1 JPA entity (and 1 repository)
-* Jpaf: same as "demo" sample but with 2 JPA entities (and 2 repositories)
-* Jpag: same as "demo" sample but with 3 JPA entities (and 3 repositories)
-* Jpaa: same as "actr" sample but with 3 JPA entities (and 3 repositories)
+* Erka: same as "actr" sample but with Eureka client
 
-The "Trend" number is the best fit prediction of the startup time from the number of beans, taken from the non-outlier data. "Delta" is the difference between the actual startup time and the trend value (so it is the extra cost of the features being added).
+The "Trend" number is the best fit prediction of the startup time from the number of classes (or beans for the JPA samples), taken from the non-outlier data. "Delta" is the difference between the actual startup time and the trend value (so it is the extra cost of the features being added).
 
 === Sleuth
 
 Here's an explanation for the "slth" result. The difference between the "slth" sample and the "demo" is 460 beans compared to 108, and 4 aspects. The aspects have 5 `@Around` advices between them plus a reflection based hand coded pointcut, that's probably worth 2 `@Arounds` or so. That's enough to account for the difference between the Sleuth sample and the trend line if there is a fixed cost of roughly 600ns per bean per advice.  The cost is reflection used to compute pointcuts on 460 beans: `460*600*7/1000 = 1932 ms`, nearly 2 seconds. If you take the "demo" sample and add an `@Aspect` with 1, 2, 3, 4, 5, 6 etc advice methods, you can measure that the cost of the aspects in that sample is indeed roughly 600ns per bean (the pointcut doesn't have to match anything - it still has to be evaluated for all beans).
 
-Here's another theory: Spring processes `@annotation` matchers in `@Pointcuts` extremely inefficiently, so the startup time scales with the number of pointcuts with `@annotations`, not so much the number of beans. If the pointcuts are driving it (as suggested by results in these https://github.com/dsyer/spring-boot-aspectj/tree/master/benchmarks[aspectj benchmarks]), then the 4 pointcuts with `@annotation` matchers would be costing 2348ms or around 570ms each, which is horrendous but consistent with the aspectj benchmarks.
+Here's another theory: Spring processes `@annotation` matchers in `@Pointcuts` extremely inefficiently, so the startup time scales with the number of pointcuts with `@annotations`, not so much the number of beans. If the pointcuts are driving it (as suggested by results in these https://github.com/dsyer/spring-boot-aspectj/tree/master/benchmarks[aspectj benchmarks]), then the 4 pointcuts with `@annotation` matchers would be costing 2403ms or around 600ms each, which is horrendous but consistent with the aspectj benchmarks.
 
 === JPA
 
 Hibernate fixed startup cost is about 1300ms (the "delta" on "jpad"), which more or less doubles the startup time for a JPA app compared to the vanilla "demo". Spring Data JPA repository creation seems to have a fixed cost of about 90ms, which isn't nothing but isn't very large in comparison. Adding repositories and entities might cost something, but it isn't a lot - the best estimate would be about 30ms per entity from these data (these were very basic, vanilla `JpaRepositories`, so maybe it would be more for more complex requirements).
 
-The JPA samples (and even Zuul) are a pretty good fit for number of classes loaded versus startup time. So Hibernate isn't necessarily doing a lot of intensive stuff beyond forcing a load of classes to be loaded.
+The JPA samples (and even Zuul) are a pretty good fit for number of classes loaded versus startup time. So Hibernate isn't necessarily doing a lot of intensive stuff beyond forcing a lot of classes to be loaded.
 
 == Old Data
 

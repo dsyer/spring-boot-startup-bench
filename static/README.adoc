@@ -1,3 +1,6 @@
+[.lead]
+In this module we study the effect of Spring and Spring Boot on startup time by first stripping out as much of it as we can, and then piling on more features, adding more dependencies and letting Spring Boot figure out the desired configuration. In the table below, the "demo" sample is the canonical, empty Spring Boot web app. All the smaller and faster apps are stripped down versions of that where we remove various things and finally get rid of even using reflection in the `BeanFactory` (using the new "functional bean registration"). The result is that, with a couple of outliers we discuss below, the startup time is directly proportional to the number of beans in the application context. The results do not suggest that reflection is a bottle neck - more work would have to be done with more complex scenarios, but the sample that uses functional bean registration for everything fits the curve of the more heavyweight applications, so it isn't intrinsically much faster, it just has fewer beans (and therefore fewer features).
+
 
 ```
 Benchmark           Mode  Cnt  Score   Error  Units Beans
@@ -17,6 +20,8 @@ DemoBenchmark.func  avgt   10  0.652 ± 0.017   s/op 25
 
 .Number of Beans vs. Startup Time
 image::https://docs.google.com/spreadsheets/d/1SqvJ-cjIYVvHUmG61CzwylxwwnjeXark855JEGESbbs/pubchart?oid=2090464856&amp;format=image[]
+
+{nbsp} +
 
 Legend:
 
@@ -69,6 +74,8 @@ DemoBenchmark.zuul  avgt   10  4.137 ± 0.173   s/op 481
 ```
 
 Here's an explanation for the "slth" result. The difference between the "slth" sample and the "demo" is 460 beans compared to 108, and 4 aspects. The aspects have 5 `@Around` advices between them plus a reflection based hand coded pointcut, that's probably worth 2 `@Arounds` or so. That's enough to account for the difference between the Sleuth sample and the trend line if there is a fixed cost of roughly 600ns per bean per advice.  The cost is reflection used to compute pointcuts on 460 beans: `460*600*7/1000 = 1932 ms`, nearly 2 seconds. If you take the "demo" sample and add an `@Aspect` with 1, 2, 3, 4, 5, 6 etc advice methods, you can measure that the cost of the aspects in that sample is indeed roughly 600ns per bean (the pointcut doesn't have to match anything - it still has to be evaluated for all beans).
+
+Here's another theory: Spring processes `@annotation` matchers in `@Pointcuts` extremely inefficiently, so the startup time scales with the number of pointcuts with `@annotations`, not so much the number of beans. So the extra `460-108=352` beans would account for roughly 1900ms, leaving a residual of roughly 2300ms. If the pointcuts are driving it (as suggested by results in these https://github.com/dsyer/spring-boot-aspectj/tree/master/benchmarks[aspectj benchmarks]), then the 4 pointcuts with `@annotation` matchers would be costing 570ms each, which is horrendous but consistent with the aspectj benchmarks.
 
 == Laptop (carbon)
 

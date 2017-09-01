@@ -24,6 +24,7 @@ Various combinations of things are tested:
 * Shading vs Spring Boot fat jars
 * Different application features: a basic web app with actuator, the petclinic and a Spring Cloud config server
 * Hardware (running on bare metal vs AWS for instance)
+* The scaling of startup time with bean count is investigated in more detail in the link:static/README.adoc[static] module
 
 NOTE: There is a
 https://github.com/spring-projects/spring-boot/issues/7493[Spring Boot

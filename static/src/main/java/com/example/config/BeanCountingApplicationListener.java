@@ -15,6 +15,7 @@
  */
 package com.example.config;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -49,6 +50,12 @@ public class BeanCountingApplicationListener
 		}
 		logger.info("Bean count: " + id + "=" + count);
 		logger.debug("Bean names: " + id + "=" + names);
+		try {
+			logger.info("Class count: " + id + "=" + ManagementFactory
+					.getClassLoadingMXBean().getTotalLoadedClassCount());
+		}
+		catch (Exception e) {
+		}
 	}
 
 }

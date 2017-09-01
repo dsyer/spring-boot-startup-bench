@@ -15,6 +15,10 @@
  */
 package com.example.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,15 +30,25 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @author Dave Syer
  *
  */
-public class RegistryPostProcessor implements ApplicationListener<ApplicationReadyEvent> {
+public class BeanCountingApplicationListener
+		implements ApplicationListener<ApplicationReadyEvent> {
 
-	private static Log logger = LogFactory.getLog(RegistryPostProcessor.class);
+	private static Log logger = LogFactory.getLog(BeanCountingApplicationListener.class);
 
+	@SuppressWarnings("resource")
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
+		int count = 0;
 		ConfigurableApplicationContext context = event.getApplicationContext();
-		logger.info("Bean count: " + context.getId() + "="
-				+ context.getBeanDefinitionCount());
+		String id = context.getId();
+		List<String> names = new ArrayList<>();
+		while (context != null) {
+			count += context.getBeanDefinitionCount();
+			names.addAll(Arrays.asList(context.getBeanDefinitionNames()));
+			context = (ConfigurableApplicationContext) context.getParent();
+		}
+		logger.info("Bean count: " + id + "=" + count);
+		logger.debug("Bean names: " + id + "=" + names);
 	}
 
 }

@@ -1,5 +1,5 @@
 org.springframework.context.ApplicationListener=\
-com.example.config.RegistryPostProcessor
+com.example.config.BeanCountingApplicationListener
 
 # BeanInfo Factory (doesn't have much of an impact)
 #org.springframework.beans.BeanInfoFactory=\

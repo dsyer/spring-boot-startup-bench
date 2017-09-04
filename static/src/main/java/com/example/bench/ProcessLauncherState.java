@@ -20,8 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +31,11 @@ import com.example.demo.DemoApplication;
 import org.openjdk.jmh.util.FileUtils;
 import org.openjdk.jmh.util.Utils;
 
+import org.springframework.boot.loader.archive.Archive;
+import org.springframework.boot.loader.thin.ArchiveUtils;
+import org.springframework.boot.loader.thin.DependencyResolver;
+import org.springframework.boot.loader.thin.PathResolver;
+
 public class ProcessLauncherState {
 
 	private Process started;
@@ -39,6 +43,9 @@ public class ProcessLauncherState {
 	private File home;
 	private String mainClass = DemoApplication.class.getName();
 	private int length;
+	private String name = "thin";
+	private String[] profiles = new String[0];
+	private int classpath = 0;
 
 	public ProcessLauncherState(String dir, String... args) {
 		this.args = new ArrayList<>(Arrays.asList(args));
@@ -46,7 +53,8 @@ public class ProcessLauncherState {
 		this.args.add(count++, System.getProperty("java.home") + "/bin/java");
 		this.args.add(count++, "-Xmx128m");
 		this.args.add(count++, "-cp");
-		this.args.add(count++, getClasspath());
+		this.classpath = count;
+		this.args.add(count++, "");
 		this.args.add(count++, "-Djava.security.egd=file:/dev/./urandom");
 		this.args.add(count++, "-XX:TieredStopAtLevel=1"); // zoom
 		this.args.add(count++, "-noverify");
@@ -62,15 +70,60 @@ public class ProcessLauncherState {
 		this.mainClass = mainClass;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setProfiles(String... profiles) {
+		this.profiles = profiles;
+	}
+
 	private String getClasspath() {
-		StringBuilder builder = new StringBuilder();
-		for (URL url : ((URLClassLoader) getClass().getClassLoader()).getURLs()) {
-			if (builder.length() > 0) {
-				builder.append(File.pathSeparator);
+		PathResolver resolver = new PathResolver(DependencyResolver.instance());
+		Archive root = ArchiveUtils.getArchive(getClass());
+		List<Archive> resolved = resolver.resolve(root, name, profiles);
+		StringBuilder builder = new StringBuilder(
+				new File("target/classes").getAbsolutePath());
+		try {
+			for (Archive archive : resolved) {
+				if (archive.getUrl().equals(root.getUrl())) {
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(File.pathSeparator);
+				}
+				builder.append(file(archive.getUrl().toString()));
 			}
-			builder.append(url.toString());
+		}
+		catch (MalformedURLException e) {
+			throw new IllegalStateException("Cannot find archive", e);
 		}
 		return builder.toString();
+	}
+
+	private String file(String path) {
+		if (path.endsWith("!/")) {
+			path = path.substring(0, path.length() - 2);
+		}
+		if (path.startsWith("jar:")) {
+			path = path.substring("jar:".length());
+		}
+		if (path.startsWith("file:")) {
+			path = path.substring("file:".length());
+		}
+		return path;
+	}
+
+	public void before() throws Exception {
+		String name = getClass().getSimpleName().contains("_")
+				? getClass().getSimpleName().split("_")[1] : "";
+		if (name.length() == 4) {
+			setProfiles(name.toLowerCase());
+		}
+		else {
+			setProfiles();
+		}
+		args.set(this.classpath, getClasspath());
 	}
 
 	public void after() throws Exception {

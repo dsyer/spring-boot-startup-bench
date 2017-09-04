@@ -28,6 +28,7 @@ import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
@@ -40,6 +41,24 @@ public class DemoBenchmark {
 
 	@Benchmark
 	public void demo(ApplicationState state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
+	public void actr(Actr state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
+	public void jdbc(Jdbc state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
+	public void empty(Empt state) throws Exception {
 		state.setMainClass(DemoApplication.class.getName());
 		state.run();
 	}
@@ -70,6 +89,7 @@ public class DemoBenchmark {
 
 	@State(Scope.Benchmark)
 	public static class ApplicationState extends ProcessLauncherState {
+		
 		public ApplicationState() {
 			super("target", "--server.port=0");
 		}
@@ -78,6 +98,22 @@ public class DemoBenchmark {
 		public void stop() throws Exception {
 			super.after();
 		}
+
+		@Setup(Level.Trial)
+		public void start() throws Exception {
+			super.before();
+		}
 	}
 
+	@State(Scope.Benchmark)
+	public static class Actr extends ApplicationState {
+	}
+
+	@State(Scope.Benchmark)
+	public static class Jdbc extends ApplicationState {
+	}
+
+	@State(Scope.Benchmark)
+	public static class Empt extends ApplicationState {
+	}
 }

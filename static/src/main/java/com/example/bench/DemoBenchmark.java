@@ -71,7 +71,7 @@ public class DemoBenchmark {
 	}
 
 	@Benchmark
-	public void empty(Empt state) throws Exception {
+	public void empt(Empt state) throws Exception {
 		state.setMainClass(DemoApplication.class.getName());
 		state.run();
 	}

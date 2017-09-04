@@ -17,6 +17,7 @@ package com.example.bench;
 
 import com.example.demo.DemoApplication;
 import com.example.func.FuncApplication;
+import com.example.jpa.JpaApplication;
 import com.example.lite.LiteApplication;
 import com.example.slim.SlimApplication;
 import com.example.thin.ThinApplication;
@@ -58,7 +59,43 @@ public class DemoBenchmark {
 	}
 
 	@Benchmark
+	public void jpae(Jpae state) throws Exception {
+		state.setMainClass(JpaApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
 	public void empty(Empt state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
+	public void conf(Conf state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
+	public void erka(Erka state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
+	public void busr(Busr state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
+	public void zuul(Zuul state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
+	public void slth(Slth state) throws Exception {
 		state.setMainClass(DemoApplication.class.getName());
 		state.run();
 	}
@@ -114,6 +151,30 @@ public class DemoBenchmark {
 	}
 
 	@State(Scope.Benchmark)
+	public static class Jpae extends ApplicationState {
+	}
+
+	@State(Scope.Benchmark)
 	public static class Empt extends ApplicationState {
+	}
+
+	@State(Scope.Benchmark)
+	public static class Conf extends ApplicationState {
+	}
+
+	@State(Scope.Benchmark)
+	public static class Erka extends ApplicationState {
+	}
+
+	@State(Scope.Benchmark)
+	public static class Busr extends ApplicationState {
+	}
+
+	@State(Scope.Benchmark)
+	public static class Zuul extends ApplicationState {
+	}
+
+	@State(Scope.Benchmark)
+	public static class Slth extends ApplicationState {
 	}
 }

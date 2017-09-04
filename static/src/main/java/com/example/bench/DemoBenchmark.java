@@ -53,6 +53,12 @@ public class DemoBenchmark {
 	}
 
 	@Benchmark
+	public void actj(Actj state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
 	public void jdbc(Jdbc state) throws Exception {
 		state.setMainClass(DemoApplication.class.getName());
 		state.run();
@@ -78,6 +84,12 @@ public class DemoBenchmark {
 
 	@Benchmark
 	public void erka(Erka state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
+		state.run();
+	}
+
+	@Benchmark
+	public void erkb(Erkb state) throws Exception {
 		state.setMainClass(DemoApplication.class.getName());
 		state.run();
 	}
@@ -147,6 +159,10 @@ public class DemoBenchmark {
 	}
 
 	@State(Scope.Benchmark)
+	public static class Actj extends ApplicationState {
+	}
+
+	@State(Scope.Benchmark)
 	public static class Jdbc extends ApplicationState {
 	}
 
@@ -164,6 +180,10 @@ public class DemoBenchmark {
 
 	@State(Scope.Benchmark)
 	public static class Erka extends ApplicationState {
+	}
+
+	@State(Scope.Benchmark)
+	public static class Erkb extends ApplicationState {
 	}
 
 	@State(Scope.Benchmark)

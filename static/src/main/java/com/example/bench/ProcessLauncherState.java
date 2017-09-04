@@ -115,14 +115,6 @@ public class ProcessLauncherState {
 	}
 
 	public void before() throws Exception {
-		String name = getClass().getSimpleName().contains("_")
-				? getClass().getSimpleName().split("_")[1] : "";
-		if (name.length() == 4) {
-			setProfiles(name.toLowerCase());
-		}
-		else {
-			setProfiles();
-		}
 		args.set(this.classpath, getClasspath());
 	}
 

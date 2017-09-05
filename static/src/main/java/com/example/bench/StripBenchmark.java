@@ -15,7 +15,10 @@
  */
 package com.example.bench;
 
-import com.example.demo.DemoApplication;
+import com.example.func.FuncApplication;
+import com.example.lite.LiteApplication;
+import com.example.slim.SlimApplication;
+import com.example.thin.ThinApplication;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -34,23 +37,35 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
-public class SampleBenchmark {
-	
+public class StripBenchmark {
+
 	@Benchmark
-	public void main(ApplicationState state) throws Exception {
-		state.setMainClass(DemoApplication.class.getName());
+	public void strip(ApplicationState state) throws Exception {
 		state.run();
 	}
 
 	@State(Scope.Benchmark)
 	public static class ApplicationState extends ProcessLauncherState {
-		
+
 		public static enum Sample {
-			empt, demo, actr, jdbc, actj, jpae, conf, erka, busr, zuul, erkb, slth;
+
+			thin(ThinApplication.class), slim(SlimApplication.class), lite(
+					LiteApplication.class), func(FuncApplication.class);
+
+			private Class<?> config;
+
+			private Sample(Class<?> config) {
+				this.config = config;
+
+			}
+
+			public Class<?> getConfig() {
+				return this.config;
+			}
 		}
 
 		@Param
-		private Sample sample = Sample.demo;
+		private Sample sample = Sample.thin;
 
 		public ApplicationState() {
 			super("target", "--server.port=0");
@@ -63,9 +78,7 @@ public class SampleBenchmark {
 
 		@Setup(Level.Trial)
 		public void start() throws Exception {
-			if (sample!=Sample.demo) {
-				setProfiles(sample.toString());
-			}
+			setMainClass(sample.getConfig().getName());
 			super.before();
 		}
 	}

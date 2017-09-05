@@ -34,16 +34,10 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
-public class SnapshotBenchmark {
+public class MainBenchmark {
 	
 	@Benchmark
-	public void snap(ApplicationState state) throws Exception {
-		state.setMainClass(DemoApplication.class.getName());
-		state.run();
-	}
-
-	@Benchmark
-	public void endp(EndpointState state) throws Exception {
+	public void main(ApplicationState state) throws Exception {
 		state.setMainClass(DemoApplication.class.getName());
 		state.run();
 	}
@@ -52,7 +46,7 @@ public class SnapshotBenchmark {
 	public static class ApplicationState extends ProcessLauncherState {
 		
 		public static enum Sample {
-			empt, demo, actr, jdbc;
+			empt, demo, actr, jdbc, actj, jpae, conf, erka, busr, zuul, erkb, slth;
 		}
 
 		@Param
@@ -70,32 +64,10 @@ public class SnapshotBenchmark {
 		@Setup(Level.Trial)
 		public void start() throws Exception {
 			if (sample!=Sample.demo) {
-				setProfiles(sample.toString(), "snapshot");
-			} else {
-				setProfiles("snapshot");
+				setProfiles(sample.toString());
 			}
 			super.before();
 		}
 	}
-
-	@State(Scope.Benchmark)
-	public static class EndpointState extends ProcessLauncherState {
-		
-		public EndpointState() {
-			super("target", "--server.port=0", "--endpoints.default.web.enabled=true");
-		}
-
-		@TearDown(Level.Iteration)
-		public void stop() throws Exception {
-			super.after();
-		}
-
-		@Setup(Level.Trial)
-		public void start() throws Exception {
-			setProfiles("actr", "snapshot");
-			super.before();
-		}
-	}
-
 
 }

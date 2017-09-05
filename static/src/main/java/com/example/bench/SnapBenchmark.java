@@ -15,10 +15,7 @@
  */
 package com.example.bench;
 
-import com.example.func.FuncApplication;
-import com.example.lite.LiteApplication;
-import com.example.slim.SlimApplication;
-import com.example.thin.ThinApplication;
+import com.example.demo.DemoApplication;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -26,6 +23,7 @@ import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -36,35 +34,30 @@ import org.openjdk.jmh.annotations.Warmup;
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
-public class SlimBenchmark {
+public class SnapBenchmark {
 	
 	@Benchmark
-	public void slim(ApplicationState state) throws Exception {
-		state.setMainClass(SlimApplication.class.getName());
+	public void snap(ApplicationState state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
 		state.run();
 	}
 
 	@Benchmark
-	public void thin(ApplicationState state) throws Exception {
-		state.setMainClass(ThinApplication.class.getName());
-		state.run();
-	}
-
-	@Benchmark
-	public void lite(ApplicationState state) throws Exception {
-		state.setMainClass(LiteApplication.class.getName());
-		state.run();
-	}
-
-	@Benchmark
-	public void func(ApplicationState state) throws Exception {
-		state.setMainClass(FuncApplication.class.getName());
+	public void endp(EndpointState state) throws Exception {
+		state.setMainClass(DemoApplication.class.getName());
 		state.run();
 	}
 
 	@State(Scope.Benchmark)
 	public static class ApplicationState extends ProcessLauncherState {
 		
+		public static enum Sample {
+			empt, demo, actr, jdbc;
+		}
+
+		@Param
+		private Sample sample = Sample.demo;
+
 		public ApplicationState() {
 			super("target", "--server.port=0");
 		}
@@ -76,8 +69,33 @@ public class SlimBenchmark {
 
 		@Setup(Level.Trial)
 		public void start() throws Exception {
+			if (sample!=Sample.demo) {
+				setProfiles(sample.toString(), "snapshot");
+			} else {
+				setProfiles("snapshot");
+			}
 			super.before();
 		}
 	}
+
+	@State(Scope.Benchmark)
+	public static class EndpointState extends ProcessLauncherState {
+		
+		public EndpointState() {
+			super("target", "--server.port=0", "--endpoints.default.web.enabled=true");
+		}
+
+		@TearDown(Level.Iteration)
+		public void stop() throws Exception {
+			super.after();
+		}
+
+		@Setup(Level.Trial)
+		public void start() throws Exception {
+			setProfiles("actr", "snapshot");
+			super.before();
+		}
+	}
+
 
 }

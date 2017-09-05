@@ -156,6 +156,8 @@ $ java -jar target/benchmarks.jar strip
 | lite | 4  | 30  | 813
 | func | 1  | 25  | 742
 
+|===
+
 (Boot 1.5.6, 2.0.0.M3 and 2.0.0.BUILD-SNAPSHOT)
 
 ```
@@ -194,8 +196,6 @@ SnapshotBenchmark.snap      demo  avgt   10  1.880 ± 0.205   s/op  112    5356
 SnapshotBenchmark.snap      actr  avgt   10  2.296 ± 0.101   s/op  198    5833
 SnapshotBenchmark.snap      jdbc  avgt   10  2.136 ± 0.117   s/op  148    5716
 ```
-
-|===
 
 == Laptop (carbon)
 

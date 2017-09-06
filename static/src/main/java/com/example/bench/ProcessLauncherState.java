@@ -30,6 +30,8 @@ import com.example.demo.DemoApplication;
 
 import org.openjdk.jmh.util.FileUtils;
 import org.openjdk.jmh.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.springframework.boot.loader.archive.Archive;
 import org.springframework.boot.loader.thin.ArchiveUtils;
@@ -37,6 +39,8 @@ import org.springframework.boot.loader.thin.DependencyResolver;
 import org.springframework.boot.loader.thin.PathResolver;
 
 public class ProcessLauncherState {
+
+	private static final Logger log = LoggerFactory.getLogger(ProcessLauncherState.class);
 
 	private Process started;
 	private List<String> args;
@@ -98,6 +102,7 @@ public class ProcessLauncherState {
 		catch (MalformedURLException e) {
 			throw new IllegalStateException("Cannot find archive", e);
 		}
+		log.debug("Classpath: " + builder);
 		return builder.toString();
 	}
 
@@ -160,14 +165,20 @@ public class ProcessLauncherState {
 		System.out.println(output(started.getInputStream(), "Started"));
 	}
 
+	protected void drain() throws IOException {
+		System.out.println(output(started.getInputStream(), null));
+	}
+
 	protected static String output(InputStream inputStream, String marker)
 			throws IOException {
 		StringBuilder sb = new StringBuilder();
 		BufferedReader br = null;
 		br = new BufferedReader(new InputStreamReader(inputStream));
 		String line = null;
-		while ((line = br.readLine()) != null && !line.contains(marker)) {
+		while ((marker != null || br.ready()) && (line = br.readLine()) != null
+				&& (marker == null || !line.contains(marker))) {
 			sb.append(line + System.getProperty("line.separator"));
+			line = null;
 		}
 		if (line != null) {
 			sb.append(line + System.getProperty("line.separator"));

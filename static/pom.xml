@@ -83,12 +83,14 @@
 			<groupId>org.springframework.boot.experimental</groupId>
 			<artifactId>spring-boot-thin-launcher</artifactId>
 			<version>${thin.version}</version>
+			<optional>true</optional>
 		</dependency>
 
 		<dependency>
 			<groupId>org.openjdk.jmh</groupId>
 			<artifactId>jmh-core</artifactId>
 			<version>${jmh.version}</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.openjdk.jmh</groupId>

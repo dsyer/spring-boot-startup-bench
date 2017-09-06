@@ -16,6 +16,7 @@
 package com.example.bench;
 
 import com.example.demo.DemoApplication;
+import com.example.jpa.JpaApplication;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -35,12 +36,6 @@ import org.openjdk.jmh.annotations.Warmup;
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
 public class SnapBenchmark {
-	
-	@Benchmark
-	public void snap(ApplicationState state) throws Exception {
-		state.setMainClass(DemoApplication.class.getName());
-		state.run();
-	}
 
 	@Benchmark
 	public void endp(EndpointState state) throws Exception {
@@ -48,11 +43,31 @@ public class SnapBenchmark {
 		state.run();
 	}
 
+	@Benchmark
+	public void snap(ApplicationState state) throws Exception {
+		state.setMainClass(state.sample.getConfig().getName());
+		state.run();
+	}
+
 	@State(Scope.Benchmark)
 	public static class ApplicationState extends ProcessLauncherState {
-		
+
 		public static enum Sample {
-			empt, demo, actr, jdbc;
+			empt, demo, actr, jdbc, actj, jpae(JpaApplication.class), conf;
+
+			private Class<?> config;
+
+			private Sample(Class<?> config) {
+				this.config = config;
+			}
+
+			private Sample() {
+				this.config = DemoApplication.class;
+			}
+
+			public Class<?> getConfig() {
+				return config;
+			}
 		}
 
 		@Param
@@ -69,9 +84,10 @@ public class SnapBenchmark {
 
 		@Setup(Level.Trial)
 		public void start() throws Exception {
-			if (sample!=Sample.demo) {
+			if (sample != Sample.demo) {
 				setProfiles(sample.toString(), "snapshot");
-			} else {
+			}
+			else {
 				setProfiles("snapshot");
 			}
 			super.before();
@@ -80,7 +96,7 @@ public class SnapBenchmark {
 
 	@State(Scope.Benchmark)
 	public static class EndpointState extends ProcessLauncherState {
-		
+
 		public EndpointState() {
 			super("target", "--server.port=0", "--endpoints.default.web.enabled=true");
 		}
@@ -96,6 +112,5 @@ public class SnapBenchmark {
 			super.before();
 		}
 	}
-
 
 }

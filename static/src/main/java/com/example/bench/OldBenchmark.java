@@ -15,6 +15,9 @@
  */
 package com.example.bench;
 
+import com.example.demo.DemoApplication;
+import com.example.jpa.JpaApplication;
+
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -36,7 +39,7 @@ public class OldBenchmark {
 
 	@Benchmark
 	public void old(ApplicationState state) throws Exception {
-		state.setMainClass("com.example.old.DemoApplication");
+		state.setMainClass(state.sample.getConfig().getName());
 		state.run();
 	}
 
@@ -44,7 +47,22 @@ public class OldBenchmark {
 	public static class ApplicationState extends ProcessLauncherState {
 
 		public static enum Sample {
-			empt, demo, actr, jdbc, actj, conf, erka, busr, zuul, erkb, slth;
+			empt, demo, actr, jdbc, actj, jpae(
+					JpaApplication.class), conf, erka, busr, zuul, erkb, slth;
+
+			private Class<?> config;
+
+			private Sample(Class<?> config) {
+				this.config = config;
+			}
+
+			private Sample() {
+				this.config = DemoApplication.class;
+			}
+
+			public Class<?> getConfig() {
+				return config;
+			}
 		}
 
 		@Param

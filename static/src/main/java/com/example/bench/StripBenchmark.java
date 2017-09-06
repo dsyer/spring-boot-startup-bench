@@ -56,7 +56,6 @@ public class StripBenchmark {
 
 			private Sample(Class<?> config) {
 				this.config = config;
-
 			}
 
 			public Class<?> getConfig() {

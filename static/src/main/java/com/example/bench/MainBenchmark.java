@@ -16,6 +16,7 @@
 package com.example.bench;
 
 import com.example.demo.DemoApplication;
+import com.example.jpa.JpaApplication;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -35,18 +36,34 @@ import org.openjdk.jmh.annotations.Warmup;
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
 public class MainBenchmark {
-	
+
 	@Benchmark
 	public void main(ApplicationState state) throws Exception {
-		state.setMainClass(DemoApplication.class.getName());
+		state.setMainClass(state.sample.getConfig().getName());
 		state.run();
 	}
 
 	@State(Scope.Benchmark)
 	public static class ApplicationState extends ProcessLauncherState {
-		
+
 		public static enum Sample {
-			empt, demo, actr, jdbc, actj, jpae, conf, erka, busr, zuul, erkb, slth;
+			empt, demo, actr, jdbc, actj, jpae(
+					JpaApplication.class), conf, erka, busr, zuul, erkb, slth;
+
+			private Class<?> config;
+
+			private Sample(Class<?> config) {
+				this.config = config;
+			}
+
+			private Sample() {
+				this.config = DemoApplication.class;
+			}
+
+			public Class<?> getConfig() {
+				return config;
+			}
+
 		}
 
 		@Param
@@ -63,7 +80,7 @@ public class MainBenchmark {
 
 		@Setup(Level.Trial)
 		public void start() throws Exception {
-			if (sample!=Sample.demo) {
+			if (sample != Sample.demo) {
 				setProfiles(sample.toString());
 			}
 			super.before();

@@ -33,7 +33,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
 public class OldBenchmark {
-	
+
 	@Benchmark
 	public void old(ApplicationState state) throws Exception {
 		state.setMainClass("com.example.old.DemoApplication");
@@ -42,9 +42,9 @@ public class OldBenchmark {
 
 	@State(Scope.Benchmark)
 	public static class ApplicationState extends ProcessLauncherState {
-		
+
 		public static enum Sample {
-			empt, demo, actr, jdbc, actj, jpae, conf, erka, busr, zuul, erkb, slth;
+			empt, demo, actr, jdbc, actj, conf, erka, busr, zuul, erkb, slth;
 		}
 
 		@Param
@@ -61,9 +61,10 @@ public class OldBenchmark {
 
 		@Setup(Level.Trial)
 		public void start() throws Exception {
-			if (sample!=Sample.demo) {
+			if (sample != Sample.demo) {
 				setProfiles(sample.toString(), "old");
-			} else {
+			}
+			else {
 				setProfiles("old");
 			}
 			super.before();

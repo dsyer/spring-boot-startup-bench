@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.config.StartupApplicationListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.BeanUtils;
@@ -82,6 +83,7 @@ public class FuncApplication {
 
 	public static void main(String[] args) {
 		new SpringApplicationBuilder(FuncApplication.class)
+				.listeners(new StartupApplicationListener(FuncApplication.class))
 				.initializers(new WebAppInitializer()).run(args);
 	}
 }

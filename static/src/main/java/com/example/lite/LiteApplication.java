@@ -24,14 +24,15 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
+import com.example.config.StartupApplicationListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanInitializationException;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.DefaultServletWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor;
@@ -92,7 +93,9 @@ public class LiteApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(LiteApplication.class, args).registerShutdownHook();
+		new SpringApplicationBuilder(LiteApplication.class)
+				.listeners(new StartupApplicationListener(LiteApplication.class))
+				.run(args).registerShutdownHook();
 	}
 }
 

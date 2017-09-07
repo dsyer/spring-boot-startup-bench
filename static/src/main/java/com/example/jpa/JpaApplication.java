@@ -5,6 +5,8 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.example.config.StartupApplicationListener;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -29,15 +31,20 @@ public class JpaApplication {
 	private static SpringApplicationBuilder builder() {
 		// Defensive reflective builder to work with Boot 1.5 and 2.0
 		if (ClassUtils.hasConstructor(SpringApplicationBuilder.class, Class[].class)) {
-			return BeanUtils.instantiateClass(
-					ClassUtils.getConstructorIfAvailable(SpringApplicationBuilder.class,
-							Class[].class),
-					(Object) new Class<?>[] { JpaApplication.class });
+			return BeanUtils
+					.instantiateClass(
+							ClassUtils.getConstructorIfAvailable(
+									SpringApplicationBuilder.class, Class[].class),
+							(Object) new Class<?>[] { JpaApplication.class })
+					.listeners(new StartupApplicationListener(JpaApplication.class));
 		}
-		return BeanUtils.instantiateClass(
-				ClassUtils.getConstructorIfAvailable(SpringApplicationBuilder.class,
-						Object[].class),
-				(Object) new Object[] { JpaApplication.class.getName() });
+		return BeanUtils
+				.instantiateClass(
+						ClassUtils.getConstructorIfAvailable(
+								SpringApplicationBuilder.class, Object[].class),
+						(Object) new Object[] { JpaApplication.class.getName() })
+				.listeners(
+						new StartupApplicationListener(JpaApplication.class.getName()));
 	}
 
 }

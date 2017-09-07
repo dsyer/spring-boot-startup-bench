@@ -16,11 +16,13 @@
 
 package com.example.thin;
 
-import org.springframework.boot.SpringApplication;
+import com.example.config.StartupApplicationListener;
+
 import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +41,8 @@ public class ThinApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(ThinApplication.class, args);
+		new SpringApplicationBuilder(ThinApplication.class)
+				.listeners(new StartupApplicationListener(ThinApplication.class))
+				.run(args);
 	}
 }

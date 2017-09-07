@@ -23,12 +23,11 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 
+import com.example.config.StartupApplicationListener;
 import com.example.demo.DemoApplication;
 
-import org.openjdk.jmh.util.FileUtils;
 import org.openjdk.jmh.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +52,8 @@ public class ProcessLauncherState {
 	private String name = "thin";
 	private String[] profiles = new String[0];
 	private int classpath = 0;
+
+	private BufferedReader buffer;
 
 	public ProcessLauncherState(String dir, String... args) {
 		this.args.add(System.getProperty("java.home") + "/bin/java");
@@ -126,18 +127,8 @@ public class ProcessLauncherState {
 		}
 	}
 
-	public Collection<String> capture(String... additional) throws Exception {
-		List<String> args = new ArrayList<>(this.args);
-		args.addAll(Arrays.asList(additional));
-		ProcessBuilder builder = new ProcessBuilder(args);
-		builder.directory(home);
-		builder.redirectErrorStream(true);
-		customize(builder);
-		if (!"false".equals(System.getProperty("debug", "false"))) {
-			System.err.println("Running: " + Utils.join(args, " "));
-		}
-		started = builder.start();
-		return FileUtils.readAllLines(started.getInputStream());
+	private BufferedReader getBuffer() {
+		return this.buffer;
 	}
 
 	public void run() throws Exception {
@@ -150,7 +141,13 @@ public class ProcessLauncherState {
 		if (!"false".equals(System.getProperty("debug", "false"))) {
 			System.err.println("Running: " + Utils.join(args, " "));
 		}
+		if (this.buffer != null) {
+			drain();
+			this.buffer.close();
+		}
 		started = builder.start();
+		InputStream stream = started.getInputStream();
+		this.buffer = new BufferedReader(new InputStreamReader(stream));
 		monitor();
 	}
 
@@ -158,28 +155,28 @@ public class ProcessLauncherState {
 	}
 
 	protected void monitor() throws IOException {
-		System.out.println(output(started.getInputStream(), "Started"));
+		output(getBuffer(), StartupApplicationListener.MARKER);
+		output(getBuffer(), "Started");
 	}
 
 	protected void drain() throws IOException {
-		System.out.println(output(started.getInputStream(), null));
+		output(getBuffer(), null);
 	}
 
-	protected static String output(InputStream inputStream, String marker)
-			throws IOException {
+	protected static void output(BufferedReader br, String marker) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		BufferedReader br = null;
-		br = new BufferedReader(new InputStreamReader(inputStream));
 		String line = null;
 		while ((marker != null || br.ready()) && (line = br.readLine()) != null
 				&& (marker == null || !line.contains(marker))) {
 			sb.append(line + System.getProperty("line.separator"));
+			// System.out.println(line);
 			line = null;
 		}
 		if (line != null) {
+			// System.out.println(line);
 			sb.append(line + System.getProperty("line.separator"));
 		}
-		return sb.toString();
+		System.out.println(sb.toString());
 	}
 
 	public File getHome() {

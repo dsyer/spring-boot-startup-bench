@@ -46,7 +46,7 @@ public class MainBenchmark {
 	}
 
 	@Benchmark
-	public void live(DynamicState state) throws Exception {
+	public void devtools(DevtoolsState state) throws Exception {
 		state.setMainClass(state.sample.getConfig().getName());
 		state.run();
 	}
@@ -96,9 +96,9 @@ public class MainBenchmark {
 	}
 
 	@State(Scope.Benchmark)
-	public static class DynamicState extends DevToolsLauncherState {
+	public static class DevtoolsState extends DevToolsLauncherState {
 
-		private static final Logger log = LoggerFactory.getLogger(DynamicState.class);
+		private static final Logger log = LoggerFactory.getLogger(DevtoolsState.class);
 
 		public static enum Sample {
 			demo, actr, jdbc, actj, jpae(
@@ -123,7 +123,7 @@ public class MainBenchmark {
 		@Param
 		private Sample sample = Sample.demo;
 
-		public DynamicState() {
+		public DevtoolsState() {
 			super("target", "classes/.restart");
 		}
 

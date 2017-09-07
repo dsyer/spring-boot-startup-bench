@@ -43,7 +43,10 @@ public class ProcessLauncherState {
 	private static final Logger log = LoggerFactory.getLogger(ProcessLauncherState.class);
 
 	private Process started;
-	private List<String> args;
+	private List<String> args = new ArrayList<>();
+	private static List<String> DEFAULT_JVM_ARGS = Arrays.asList("-Xmx128m", "-cp", "",
+			"-Djava.security.egd=file:/dev/./urandom", "-XX:TieredStopAtLevel=1",
+			"-noverify");
 	private File home;
 	private String mainClass = DemoApplication.class.getName();
 	private int length;
@@ -52,20 +55,13 @@ public class ProcessLauncherState {
 	private int classpath = 0;
 
 	public ProcessLauncherState(String dir, String... args) {
-		this.args = new ArrayList<>(Arrays.asList(args));
-		int count = 0;
-		this.args.add(count++, System.getProperty("java.home") + "/bin/java");
-		this.args.add(count++, "-Xmx128m");
-		this.args.add(count++, "-cp");
-		this.classpath = count;
-		this.args.add(count++, "");
-		this.args.add(count++, "-Djava.security.egd=file:/dev/./urandom");
-		this.args.add(count++, "-XX:TieredStopAtLevel=1"); // zoom
-		this.args.add(count++, "-noverify");
+		this.args.add(System.getProperty("java.home") + "/bin/java");
+		this.args.addAll(DEFAULT_JVM_ARGS);
+		this.classpath = this.args.indexOf("-cp") + 1;
 		if (System.getProperty("bench.args") != null) {
-			this.args.addAll(count++,
-					Arrays.asList(System.getProperty("bench.args").split(" ")));
+			this.args.addAll(Arrays.asList(System.getProperty("bench.args").split(" ")));
 		}
+		this.args.addAll(Arrays.asList(args));
 		this.length = args.length;
 		this.home = new File(dir);
 	}

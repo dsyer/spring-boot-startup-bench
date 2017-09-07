@@ -18,14 +18,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class DevToolsLauncherState extends ProcessLauncherState {
+
+	private static String[] defaultArgs = new String[] { "--server.port=0",
+			"--spring.devtools.livereload.enabled=false",
+			"--spring.devtools.restart.pollInterval=10",
+			"--spring.devtools.restart.quietPeriod=1", "--spring.jmx.enabled=false" };
 
 	private Path restart;
 	private int count = 0;
@@ -36,12 +38,12 @@ public class DevToolsLauncherState extends ProcessLauncherState {
 	}
 
 	private static String[] enhance(String[] args) {
-		List<String> result = new ArrayList<>(Arrays.asList("--server.port=0",
-				"--spring.devtools.livereload.enabled=false",
-				"--spring.devtools.restart.pollInterval=10",
-				"--spring.devtools.restart.quietPeriod=1", "--spring.jmx.enabled=false"));
-		result.addAll(Arrays.asList(args));
-		return result.toArray(new String[result.size()]);
+		String[] result = new String[args.length + defaultArgs.length];
+		System.arraycopy(defaultArgs, 0, result, 0, defaultArgs.length);
+		if (args.length > 0) {
+			System.arraycopy(args, 0, result, defaultArgs.length, args.length);
+		}
+		return result;
 	}
 
 	@Override

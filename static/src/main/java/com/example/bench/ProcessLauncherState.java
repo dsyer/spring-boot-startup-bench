@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.example.config.ShutdownApplicationListener;
 import com.example.config.StartupApplicationListener;
 import com.example.demo.DemoApplication;
 
@@ -155,8 +156,14 @@ public class ProcessLauncherState {
 	}
 
 	protected void monitor() throws IOException {
+		// use this method to wait for an app to start
 		output(getBuffer(), StartupApplicationListener.MARKER);
 		output(getBuffer(), "Started");
+	}
+
+	protected void finish() throws IOException {
+		// use this method to wait for an app to stop
+		output(getBuffer(), ShutdownApplicationListener.MARKER);
 	}
 
 	protected void drain() throws IOException {

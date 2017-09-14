@@ -61,6 +61,7 @@ public class DevToolsLauncherState extends ProcessLauncherState {
 		drain();
 		Files.write(restart, (new Date().toString() + IntStream.range(0, count++)
 				.mapToObj(i -> "" + i).collect(Collectors.joining(","))).getBytes());
+		finish();
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.config.ShutdownApplicationListener;
 import com.example.config.StartupApplicationListener;
 
 import org.springframework.beans.BeanUtils;
@@ -19,26 +20,22 @@ public class DemoApplication {
 	}
 
 	public static void main(String[] args) throws Exception {
-		builder().run(args);
+		builder().listeners(new StartupApplicationListener(DemoApplication.class),
+				new ShutdownApplicationListener(DemoApplication.class)).run(args);
 	}
 
 	private static SpringApplicationBuilder builder() {
 		// Defensive reflective builder to work with Boot 1.5 and 2.0
 		if (ClassUtils.hasConstructor(SpringApplicationBuilder.class, Class[].class)) {
-			return BeanUtils
-					.instantiateClass(
-							ClassUtils.getConstructorIfAvailable(
-									SpringApplicationBuilder.class, Class[].class),
-							(Object) new Class<?>[] { DemoApplication.class })
-					.listeners(new StartupApplicationListener(DemoApplication.class));
+			return BeanUtils.instantiateClass(
+					ClassUtils.getConstructorIfAvailable(SpringApplicationBuilder.class,
+							Class[].class),
+					(Object) new Class<?>[] { DemoApplication.class });
 		}
-		return BeanUtils
-				.instantiateClass(
-						ClassUtils.getConstructorIfAvailable(
-								SpringApplicationBuilder.class, Object[].class),
-						(Object) new Object[] { DemoApplication.class.getName() })
-				.listeners(
-						new StartupApplicationListener(DemoApplication.class.getName()));
+		return BeanUtils.instantiateClass(
+				ClassUtils.getConstructorIfAvailable(SpringApplicationBuilder.class,
+						Object[].class),
+				(Object) new Object[] { DemoApplication.class.getName() });
 	}
 
 }

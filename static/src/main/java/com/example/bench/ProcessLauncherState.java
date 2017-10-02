@@ -173,14 +173,21 @@ public class ProcessLauncherState {
 	protected static void output(BufferedReader br, String marker) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		String line = null;
+		if (!"false".equals(System.getProperty("debug", "false"))) {
+			System.err.println("Scanning for: " + marker);
+		}
 		while ((marker != null || br.ready()) && (line = br.readLine()) != null
 				&& (marker == null || !line.contains(marker))) {
 			sb.append(line + System.getProperty("line.separator"));
-			// System.out.println(line);
+			if (!"false".equals(System.getProperty("debug", "false"))) {
+				System.out.println(line);
+			}
 			line = null;
 		}
 		if (line != null) {
-			// System.out.println(line);
+			if (!"false".equals(System.getProperty("debug", "false"))) {
+				System.out.println(line);
+			}
 			sb.append(line + System.getProperty("line.separator"));
 		}
 		System.out.println(sb.toString());

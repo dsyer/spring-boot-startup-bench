@@ -24,11 +24,9 @@ import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import com.example.config.StartupApplicationListener;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanInitializationException;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.DefaultServletWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
@@ -80,7 +78,9 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 import org.springframework.web.util.UrlPathHelper;
 
-@Configuration
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+@SpringBootConfiguration
 @Import({ DispatcherServletConfiguration.class, EmbeddedTomcat.class,
 		WebMvcConfiguration.class })
 @EnableConfigurationProperties(WebMvcProperties.class)
@@ -93,9 +93,7 @@ public class LiteApplication {
 	}
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(LiteApplication.class)
-				.listeners(new StartupApplicationListener(LiteApplication.class))
-				.run(args).registerShutdownHook();
+		new SpringApplicationBuilder(LiteApplication.class).run(args).registerShutdownHook();
 	}
 }
 

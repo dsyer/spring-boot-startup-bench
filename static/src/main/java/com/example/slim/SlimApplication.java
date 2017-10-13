@@ -16,8 +16,8 @@
 
 package com.example.slim;
 
-import com.example.config.StartupApplicationListener;
-
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration;
 import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
 import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
@@ -33,13 +33,11 @@ import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactor
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.websocket.servlet.WebSocketServletAutoConfiguration;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Configuration
+@SpringBootConfiguration
 @Import({ HttpMessageConvertersAutoConfiguration.class, JacksonAutoConfiguration.class,
 		JmxAutoConfiguration.class, ValidationAutoConfiguration.class,
 		RestTemplateAutoConfiguration.class, DispatcherServletAutoConfiguration.class,
@@ -57,8 +55,6 @@ public class SlimApplication {
 	}
 
 	public static void main(String[] args) {
-		new SpringApplicationBuilder(SlimApplication.class)
-				.listeners(new StartupApplicationListener(SlimApplication.class))
-				.run(args);
+		SpringApplication.run(SlimApplication.class, args);
 	}
 }

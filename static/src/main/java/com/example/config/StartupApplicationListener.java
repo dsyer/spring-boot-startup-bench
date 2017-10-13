@@ -16,15 +16,19 @@
 package com.example.config;
 
 import java.lang.reflect.Method;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.springframework.beans.BeansException;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
@@ -33,25 +37,39 @@ import org.springframework.util.ReflectionUtils;
  *
  */
 public class StartupApplicationListener
-		implements ApplicationListener<ApplicationReadyEvent> {
+		implements ApplicationListener<ApplicationReadyEvent>, ApplicationContextAware {
 
 	public static final String MARKER = "Benchmark app started";
 	private static Log logger = LogFactory.getLog(StartupApplicationListener.class);
-	private Class<?> source;
+	private ApplicationContext context;
 
-	public StartupApplicationListener(Class<?> source) {
-		this.source = source;
+	@Override
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		this.context = context;
 	}
 
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
-		if (sources(event).contains(source)) {
+		if (!event.getApplicationContext().equals(this.context)) {
+			return;
+		}
+		if (isSpringBootApplication(sources(event))) {
 			try {
 				logger.info(MARKER);
 			}
 			catch (Exception e) {
 			}
 		}
+	}
+
+	private boolean isSpringBootApplication(Set<Class<?>> sources) {
+		for (Class<?> source : sources) {
+			if (AnnotatedElementUtils.hasAnnotation(source,
+					SpringBootConfiguration.class)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private Set<Class<?>> sources(ApplicationReadyEvent event) {
@@ -62,15 +80,14 @@ public class StartupApplicationListener
 		}
 		ReflectionUtils.makeAccessible(method);
 		@SuppressWarnings("unchecked")
-		Set<Object> sources = (Set<Object>) ReflectionUtils.invokeMethod(method,
+		Set<Object> objects = (Set<Object>) ReflectionUtils.invokeMethod(method,
 				event.getSpringApplication());
-		Set<Class<?>> result = new HashSet<>();
-		for (Object object : sources) {
+		Set<Class<?>> result = new LinkedHashSet<>();
+		for (Object object : objects) {
 			if (object instanceof String) {
-				result.add(ClassUtils.resolveClassName(object.toString(), null));
-			} else if (object instanceof Class) {
-				result.add((Class<?>) object);
+				object = ClassUtils.resolveClassName((String) object, null);
 			}
+			result.add((Class<?>) object);
 		}
 		return result;
 	}

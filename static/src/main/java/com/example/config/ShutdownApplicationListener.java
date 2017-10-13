@@ -16,18 +16,24 @@
 package com.example.config;
 
 import java.lang.reflect.Method;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 /**
@@ -36,24 +42,26 @@ import org.springframework.util.ReflectionUtils;
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class ShutdownApplicationListener
-		implements ApplicationListener<ApplicationReadyEvent>, DisposableBean {
+		implements ApplicationListener<ApplicationReadyEvent>, DisposableBean,
+		ApplicationContextAware {
 
-	/**
-	 * 
-	 */
 	private static final String SHUTDOWN_LISTENER = "SHUTDOWN_LISTENER";
 	public static final String MARKER = "Benchmark app stopped";
 	private static Log logger = LogFactory.getLog(ShutdownApplicationListener.class);
-	private Object source;
 
-	public ShutdownApplicationListener(Object source) {
-		this.source = source;
+	private ApplicationContext context;
+
+	@Override
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		this.context = context;
 	}
 
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
-		Set<Object> sources = sources(event);
-		if (sources.contains(source)) {
+		if (!event.getApplicationContext().equals(this.context)) {
+			return;
+		}
+		if (isSpringBootApplication(sources(event))) {
 			((DefaultListableBeanFactory) event.getApplicationContext().getBeanFactory())
 					.registerDisposableBean(SHUTDOWN_LISTENER, this);
 		}
@@ -68,8 +76,17 @@ public class ShutdownApplicationListener
 		}
 	}
 
-	private Set<Object> sources(ApplicationReadyEvent event) {
-		event.getSpringApplication().getMainApplicationClass();
+	private boolean isSpringBootApplication(Set<Class<?>> sources) {
+		for (Class<?> source : sources) {
+			if (AnnotatedElementUtils.hasAnnotation(source,
+					SpringBootConfiguration.class)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private Set<Class<?>> sources(ApplicationReadyEvent event) {
 		Method method = ReflectionUtils.findMethod(SpringApplication.class,
 				"getAllSources");
 		if (method == null) {
@@ -77,9 +94,15 @@ public class ShutdownApplicationListener
 		}
 		ReflectionUtils.makeAccessible(method);
 		@SuppressWarnings("unchecked")
-		Set<Object> result = (Set<Object>) ReflectionUtils.invokeMethod(method,
+		Set<Object> objects = (Set<Object>) ReflectionUtils.invokeMethod(method,
 				event.getSpringApplication());
+		Set<Class<?>> result = new LinkedHashSet<>();
+		for (Object object : objects) {
+			if (object instanceof String) {
+				object = ClassUtils.resolveClassName((String) object, null);
+			}
+			result.add((Class<?>) object);
+		}
 		return result;
 	}
-
 }

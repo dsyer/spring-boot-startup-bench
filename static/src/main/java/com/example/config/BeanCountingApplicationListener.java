@@ -22,8 +22,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.springframework.beans.BeansException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -32,13 +34,22 @@ import org.springframework.context.ConfigurableApplicationContext;
  *
  */
 public class BeanCountingApplicationListener
-		implements ApplicationListener<ApplicationReadyEvent> {
+		implements ApplicationListener<ApplicationReadyEvent>, ApplicationContextAware {
 
 	private static Log logger = LogFactory.getLog(BeanCountingApplicationListener.class);
+	private ApplicationContext context;
+
+	@Override
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		this.context = context;
+	}
 
 	@SuppressWarnings("resource")
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
+		if (!event.getApplicationContext().equals(this.context)) {
+			return;
+		}
 		int count = 0;
 		ConfigurableApplicationContext context = event.getApplicationContext();
 		String id = context.getId();

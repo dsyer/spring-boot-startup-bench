@@ -34,7 +34,7 @@
 
 		<start-class>org.springframework.samples.petclinic.PetClinicApplication</start-class>
 
-		<thin-layout.version>1.0.2.RELEASE</thin-layout.version>
+		<thin-layout.version>1.0.6.RELEASE</thin-layout.version>
 		<spring-boot-plugin.version>1.5.3.RELEASE</spring-boot-plugin.version>
 
 	</properties>

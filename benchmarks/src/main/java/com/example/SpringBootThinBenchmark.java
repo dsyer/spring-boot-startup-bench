@@ -100,7 +100,7 @@ public class SpringBootThinBenchmark {
 
 		@Setup(Level.Trial)
 		public void compute() throws Exception {
-			Collection<String> properties = capture("--thin.compute");
+			Collection<String> properties = capture("--thin.classpath=properties");
 			FileUtils.writeLines(new File("target/thin.properties"), properties);
 		}
 		
@@ -164,7 +164,7 @@ public class SpringBootThinBenchmark {
 
 		@Setup(Level.Trial)
 		public void compute() throws Exception {
-			Collection<String> properties = capture("--thin.compute");
+			Collection<String> properties = capture("--thin.classpath=properties");
 			FileUtils.writeLines(new File("target/thin.properties"), properties);
 		}
 		

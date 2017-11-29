@@ -124,7 +124,7 @@ public class PetclinicLatestBenchmark {
 				if (Files
 						.find(new File("target/demo/BOOT-INF/lib/").toPath(), 1,
 								(path, attrs) -> path.getFileName()
-										.startsWith("spring-boot-devtools"))
+										.startsWith("spring-boot-devtools-latest"))
 						.count() == 0) {
 					copy("target/demo/BOOT-INF/lib",
 							"../alt/target/spring-boot-devtools.jar");

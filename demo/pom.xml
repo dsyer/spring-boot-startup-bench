@@ -71,11 +71,18 @@
 		<profile>
 			<id>boot20x</id>
 			<properties>
-				<spring-boot.version>2.0.0.M1</spring-boot.version>
+				<spring-boot.version>2.0.0.M6</spring-boot.version>
 				<jar.classifier>20x</jar.classifier>
 			</properties>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>animal-sniffer-maven-plugin</artifactId>
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>

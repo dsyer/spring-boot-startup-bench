@@ -16,10 +16,11 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<jmh.version>1.16</jmh.version>
-		<spring-boot.version>2.0.0.M3</spring-boot.version>
-		<spring-cloud.version>Finchley.M1</spring-cloud.version>
+		<aspectj.version>1.8.11</aspectj.version>
+		<spring-boot.version>2.0.0.M6</spring-boot.version>
+		<spring-cloud.version>Finchley.M4</spring-cloud.version>
 		<locator.version>1.0.0.RELEASE</locator.version>
-		<thin.version>1.0.6.RELEASE</thin.version>
+		<thin.version>1.0.7.RELEASE</thin.version>
 		<uberjar.name>benchmarks</uberjar.name>
 		<start-class>org.openjdk.jmh.Main</start-class>
 	</properties>
@@ -35,6 +36,16 @@
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-settings-builder</artifactId>
 				<version>3.3.9</version>
+			</dependency>
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjrt</artifactId>
+				<version>${aspectj.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>${aspectj.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.boot</groupId>
@@ -71,12 +82,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-eureka</artifactId>
+			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-zuul</artifactId>
+			<artifactId>spring-cloud-starter-netflix-zuul</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

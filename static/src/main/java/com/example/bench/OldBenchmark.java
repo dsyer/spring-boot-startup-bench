@@ -56,7 +56,7 @@ public class OldBenchmark {
 
 		public static enum Sample {
 			empt, demo, actr, jdbc, actj, jpae(
-					JpaApplication.class), conf, erka, busr, zuul, erkb, slth;
+					JpaApplication.class), conf, erka, buna, busr, zuul, erkb, slth;
 
 			private Class<?> config;
 
@@ -104,7 +104,7 @@ public class OldBenchmark {
 
 		public static enum Sample {
 			demo, actr, jdbc, actj, jpae(
-					JpaApplication.class), conf, erka, busr, zuul, erkb, slth;
+					JpaApplication.class), conf, erka, buna, busr, zuul, erkb, slth;
 
 			private Class<?> config;
 

@@ -38,7 +38,7 @@
 		<profile>
 			<id>boot15x</id>
 			<properties>
-				<spring-boot.version>1.5.4.RELEASE</spring-boot.version>
+				<spring-boot.version>1.5.8.RELEASE</spring-boot.version>
 				<jar.classifier>15x</jar.classifier>
 			</properties>
 		</profile>

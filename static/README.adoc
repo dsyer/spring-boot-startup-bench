@@ -97,11 +97,20 @@ The "Trend" number is the best fit prediction of the startup time from the numbe
 
 === Eureka
 
-The "erka" sample started up _faster_ then predicted, but it also has a suspiciously large number of loaded classes (even more classes than with Eureka and Bus). The loaded classes mesaurements are not stable - you get different answers from run to run - but they don't usually fluctuate by enough to explain the difference here.
+The "erka" sample started up _faster_ then predicted, but it also has a suspiciously large number of loaded classes (even more classes than with Eureka and Bus). The loaded classes measurements are not stable - you get different answers from run to run - but they don't usually fluctuate by enough to explain the difference here.
 
 === Sleuth
 
 Here's an explanation for the "slth" result. Spring processes `@annotation` matchers in `@Pointcuts` extremely inefficiently, so the startup time scales with the number of pointcuts with `@annotations`, not so much the number of beans. If the pointcuts are driving it (as suggested by results in these https://github.com/dsyer/spring-boot-aspectj/tree/master/benchmarks[aspectj benchmarks]), then the 4 pointcuts with `@annotation` matchers would be costing 2403ms or around 600ms each, which is horrendous but consistent with the aspectj benchmarks.
+
+With AspectJ 1.8.13
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units  Beans  Classes
+MainBenchmark.main      slth    ss   10  4.002 ± 0.113   s/op  450    8358
+```
+
+(Makes a *huge* difference, but still slower than the trend.)
 
 === JPA
 

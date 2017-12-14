@@ -45,8 +45,7 @@ public class ProcessLauncherState {
 	private Process started;
 	private List<String> args = new ArrayList<>();
 	private static List<String> DEFAULT_JVM_ARGS = Arrays.asList("-Xmx128m", "-cp", "",
-			"-Djava.security.egd=file:/dev/./urandom", "-XX:TieredStopAtLevel=1",
-			"-noverify");
+			"-Djava.security.egd=file:/dev/./urandom", "-noverify");
 	private File home;
 	private String mainClass = DemoApplication.class.getName();
 	private int length;
@@ -59,6 +58,12 @@ public class ProcessLauncherState {
 	public ProcessLauncherState(String dir, String... args) {
 		this.args.add(System.getProperty("java.home") + "/bin/java");
 		this.args.addAll(DEFAULT_JVM_ARGS);
+		if (System.getProperty("java.vendor", "").toLowerCase().contains("ibm")) {
+			this.args.addAll(Arrays.asList("-Xquickstart", "-Xshareclasses"));
+		}
+		else {
+			this.args.addAll(Arrays.asList("-XX:TieredStopAtLevel=1"));
+		}
 		this.classpath = this.args.indexOf("-cp") + 1;
 		if (System.getProperty("bench.args") != null) {
 			this.args.addAll(Arrays.asList(System.getProperty("bench.args").split(" ")));

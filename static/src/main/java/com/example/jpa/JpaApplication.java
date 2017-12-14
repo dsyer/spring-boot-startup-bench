@@ -5,7 +5,8 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import org.springframework.boot.SpringApplication;
+import com.example.config.ApplicationBuilder;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ public class JpaApplication {
 	}
 
 	public static void main(String[] args) throws Exception {
-		SpringApplication.run(JpaApplication.class, args);
+		ApplicationBuilder.builder(JpaApplication.class).run(args);
 	}
 
 }

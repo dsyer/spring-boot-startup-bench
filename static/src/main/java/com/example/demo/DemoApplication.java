@@ -1,9 +1,8 @@
 package com.example.demo;
 
-import org.springframework.beans.BeanUtils;
+import com.example.config.ApplicationBuilder;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,21 +16,7 @@ public class DemoApplication {
 	}
 
 	public static void main(String[] args) throws Exception {
-		builder().run(args);
-	}
-
-	private static SpringApplicationBuilder builder() {
-		// Defensive reflective builder to work with Boot 1.5 and 2.0
-		if (ClassUtils.hasConstructor(SpringApplicationBuilder.class, Class[].class)) {
-			return BeanUtils.instantiateClass(
-					ClassUtils.getConstructorIfAvailable(SpringApplicationBuilder.class,
-							Class[].class),
-					(Object) new Class<?>[] { DemoApplication.class });
-		}
-		return BeanUtils.instantiateClass(
-				ClassUtils.getConstructorIfAvailable(SpringApplicationBuilder.class,
-						Object[].class),
-				(Object) new Object[] { DemoApplication.class.getName() });
+		ApplicationBuilder.builder(DemoApplication.class).run(args);
 	}
 
 }

@@ -16,7 +16,8 @@
 
 package com.example.slim;
 
-import org.springframework.boot.SpringApplication;
+import com.example.config.ApplicationBuilder;
+
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.context.ConfigurationPropertiesAutoConfiguration;
 import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
@@ -55,6 +56,6 @@ public class SlimApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(SlimApplication.class, args);
+		ApplicationBuilder.builder(SlimApplication.class).run(args);
 	}
 }

@@ -16,7 +16,8 @@
 
 package com.example.thin;
 
-import org.springframework.boot.SpringApplication;
+import com.example.config.ApplicationBuilder;
+
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.http.HttpMessageConvertersAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
@@ -39,6 +40,6 @@ public class ThinApplication {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(ThinApplication.class, args);
+		ApplicationBuilder.builder(ThinApplication.class).run(args);
 	}
 }

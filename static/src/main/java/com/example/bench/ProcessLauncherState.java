@@ -58,8 +58,9 @@ public class ProcessLauncherState {
 	public ProcessLauncherState(String dir, String... args) {
 		this.args.add(System.getProperty("java.home") + "/bin/java");
 		this.args.addAll(DEFAULT_JVM_ARGS);
-		if (System.getProperty("java.vendor", "").toLowerCase().contains("ibm")) {
-			this.args.addAll(Arrays.asList("-Xquickstart", "-Xshareclasses"));
+		String vendor = System.getProperty("java.vendor", "").toLowerCase();
+		if (vendor.contains("ibm") || vendor.contains("j9")) {
+			this.args.addAll(Arrays.asList("-Xms32m", "-Xquickstart", "-Xshareclasses"));
 		}
 		else {
 			this.args.addAll(Arrays.asList("-XX:TieredStopAtLevel=1"));

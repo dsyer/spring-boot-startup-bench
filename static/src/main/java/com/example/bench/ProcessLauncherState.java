@@ -60,7 +60,8 @@ public class ProcessLauncherState {
 		this.args.addAll(DEFAULT_JVM_ARGS);
 		String vendor = System.getProperty("java.vendor", "").toLowerCase();
 		if (vendor.contains("ibm") || vendor.contains("j9")) {
-			this.args.addAll(Arrays.asList("-Xms32m", "-Xquickstart", "-Xshareclasses"));
+			this.args.addAll(Arrays.asList("-Xms32m", "-Xquickstart", "-Xshareclasses",
+					"-Xscmx128m"));
 		}
 		else {
 			this.args.addAll(Arrays.asList("-XX:TieredStopAtLevel=1"));

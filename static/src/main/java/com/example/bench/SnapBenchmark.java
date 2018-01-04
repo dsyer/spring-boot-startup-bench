@@ -34,7 +34,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @Measurement(iterations = 5)
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.SingleShotTime)
 public class SnapBenchmark {
 
 	@Benchmark

@@ -315,10 +315,13 @@ dev time it's a good idea.
 
 #### Class Data Sharing (CDS)
 
-Class Data Sharing is a JDK feature (since Java 5). It is not a
-"standard" JVM option, so you have to use the Oracle JDK for the
-`JsaBenchmark`.  IBM and Open J9 have their own version of the same
-thing. Zulu works with the vanilla `CdsBenchmark`.
+Class Data Sharing is a JDK feature (since Java 5). Some people have
+reported success in improving startup time with simple apps (e.g. see
+https://mjg123.github.io/2017/10/02/JVM-startup.html[this blog]).
+
+CDS is not a "standard" JVM option, so you have to use the Oracle JDK
+for the `JsaBenchmark`.  IBM and Open J9 have their own version of the
+same thing. Zulu works with the vanilla `CdsBenchmark`.
 
 There is a `JsaBenchmark` that uses commercial features in the Oracle
 JDK, and also a "vanilla" CdsBenchmark (not using commercial
@@ -347,7 +350,9 @@ JDK9 results I looked at as well). The difference in the old results
 is probably entirely explained by the effect of -noverify, which I
 forgot to include in the non-shared classes execution.
 
-Reminder: this is a PetClinic with Boot 1.4.6.
+This is a PetClinic with Boot 1.4.6. There's no reason to put any
+effort into exploring the eeffect with other versions and other apps
+based on this data.
 
 #### Logback
 

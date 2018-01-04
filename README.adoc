@@ -48,7 +48,9 @@ Spring Boot (and other) issues for follow up:
 
 You need Java 8 and Docker to build all the code cleanly (you can
 build selectively the bits that don't depend on Docker if you don't
-have it). Then do this:
+have it). To run the `JsaBenchmark` you need an Oracle JVM.
+
+Then do this:
 
 ```
 $ ./mvnw clean install
@@ -135,6 +137,8 @@ Summary:
 * Hardware matters a lot, but affects all apps roughly the same.
 
 * Spring Boot (and Spring Data) slow things down (a bit).
+
+* Common Data Sharing (CDS) can improve startup a bit (see `JsaBenchmark`).
 
 N.B. the times reported by the Spring Boot stop watch on the console
 are always shorter than those measured by the benchmark. The
@@ -308,6 +312,42 @@ JsaBenchmark.thinMain                       avgt   10  3.573 ± 0.229   s/op
 This wouldn't be a sensible setting for a long-running process in
 production, but it seems to have a positive effect on startup, so at
 dev time it's a good idea.
+
+#### Class Data Sharing (CDS)
+
+Class Data Sharing is a JDK feature (since Java 5). It is not a
+"standard" JVM option, so you have to use the Oracle JDK for the
+`JsaBenchmark`.  IBM and Open J9 have their own version of the same
+thing. Zulu works with the vanilla `CdsBenchmark`.
+
+There is a `JsaBenchmark` that uses commercial features in the Oracle
+JDK, and also a "vanilla" CdsBenchmark (not using commercial
+features).
+
+With `8u151-oracle`:
+
+```
+Benchmark                   Mode  Cnt  Score   Error  Units
+CdsBenchmark.sharedClasses  avgt   10  2.871 ± 0.088   s/op
+CdsBenchmark.thinMain       avgt   10  2.933 ± 0.154   s/op
+JsaBenchmark.sharedClasses  avgt   10  2.893 ± 0.068   s/op
+JsaBenchmark.thinMain       avgt   10  2.898 ± 0.085   s/op
+```
+
+With `8u152-zulu`:
+
+```
+Benchmark                   Mode  Cnt  Score   Error  Units
+CdsBenchmark.sharedClasses  avgt   10  2.854 ± 0.042   s/op
+CdsBenchmark.thinMain       avgt   10  2.837 ± 0.072   s/op
+```
+
+So there is really nothing in it (which is what I remembered from the
+JDK9 results I looked at as well). The difference in the old results
+is probably entirely explained by the effect of -noverify, which I
+forgot to include in the non-shared classes execution.
+
+Reminder: this is a PetClinic with Boot 1.4.6.
 
 #### Logback
 

@@ -40,7 +40,7 @@ import org.openjdk.jmh.util.FileUtils;
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
-public class JsaBenchmark {
+public class CdsBenchmark {
 
 	@Benchmark
 	public void sharedClasses(SharedState state) throws Exception {
@@ -57,39 +57,19 @@ public class JsaBenchmark {
 
 		@Setup(Level.Trial)
 		public void setup() throws Exception {
-			Process started = exec(
-					"-Xshare:off -XX:DumpLoadedClassList=app.classlist -cp $CLASSPATH:"
-							+ jarFile("com.example:petclinic:jar:thin:1.4.2"),
-					"org.springframework.samples.petclinic.PetClinicApplication",
-					"--server.port=0");
-			output(started.getInputStream(), "Started");
-			started.destroyForcibly();
 			Process dump = exec(
-					"-Xshare:dump -XX:SharedArchiveFile=app.jsa -XX:SharedClassListFile=app.classlist -cp $CLASSPATH",
+					"-Xshare:dump -XX:+UnlockDiagnosticVMOptions -XX:SharedArchiveFile=app.jsa -cp $CLASSPATH",
 					"", "");
 			FileUtils.readAllLines(dump.getInputStream());
 			dump.waitFor();
 		}
 
 		@Override
-		protected void precustomize(ProcessBuilder builder) {
-			commonArgs(builder.command());
-			super.precustomize(builder);
-		}
-
-		@Override
 		protected void customize(ProcessBuilder builder) {
-			commonArgs(builder.command());
-			builder.command().addAll(
-					Arrays.asList("-Xshare:on -XX:SharedArchiveFile=app.jsa".split(" ")));
+			builder.command().addAll(Arrays.asList(
+					"-Xshare:on -XX:+UnlockDiagnosticVMOptions -XX:SharedArchiveFile=app.jsa"
+							.split(" ")));
 			super.customize(builder);
-		}
-
-		@Override
-		protected void commonArgs(List<String> command) {
-			super.commonArgs(command);
-			command.addAll(1, Arrays
-					.asList("-XX:+UnlockCommercialFeatures -XX:+UseAppCDS".split(" ")));
 		}
 
 		@Override
@@ -164,7 +144,7 @@ public class JsaBenchmark {
 			replaceEnvironment(builder);
 		}
 
-		protected void commonArgs(List<String> command) {
+		private void commonArgs(List<String> command) {
 			command.addAll(1, Arrays.asList("-noverify".split(" ")));
 		}
 

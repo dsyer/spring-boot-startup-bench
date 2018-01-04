@@ -46,6 +46,10 @@ Spring Boot (and other) issues for follow up:
 
 ## Running Locally
 
+You need Java 8 and Docker to build all the code cleanly (you can
+build selectively the bits that don't depend on Docker if you don't
+have it). Then do this:
+
 ```
 $ ./mvnw clean install
 $ (cd benchmarks/; java -jar target/benchmarks.jar)

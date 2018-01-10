@@ -35,14 +35,14 @@
 								<artifactItem>
 									<groupId>org.springframework.boot</groupId>
 									<artifactId>spring-boot-devtools</artifactId>
-									<version>1.4.6.RELEASE</version>
+									<version>1.5.9.RELEASE</version>
 									<outputDirectory>${project.basedir}/target</outputDirectory>
 									<destFileName>spring-boot-devtools.jar</destFileName>
 								</artifactItem>
 								<artifactItem>
 									<groupId>org.springframework.boot</groupId>
 									<artifactId>spring-boot-devtools</artifactId>
-									<version>1.5.6.RELEASE</version>
+									<version>2.0.0.BUILD-SNAPSHOT</version>
 									<outputDirectory>${project.basedir}/target</outputDirectory>
 									<destFileName>spring-boot-devtools-latest.jar</destFileName>
 								</artifactItem>

@@ -127,7 +127,7 @@ public class PetclinicLatestBenchmark {
 										.startsWith("spring-boot-devtools-latest"))
 						.count() == 0) {
 					copy("target/demo/BOOT-INF/lib",
-							"../alt/target/spring-boot-devtools.jar");
+							"../alt/target/spring-boot-devtools-latest.jar");
 				}
 			}
 			catch (IOException e) {

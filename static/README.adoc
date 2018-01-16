@@ -118,11 +118,17 @@ Hibernate fixed startup cost is about 1300ms (the "delta" on "jpad"), which more
 
 == Running the Benchmarks
 
-You need Java 8.
+TL;DR: You need Java 8.
 
 ```
 $ ../mvnw clean install
 $ java -jar target/benchmarks.jar
+```
+
+and the whole suite takes quite a long time to run, so to just try it out quickly, it's best to cherry pick some specific samples, e.g.
+
+```
+$ java -jar target/benchmarks.jar main -p sample=actr
 ```
 
 There are 4 groups of benchmarks:

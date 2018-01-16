@@ -45,7 +45,7 @@ public class ProcessLauncherState {
 	private Process started;
 	private List<String> args = new ArrayList<>();
 	private static List<String> DEFAULT_JVM_ARGS = Arrays.asList("-Xmx128m", "-cp", "",
-			"-Djava.security.egd=file:/dev/./urandom", "-noverify");
+        "-Djava.security.egd=file:/dev/./urandom", "-noverify");
 	private File home;
 	private String mainClass = DemoApplication.class.getName();
 	private int length;
@@ -165,7 +165,6 @@ public class ProcessLauncherState {
 	protected void monitor() throws IOException {
 		// use this method to wait for an app to start
 		output(getBuffer(), StartupApplicationListener.MARKER);
-		output(getBuffer(), "Started");
 	}
 
 	protected void finish() throws IOException {

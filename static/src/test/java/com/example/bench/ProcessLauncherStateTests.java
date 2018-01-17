@@ -28,14 +28,32 @@ import static org.assertj.core.api.Assertions.assertThat;
  *
  */
 public class ProcessLauncherStateTests {
-	
+
 	@Rule
 	public OutputCapture output = new OutputCapture();
 
 	@Test
-	public void test() throws Exception {
-		ProcessLauncherState state = new ProcessLauncherState("target", "--server.port=0");
+	public void vanilla() throws Exception {
+		ProcessLauncherState state = new ProcessLauncherState("target",
+				"--server.port=0");
+		state.setProfiles("old");
 		state.before();
+		state.run();
+		state.after();
+		output.flush();
+		assertThat(output.toString()).contains("Benchmark app started");
+	}
+
+	// @Test
+	// Only use this if devtools is on the classpath
+	public void devtools() throws Exception {
+		DevToolsLauncherState state = new DevToolsLauncherState("target",
+				"classes/.restart");
+		// state.setProfiles("erka");
+		state.before();
+		output.flush();
+		state.update();
+		output.flush();
 		state.run();
 		state.after();
 		output.flush();

@@ -19,8 +19,6 @@ import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -47,7 +45,6 @@ public class ShutdownApplicationListener
 
 	private static final String SHUTDOWN_LISTENER = "SHUTDOWN_LISTENER";
 	public static final String MARKER = "Benchmark app stopped";
-	private static Log logger = LogFactory.getLog(ShutdownApplicationListener.class);
 
 	private ApplicationContext context;
 
@@ -70,7 +67,7 @@ public class ShutdownApplicationListener
 	@Override
 	public void destroy() throws Exception {
 		try {
-			logger.info(MARKER);
+			System.out.println(MARKER);
 		}
 		catch (Exception e) {
 		}

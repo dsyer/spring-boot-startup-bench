@@ -57,7 +57,7 @@ public class DevToolsLauncherState extends ProcessLauncherState {
 		monitor();
 	}
 
-	protected void update() throws IOException {
+	public void update() throws IOException {
 		drain();
 		Files.write(restart, (new Date().toString() + IntStream.range(0, count++)
 				.mapToObj(i -> "" + i).collect(Collectors.joining(","))).getBytes());

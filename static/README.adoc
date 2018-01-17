@@ -116,6 +116,33 @@ MainBenchmark.main      slth    ss   10  4.002 ± 0.113   s/op  450    8358
 
 Hibernate fixed startup cost is about 1300ms (the "delta" on "jpad"), which more or less doubles the startup time for a JPA app compared to the vanilla "demo". Spring Data JPA repository creation seems to have a fixed cost of about 90ms, which isn't nothing but isn't very large in comparison. Adding repositories and entities might cost something, but it isn't a lot - the best estimate would be about 30ms per entity from these data (these were very basic, vanilla `JpaRepositories`, so maybe it would be more for more complex requirements). The JPA samples (and even Zuul) are a pretty good fit for number of classes loaded versus startup time, so Hibernate isn't doing a lot of intensive stuff beyond forcing a lot of classes to be loaded.
 
+=== Jackson
+
+We can't easily exclude Jackson from all the sample, but anything that doesn't use the Actuator can be run with and without to see the difference. Here's the vanilla "demo" sample
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units
+SnapBenchmark.snap      demo    ss   10  1.150 ± 0.076   s/op
+```
+
+and with `exclusions.spring-boot-jackson=org.springframework.boot:spring-boot-starter-json` in `thin.properties`:
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units
+SnapBenchmark.snap      demo    ss   10  1.069 ± 0.036   s/op
+```
+
+So that's probably worth having.
+
+=== Hibernate Validator
+
+Further excluding Hibernate Validator with `exclusions.hibernate-validator=org.hibernate.validator:hibernate-validator`:
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units
+SnapBenchmark.snap      demo    ss   10  1.014 ± 0.027   s/op
+```
+
 == Running the Benchmarks
 
 TL;DR: You need Java 8.

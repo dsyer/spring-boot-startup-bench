@@ -17,7 +17,6 @@ package com.example.bench;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -162,22 +161,22 @@ public class ProcessLauncherState {
 	protected void customize(ProcessBuilder builder) {
 	}
 
-	protected void monitor() throws IOException {
+	protected void monitor() throws Exception {
 		// use this method to wait for an app to start
 		output(getBuffer(), StartupApplicationListener.MARKER);
 		// output(getBuffer(), "Started");
 	}
 
-	protected void finish() throws IOException {
+	protected void finish() throws Exception {
 		// use this method to wait for an app to stop
 		output(getBuffer(), ShutdownApplicationListener.MARKER);
 	}
 
-	protected void drain() throws IOException {
+	protected void drain() throws Exception {
 		output(getBuffer(), null);
 	}
 
-	protected static void output(BufferedReader br, String marker) throws IOException {
+	protected static void output(BufferedReader br, String marker) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		String line = null;
 		if (!"false".equals(System.getProperty("debug", "false"))) {

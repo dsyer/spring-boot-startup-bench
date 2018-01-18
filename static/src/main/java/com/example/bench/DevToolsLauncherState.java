@@ -15,7 +15,6 @@
  */package com.example.bench;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
@@ -57,7 +56,7 @@ public class DevToolsLauncherState extends ProcessLauncherState {
 		monitor();
 	}
 
-	public void update() throws IOException {
+	public void update() throws Exception {
 		drain();
 		Files.write(restart, (new Date().toString() + IntStream.range(0, count++)
 				.mapToObj(i -> "" + i).collect(Collectors.joining(","))).getBytes());

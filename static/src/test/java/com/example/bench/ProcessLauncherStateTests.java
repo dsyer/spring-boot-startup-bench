@@ -44,20 +44,4 @@ public class ProcessLauncherStateTests {
 		assertThat(output.toString()).contains("Benchmark app started");
 	}
 
-	// @Test
-	// Only use this if devtools is on the classpath
-	public void devtools() throws Exception {
-		DevToolsLauncherState state = new DevToolsLauncherState("target",
-				"classes/.restart");
-		// state.setProfiles("erka");
-		state.before();
-		output.flush();
-		state.update();
-		output.flush();
-		state.run();
-		state.after();
-		output.flush();
-		assertThat(output.toString()).contains("Benchmark app started");
-	}
-
 }

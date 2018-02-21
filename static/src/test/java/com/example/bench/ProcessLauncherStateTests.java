@@ -16,6 +16,8 @@
 
 package com.example.bench;
 
+import com.example.bench.StripBenchmark.ApplicationState;
+
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -41,6 +43,18 @@ public class ProcessLauncherStateTests {
 		state.run();
 		state.after();
 		output.flush();
+		assertThat(output.toString()).contains("Benchmark app started");
+	}
+
+	@Test
+	public void func() throws Exception {
+		ApplicationState state = new ApplicationState();
+		state.sample = ApplicationState.Sample.func;
+		state.start();
+		state.run();
+		state.after();
+		output.flush();
+		assertThat(output.toString()).contains("FuncApplication");
 		assertThat(output.toString()).contains("Benchmark app started");
 	}
 

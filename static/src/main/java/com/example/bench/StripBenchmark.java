@@ -64,7 +64,7 @@ public class StripBenchmark {
 		}
 
 		@Param
-		private Sample sample = Sample.thin;
+		public Sample sample = Sample.thin;
 
 		public ApplicationState() {
 			super("target", "--server.port=0");

@@ -31,6 +31,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
+import org.springframework.boot.context.properties.ConfigurationBeanFactoryMetadata;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor;
@@ -106,6 +107,8 @@ class WebAppInitializer
 	public void initialize(GenericApplicationContext context) {
 		context.registerBean(ConfigurationPropertiesBindingPostProcessor.class,
 				() -> new ConfigurationPropertiesBindingPostProcessor());
+		context.registerBean(ConfigurationBeanFactoryMetadata.class,
+				() -> new ConfigurationBeanFactoryMetadata());
 		context.registerBean(WebMvcProperties.class, () -> new WebMvcProperties());
 		context.registerBean(ServerProperties.class, () -> new ServerProperties());
 		context.registerBean(ServletWebServerFactoryCustomizer.class,

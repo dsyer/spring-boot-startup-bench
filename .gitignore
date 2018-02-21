@@ -6,6 +6,7 @@ interpolated-pom.xml
 *#
 *~
 build.log
+.attach_*
 _site/
 
 ### STS ###

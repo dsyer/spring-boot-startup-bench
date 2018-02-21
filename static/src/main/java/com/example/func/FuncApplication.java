@@ -29,7 +29,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.autoconfigure.web.servlet.DefaultServletWebServerFactoryCustomizer;
+import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -108,7 +108,7 @@ class WebAppInitializer
 				() -> new ConfigurationPropertiesBindingPostProcessor());
 		context.registerBean(WebMvcProperties.class, () -> new WebMvcProperties());
 		context.registerBean(ServerProperties.class, () -> new ServerProperties());
-		context.registerBean(DefaultServletWebServerFactoryCustomizer.class,
+		context.registerBean(ServletWebServerFactoryCustomizer.class,
 				() -> serverPropertiesWebServerFactoryCustomizer(
 						context.getBean(ServerProperties.class)));
 		context.registerBean(WebServerFactoryCustomizerBeanPostProcessor.class,
@@ -147,9 +147,9 @@ class WebAppInitializer
 		return new TomcatServletWebServerFactory();
 	}
 
-	public DefaultServletWebServerFactoryCustomizer serverPropertiesWebServerFactoryCustomizer(
+	public ServletWebServerFactoryCustomizer serverPropertiesWebServerFactoryCustomizer(
 			ServerProperties serverProperties) {
-		return new DefaultServletWebServerFactoryCustomizer(serverProperties);
+		return new ServletWebServerFactoryCustomizer(serverProperties);
 	}
 
 	public WebServerFactoryCustomizerBeanPostProcessor webServerFactoryCustomizerBeanPostProcessor() {

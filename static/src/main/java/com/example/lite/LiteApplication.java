@@ -31,7 +31,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.autoconfigure.web.servlet.DefaultServletWebServerFactoryCustomizer;
+import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -108,9 +108,9 @@ class EmbeddedTomcat {
 	}
 
 	@Bean
-	public DefaultServletWebServerFactoryCustomizer serverPropertiesWebServerFactoryCustomizer(
+	public ServletWebServerFactoryCustomizer serverPropertiesWebServerFactoryCustomizer(
 			ServerProperties serverProperties) {
-		return new DefaultServletWebServerFactoryCustomizer(serverProperties);
+		return new ServletWebServerFactoryCustomizer(serverProperties);
 	}
 
 	@Bean

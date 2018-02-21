@@ -188,6 +188,20 @@ $ spring install org.springframework.cloud:spring-cloud-cli:1.3.4.RELEASE
 $ spring cloud eureka
 ```
 
+== New Data
+
+Spring Boot 2.0.0 snapshots (before RC2):
+
+```
+Benchmark             (sample)  Mode  Cnt  Score   Error  Units Beans Classes
+StripBenchmark.strip      slim    ss   10  1.102 ± 0.041   s/op 107   5754
+StripBenchmark.strip      thin    ss   10  0.941 ± 0.034   s/op 62    5444
+StripBenchmark.strip      lite    ss   10  0.767 ± 0.021   s/op 30    5094
+StripBenchmark.strip      func    ss   10  0.718 ± 0.010   s/op 26    5030
+```
+
+Even in the "lite" and "func" samples, where all the beans are hard coded (no scanning, no autoconfig, no condition evaluation), Boot 2.0 loads way more classes.
+
 == Old Data
 
 (Boot 1.5.4 without `-noverify`)

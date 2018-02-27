@@ -36,9 +36,10 @@ public class ProcessLauncherStateTests {
 
 	@Test
 	public void vanilla() throws Exception {
+		// System.setProperty("bench.args", "-verbose:class");
 		ProcessLauncherState state = new ProcessLauncherState("target",
 				"--server.port=0");
-		state.setProfiles("old");
+		state.setProfiles("old", "jlog");
 		state.before();
 		state.run();
 		state.after();

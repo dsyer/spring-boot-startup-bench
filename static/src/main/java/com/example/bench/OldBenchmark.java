@@ -55,7 +55,7 @@ public class OldBenchmark {
 	public static class OldState extends ProcessLauncherState {
 
 		public static enum Sample {
-			empt, demo, actr, jdbc, actj, jpae(
+			empt, jlog, demo, actr, jdbc, actj, jpae(
 					JpaApplication.class), conf, erka, buna, busr, zuul, erkb, slth;
 
 			private Class<?> config;

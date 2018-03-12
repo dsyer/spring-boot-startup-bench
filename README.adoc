@@ -373,7 +373,8 @@ Java10CdsBenchmark.thinMain          older  avgt   10  3.217 ± 0.783   s/op
 Java10CdsBenchmark.thinMain         latest  avgt   10  3.747 ± 1.026   s/op
 ```
 
-The effect is more dramatic for Boot 1.5.
+The "older" is Boot 1.5, and "latest" is 2.0, so the effect is more
+dramatic for Boot 1.5.
 
 #### Logback
 

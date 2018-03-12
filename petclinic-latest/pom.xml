@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.0.BUILD-SNAPSHOT</version>
+		<version>2.0.0.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<name>petclinic latest</name>
@@ -33,7 +33,7 @@
 		<start-class>org.springframework.samples.petclinic.PetClinicApplication</start-class>
 
 		<thin-layout.version>1.0.9.RELEASE</thin-layout.version>
-		<spring-boot-plugin.version>2.0.0.BUILD-SNAPSHOT</spring-boot-plugin.version>
+		<spring-boot-plugin.version>1.5.10.RELEASE</spring-boot-plugin.version>
 
 	</properties>
 
@@ -150,7 +150,6 @@
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>${spring-boot-plugin.version}</version>
 						<configuration>
 							<classifier>thin</classifier>
 						</configuration>
@@ -186,26 +185,10 @@
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
+					<version>${spring-boot-plugin.version}</version>
 					<configuration>
 						<classifier>${jar.classifier}</classifier>
 					</configuration>
-					<executions>
-						<execution>
-							<!-- Spring Boot Actuator displays build-related information if a 
-								META-INF/build-info.properties file is present -->
-							<goals>
-								<goal>build-info</goal>
-							</goals>
-							<configuration>
-								<additionalProperties>
-									<encoding.source>${project.build.sourceEncoding}</encoding.source>
-									<encoding.reporting>${project.reporting.outputEncoding}</encoding.reporting>
-									<java.source>${maven.compiler.source}</java.source>
-									<java.target>${maven.compiler.target}</java.target>
-								</additionalProperties>
-							</configuration>
-						</execution>
-					</executions>
 				</plugin>
 				<plugin>
 					<artifactId>maven-shade-plugin</artifactId>

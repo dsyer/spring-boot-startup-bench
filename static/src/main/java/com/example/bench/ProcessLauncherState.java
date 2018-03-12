@@ -28,7 +28,6 @@ import com.example.config.ShutdownApplicationListener;
 import com.example.config.StartupApplicationListener;
 import com.example.demo.DemoApplication;
 
-import org.openjdk.jmh.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,19 +42,17 @@ public class ProcessLauncherState {
 
 	private Process started;
 	private List<String> args = new ArrayList<>();
+	private List<String> progs = new ArrayList<>();
 	private static List<String> DEFAULT_JVM_ARGS = Arrays.asList("-Xmx128m", "-cp", "",
 			"-Djava.security.egd=file:/dev/./urandom", "-noverify");
 	private File home;
 	private String mainClass = DemoApplication.class.getName();
-	private int length;
 	private String name = "thin";
 	private String[] profiles = new String[0];
-	private int classpath = 0;
 
 	private BufferedReader buffer;
 
 	public ProcessLauncherState(String dir, String... args) {
-		this.args.add(System.getProperty("java.home") + "/bin/java");
 		this.args.addAll(DEFAULT_JVM_ARGS);
 		String vendor = System.getProperty("java.vendor", "").toLowerCase();
 		if (vendor.contains("ibm") || vendor.contains("j9")) {
@@ -65,12 +62,10 @@ public class ProcessLauncherState {
 		else {
 			this.args.addAll(Arrays.asList("-XX:TieredStopAtLevel=1"));
 		}
-		this.classpath = this.args.indexOf("-cp") + 1;
 		if (System.getProperty("bench.args") != null) {
 			this.args.addAll(Arrays.asList(System.getProperty("bench.args").split(" ")));
 		}
-		this.args.addAll(Arrays.asList(args));
-		this.length = args.length;
+		this.progs.addAll(Arrays.asList(args));
 		this.home = new File(dir);
 	}
 
@@ -90,8 +85,11 @@ public class ProcessLauncherState {
 		PathResolver resolver = new PathResolver(DependencyResolver.instance());
 		Archive root = ArchiveUtils.getArchive(getClass());
 		List<Archive> resolved = resolver.resolve(root, name, profiles);
-		StringBuilder builder = new StringBuilder(
-				new File("target/classes").getAbsolutePath());
+		File app = new File("target/original-benchmarks.jar");
+		if (!app.exists()) {
+			app = new File("target/classes");
+		}
+		StringBuilder builder = new StringBuilder(app.getAbsolutePath());
 		try {
 			for (Archive archive : resolved) {
 				if (archive.getUrl().equals(root.getUrl())) {
@@ -123,10 +121,6 @@ public class ProcessLauncherState {
 		return path;
 	}
 
-	public void before() throws Exception {
-		args.set(this.classpath, getClasspath());
-	}
-
 	public void after() throws Exception {
 		if (started != null && started.isAlive()) {
 			System.err.println(
@@ -139,26 +133,50 @@ public class ProcessLauncherState {
 	}
 
 	public void run() throws Exception {
-		List<String> args = new ArrayList<>(this.args);
-		args.add(args.size() - this.length, this.mainClass);
-		ProcessBuilder builder = new ProcessBuilder(args);
-		builder.directory(home);
-		builder.redirectErrorStream(true);
-		customize(builder);
-		if (!"false".equals(System.getProperty("debug", "false"))) {
-			System.err.println("Running: " + Utils.join(args, " "));
-		}
-		if (this.buffer != null) {
-			drain();
-			this.buffer.close();
-		}
-		started = builder.start();
+		List<String> jvmArgs = new ArrayList<>(this.args);
+		customize(jvmArgs);
+		started = exec(jvmArgs.toArray(new String[0]), this.progs.toArray(new String[0]));
 		InputStream stream = started.getInputStream();
 		this.buffer = new BufferedReader(new InputStreamReader(stream));
 		monitor();
 	}
 
-	protected void customize(ProcessBuilder builder) {
+	public void before() throws Exception {
+		int classpath = args.indexOf("-cp");
+		if (classpath >= 0 && args.get(classpath + 1).length() == 0) {
+			args.set(classpath + 1, getClasspath());
+		}
+	}
+
+	protected void customize(List<String> args) {
+	}
+
+	protected Process exec(String[] jvmArgs, String... progArgs) {
+		List<String> args = new ArrayList<>(Arrays.asList(jvmArgs));
+		args.add(0, System.getProperty("java.home") + "/bin/java");
+		if (mainClass.length() > 0) {
+			args.add(mainClass);
+		}
+		int classpath = args.indexOf("-cp");
+		if (classpath >= 0 && args.get(classpath + 1).length() == 0) {
+			args.set(classpath + 1, getClasspath());
+		}
+		args.addAll(Arrays.asList(progArgs));
+		ProcessBuilder builder = new ProcessBuilder(args);
+		builder.redirectErrorStream(true);
+		builder.directory(getHome());
+		if (!"false".equals(System.getProperty("debug", "false"))) {
+			System.err.println("Executing: " + builder.command());
+		}
+		Process started;
+		try {
+			started = builder.start();
+			return started;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			throw new IllegalStateException("Cannot calculate classpath");
+		}
 	}
 
 	protected void monitor() throws Exception {

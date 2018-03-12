@@ -29,6 +29,7 @@ import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -36,11 +37,18 @@ import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.util.FileUtils;
 
+/**
+ * Benchmarks for Common Data Sharing. Only works for application classes with Oracle JDK,
+ * so don't expect to see anything dramatic with other JVMs.
+ * 
+ * @author Dave Syer
+ *
+ */
 @Measurement(iterations = 5)
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.AverageTime)
-public class CdsBenchmark {
+public class OracleCdsBenchmark {
 
 	@Benchmark
 	public void sharedClasses(SharedState state) throws Exception {
@@ -55,8 +63,10 @@ public class CdsBenchmark {
 	@State(Scope.Benchmark)
 	public static class SharedState extends ThinMainState {
 
+		@Override
 		@Setup(Level.Trial)
 		public void setup() throws Exception {
+			super.setup();
 			Process dump = exec(
 					"-Xshare:dump -XX:+UnlockDiagnosticVMOptions -XX:SharedArchiveFile=app.jsa -cp $CLASSPATH",
 					"", "");
@@ -82,19 +92,40 @@ public class CdsBenchmark {
 	@State(Scope.Benchmark)
 	public static class ThinMainState extends ProcessLauncherState {
 
+		public static enum Sample {
+			older, latest("com.example:petclinic-latest:jar:thin:1.4.2");
+
+			private String jar;
+
+			private Sample(String jar) {
+				this.jar = jar;
+			}
+
+			private Sample() {
+				this.jar = "com.example:petclinic:jar:thin:1.4.2";
+			}
+
+			public String getJar() {
+				return jarFile(jar);
+			}
+
+		}
+
+		@Param
+		private Sample sample = Sample.older;
+
 		private Map<String, String> environment = new LinkedHashMap<>();
 
 		public ThinMainState() {
-			super("target", "-cp",
-					"$CLASSPATH:" + jarFile("com.example:petclinic:jar:thin:1.4.2"),
+			super("target", "-cp", "$CLASSPATH:%JAR%",
 					"org.springframework.samples.petclinic.PetClinicApplication",
 					"--server.port=0");
-			environment();
 		}
 
-		private void environment() {
-			Process started = exec("-jar",
-					jarFile("com.example:petclinic:jar:thin:1.4.2"), "--thin.classpath");
+		@Setup(Level.Trial)
+		public void setup() throws Exception {
+			replace("%JAR%", sample.getJar());
+			Process started = exec("-jar", sample.getJar(), "--thin.classpath");
 			try {
 				Collection<String> lines = FileUtils
 						.readAllLines(started.getInputStream());

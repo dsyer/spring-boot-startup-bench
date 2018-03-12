@@ -35,7 +35,7 @@ import org.openjdk.jmh.util.FileUtils;
 @Measurement(iterations = 5)
 @Warmup(iterations = 1)
 @Fork(value = 2, warmups = 0)
-@BenchmarkMode(Mode.AverageTime)
+@BenchmarkMode(Mode.SingleShotTime)
 public class SpringBootThinBenchmark {
 
 	@Benchmark
@@ -44,7 +44,8 @@ public class SpringBootThinBenchmark {
 	}
 
 	@Benchmark
-	public void basic14xPrecomputeThin(Basic14xPrecomputeThinState state) throws Exception {
+	public void basic14xPrecomputeThin(Basic14xPrecomputeThinState state)
+			throws Exception {
 		state.run();
 	}
 
@@ -59,12 +60,24 @@ public class SpringBootThinBenchmark {
 	}
 
 	@Benchmark
+	public void petclinicLatestThin(PetclinicLatestThinState state) throws Exception {
+		state.run();
+	}
+
+	@Benchmark
+	public void petclinicLatesPrecomputeThin(PetclinicLatestPrecomputeThinState state)
+			throws Exception {
+		state.run();
+	}
+
+	@Benchmark
 	public void petclinicThin(PetclinicThinState state) throws Exception {
 		state.run();
 	}
 
 	@Benchmark
-	public void petclinicPrecomputeThin(PetclinicPrecomputeThinState state) throws Exception {
+	public void petclinicPrecomputeThin(PetclinicPrecomputeThinState state)
+			throws Exception {
 		state.run();
 	}
 
@@ -103,7 +116,7 @@ public class SpringBootThinBenchmark {
 			Collection<String> properties = capture("--thin.classpath=properties");
 			FileUtils.writeLines(new File("target/thin.properties"), properties);
 		}
-		
+
 		@TearDown(Level.Trial)
 		public void clean() throws Exception {
 			new File("target/thin.properties").delete();
@@ -138,6 +151,46 @@ public class SpringBootThinBenchmark {
 	}
 
 	@State(Scope.Benchmark)
+	public static class PetclinicLatestThinState extends ProcessLauncherState {
+		public PetclinicLatestThinState() {
+			super("target", "-jar",
+					jarFile("com.example:petclinic-latest:jar:thin:1.4.2"),
+					"--server.port=0");
+		}
+
+		@TearDown(Level.Iteration)
+		public void stop() throws Exception {
+			super.after();
+		}
+	}
+
+	@State(Scope.Benchmark)
+	public static class PetclinicLatestPrecomputeThinState extends ProcessLauncherState {
+		public PetclinicLatestPrecomputeThinState() {
+			super("target", "-jar",
+					jarFile("com.example:petclinic-latest:jar:thin:1.4.2"),
+					"--server.port=0");
+		}
+
+		@TearDown(Level.Iteration)
+		public void stop() throws Exception {
+			super.after();
+		}
+
+		@Setup(Level.Trial)
+		public void compute() throws Exception {
+			Collection<String> properties = capture("--thin.classpath=properties");
+			FileUtils.writeLines(new File("target/thin.properties"), properties);
+		}
+
+		@TearDown(Level.Trial)
+		public void clean() throws Exception {
+			new File("target/thin.properties").delete();
+		}
+
+	}
+
+	@State(Scope.Benchmark)
 	public static class PetclinicThinState extends ProcessLauncherState {
 		public PetclinicThinState() {
 			super("target", "-jar", jarFile("com.example:petclinic:jar:thin:1.4.2"),
@@ -167,7 +220,7 @@ public class SpringBootThinBenchmark {
 			Collection<String> properties = capture("--thin.classpath=properties");
 			FileUtils.writeLines(new File("target/thin.properties"), properties);
 		}
-		
+
 		@TearDown(Level.Trial)
 		public void clean() throws Exception {
 			new File("target/thin.properties").delete();

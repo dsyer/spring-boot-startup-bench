@@ -188,6 +188,49 @@ $ spring install org.springframework.cloud:spring-cloud-cli:1.3.4.RELEASE
 $ spring cloud eureka
 ```
 
+== Eclipse J9
+
+J9 is the IBM JVM, which they open sourced and is now available also as Eclipse J9. The benchmarks are tuned to use different command line optimizations depending on the JVM in use. Here's a comparison between the regular OpenJDK Hotspot and the OpenJDK Eclipse J9 (still JDK 1.8) build:
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units JVM
+MainBenchmark.main      demo    ss   10  1.171 ± 0.044   s/op 8u152-zulu
+MainBenchmark.main      demo    ss   10  1.015 ± 0.116   s/op 8u152-openj9
+```
+
+Eclipse J9 is about 10% faster than HotSpot, probably owing to the
+ability to cache class data between runs (which is switched on by
+default in the benchmarks but not in general).
+
+== Java 10
+
+Java 10 is quite a bit slower than Java 8, but you can get back most
+or all of the difference by switching on Class Data Sharing:
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units  JVM
+OldBenchmark.old        demo    ss   10  1.070 ± 0.031   s/op  8u152-zulu
+OldBenchmark.old        actr    ss   10  1.370 ± 0.042   s/op  8u152-zulu
+MainBenchmark.main      demo    ss   10  1.128 ± 0.044   s/op  8u152-zulu
+MainBenchmark.main      actr    ss   10  1.554 ± 0.068   s/op  8u152-zulu
+OldBenchmark.old        demo    ss   10  1.155 ± 0.035   s/op  jdk-10
+OldBenchmark.old        actr    ss   10  1.432 ± 0.043   s/op  jdk-10
+MainBenchmark.main      demo    ss   10  1.195 ± 0.061   s/op  jdk-10
+MainBenchmark.main      actr    ss   10  1.605 ± 0.060   s/op  jdk-10
+CdsBenchmark.cds        demo    ss   10  0.912 ± 0.051   s/op  jdk-10
+CdsBenchmark.cds        actr    ss   10  1.286 ± 0.044   s/op  jdk-10
+```
+
+== Other versions of Java
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units JVM
+MainBenchmark.main      demo    ss   10  1.171 ± 0.044   s/op 8u152-zulu
+MainBenchmark.main      demo    ss   10  1.015 ± 0.116   s/op 8u152-openj9
+MainBenchmark.main      demo    ss   10  1.253 ± 0.076   s/op OpenJDK10
+MainBenchmark.main      demo    ss   10  1.280 ± 0.066   s/op 9.0.4-zulu
+```
+
 == New Data
 
 Spring Boot 2.0.0 snapshots (before RC2):

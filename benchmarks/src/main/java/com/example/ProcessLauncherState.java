@@ -42,11 +42,19 @@ public class ProcessLauncherState {
 	private File home;
 
 	public ProcessLauncherState(String dir, String... args) {
-		this.args = new ArrayList<>(Arrays.asList(args));
-		this.args.add(0, System.getProperty("java.home") + "/bin/java");
-		this.args.add(1, "-Xmx128m");
-		this.args.add(2, "-Djava.security.egd=file:/dev/./urandom");
-		this.args.add(3, "-XX:TieredStopAtLevel=1"); // zoom
+		this.args = new ArrayList<>();
+		this.args.add(System.getProperty("java.home") + "/bin/java");
+		this.args.add("-Xmx128m");
+		this.args.add("-Djava.security.egd=file:/dev/./urandom");
+		String vendor = System.getProperty("java.vendor", "").toLowerCase();
+		if (vendor.contains("ibm") || vendor.contains("j9")) {
+			this.args.addAll(Arrays.asList("-Xms32m", "-Xquickstart", "-Xshareclasses",
+					"-Xscmx128m"));
+		}
+		else {
+			this.args.addAll(Arrays.asList("-XX:TieredStopAtLevel=1"));
+		}
+		this.args.addAll(Arrays.asList(args));
 		if (System.getProperty("bench.args") != null) {
 			this.args.addAll(4,
 					Arrays.asList(System.getProperty("bench.args").split(" ")));
@@ -57,6 +65,13 @@ public class ProcessLauncherState {
 	public void after() throws Exception {
 		if (started != null && started.isAlive()) {
 			started.destroyForcibly().waitFor();
+		}
+	}
+
+	public void replace(String pattern, String value) {
+		for (int i = 0; i < args.size(); i++) {
+			String arg = args.get(i).replace(pattern, value);
+			args.set(i, arg);
 		}
 	}
 

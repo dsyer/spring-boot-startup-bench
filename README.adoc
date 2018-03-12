@@ -358,8 +358,22 @@ is probably entirely explained by the effect of -noverify, which I
 forgot to include in the non-shared classes execution.
 
 This is a PetClinic with Boot 1.4.6. There's no reason to put any
-effort into exploring the eeffect with other versions and other apps
+effort into exploring the effect with other versions and other apps
 based on this data.
+
+Java 10 has app class sharing as a new (non-commercial) feature. It is
+slower in general than Java 8, but the class sharing does improve
+startup times:
+
+```
+Benchmark                         (sample)  Mode  Cnt  Score   Error  Units
+Java10CdsBenchmark.sharedClasses     older  avgt   10  2.780 ± 0.071   s/op
+Java10CdsBenchmark.sharedClasses    latest  avgt   10  3.407 ± 0.223   s/op
+Java10CdsBenchmark.thinMain          older  avgt   10  3.217 ± 0.783   s/op
+Java10CdsBenchmark.thinMain         latest  avgt   10  3.747 ± 1.026   s/op
+```
+
+The effect is more dramatic for Boot 1.5.
 
 #### Logback
 

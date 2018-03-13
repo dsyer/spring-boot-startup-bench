@@ -205,7 +205,7 @@ default in the benchmarks but not in general).
 == Java 10
 
 Java 10 is quite a bit slower than Java 8, but you can get back most
-or all of the difference by switching on Class Data Sharing:
+or all of the difference by switching on Class Data Sharing (CDS):
 
 ```
 Benchmark           (sample)  Mode  Cnt  Score   Error  Units  JVM
@@ -217,9 +217,13 @@ OldBenchmark.old        demo    ss   10  1.155 ± 0.035   s/op  jdk-10
 OldBenchmark.old        actr    ss   10  1.432 ± 0.043   s/op  jdk-10
 MainBenchmark.main      demo    ss   10  1.195 ± 0.061   s/op  jdk-10
 MainBenchmark.main      actr    ss   10  1.605 ± 0.060   s/op  jdk-10
-CdsBenchmark.cds        demo    ss   10  0.912 ± 0.051   s/op  jdk-10
-CdsBenchmark.cds        actr    ss   10  1.286 ± 0.044   s/op  jdk-10
+CdsBenchmark.main       demo    ss   10  0.912 ± 0.051   s/op  jdk-10
+CdsBenchmark.main       actr    ss   10  1.286 ± 0.044   s/op  jdk-10
+CdsBenchmark.old        demo    ss   10  0.875 ± 0.050   s/op  jdk-10
+CdsBenchmark.old        actr    ss   10  1.134 ± 0.032   s/op  jdk-10
 ```
+
+Spring Boot 1.5 still wins all teh races though (the "old" benchmarks above).
 
 == Other versions of Java
 

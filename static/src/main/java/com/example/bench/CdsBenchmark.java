@@ -44,9 +44,45 @@ import org.openjdk.jmh.util.FileUtils;
 public class CdsBenchmark {
 
 	@Benchmark
-	public void cds(ApplicationState state) throws Exception {
-		state.setMainClass(state.sample.getConfig().getName());
+	public void main(SnapshotState state) throws Exception {
+		state.setMainClass(state.getSample().getConfig().getName());
 		state.run();
+	}
+
+	@Benchmark
+	public void old(OldState state) throws Exception {
+		state.setMainClass(state.getSample().getConfig().getName());
+		state.run();
+	}
+
+	@State(Scope.Benchmark)
+	public static class SnapshotState extends ApplicationState {
+		@Override
+		@Setup(Level.Trial)
+		public void start() throws Exception {
+			if (getSample() != Sample.demo) {
+				setProfiles(getSample().toString(), "snapshot");
+			}
+			else {
+				setProfiles("snapshot");
+			}
+			super.start();
+		}
+	}
+
+	@State(Scope.Benchmark)
+	public static class OldState extends ApplicationState {
+		@Override
+		@Setup(Level.Trial)
+		public void start() throws Exception {
+			if (getSample() != Sample.demo) {
+				setProfiles(getSample().toString(), "old");
+			}
+			else {
+				setProfiles("old");
+			}
+			super.start();
+		}
 	}
 
 	@State(Scope.Benchmark)
@@ -89,14 +125,7 @@ public class CdsBenchmark {
 			super.after();
 		}
 
-		@Setup(Level.Trial)
-		public void start() throws Exception {
-			if (sample != Sample.demo) {
-				setProfiles(sample.toString(), "snapshot");
-			}
-			else {
-				setProfiles("snapshot");
-			}
+		protected void start() throws Exception {
 			Process started = exec(
 					new String[] { "-Xshare:off", "-XX:+UseAppCDS",
 							"-XX:DumpLoadedClassList=app.classlist", "-cp", "" },
@@ -110,6 +139,14 @@ public class CdsBenchmark {
 			FileUtils.readAllLines(dump.getInputStream());
 			dump.waitFor();
 			super.before();
+		}
+
+		public Sample getSample() {
+			return sample;
+		}
+
+		public void setSample(Sample sample) {
+			this.sample = sample;
 		}
 
 	}

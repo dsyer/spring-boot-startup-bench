@@ -55,7 +55,7 @@ public class MainBenchmark {
 	public static class MainState extends ProcessLauncherState {
 
 		public static enum Sample {
-			empt, jlog, demo, actr, jdbc, actj, jpae(
+			empt, jlog, demo, flux, actr, jdbc, actj, jpae(
 					JpaApplication.class), conf, erka, busr, zuul, erkb, slth;
 
 			private Class<?> config;

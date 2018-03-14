@@ -9,6 +9,16 @@ to take advantage of some of the parallelization in Spring Boot, 8 is
 better). And use an up-to-date JVM (although actually `8u131-zulu`
 seems to to be faster than `8u141-openjdk`).
 
+Spring and Spring Boot are not slow (after many optimizations, some of
+which were motivated by data here). Neither component scanning,
+autoconfiguration, condition processing, nor anything else they do on
+their own is a significant source of startup time. There is some
+evidence that most of the cost is associated with JVM overheads,
+loading and parsing classes. So essentially, if you want more features
+(more classes) you get slower startup. See in particular the data
+https://github.com/dsyer/spring-boot-startup-bench/tree/master/static[here]
+for more detail.
+
 This project uses JMH to test and report on various the effect of
 various parameters on Spring Boot startup times. The apps are launched
 in a forked JVM and the measurements below are all "seconds to start

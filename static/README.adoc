@@ -7,7 +7,7 @@ Results:
 
 * Reflection is not a bottleneck - more work would have to be done with more complex scenarios, but the sample that uses functional bean registration for everything fits the curve of the more heavyweight applications, so it isn't intrinsically much faster, it just has fewer beans (and therefore fewer features).
 
-* Condition processing in Spring Boot is not expensive - when we remove conditions partially ("slim", "thin") and completely ("lite", "func") the startup time is right on the curve.
+* Condition processing in Spring Boot is not expensive - when we remove conditions partially ("slim", "thin") and completely ("lite", "func") the startup time is right on the curve. The same is true of component scanning, except possibly in the very largest of applications.
 
 * There is some evidence that most of the cost is associated with JVM overheads, loading and parsing classes (this is supported by other data, for instance on devtools restarts, which are *much* quicker than cold starts).
 
@@ -223,7 +223,7 @@ CdsBenchmark.old        demo    ss   10  0.875 ± 0.050   s/op  jdk-10
 CdsBenchmark.old        actr    ss   10  1.134 ± 0.032   s/op  jdk-10
 ```
 
-Spring Boot 1.5 still wins all teh races though (the "old" benchmarks above).
+Spring Boot 1.5 still wins all the races though (the "old" benchmarks above).
 
 == Other versions of Java
 

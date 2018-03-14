@@ -1,0 +1,8 @@
+org.springframework.context.ApplicationListener=\
+com.example.config.BeanCountingApplicationListener,\
+com.example.config.StartupApplicationListener,\
+com.example.config.ShutdownApplicationListener
+
+# BeanInfo Factory (doesn't have much of an impact)
+#org.springframework.beans.BeanInfoFactory=\
+#org.springframework.boot.beans.SpringBeanInfoFactory

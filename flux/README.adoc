@@ -5,14 +5,12 @@ Results:
 
 ```
 Benchmark           (sample)  Mode  Cnt  Score   Error  Units Webstack
-MainBenchmark.main      demo    ss   10  1.649 ± 0.064   s/op mvc
-MainBenchmark.main      actr    ss   10  2.235 ± 0.129   s/op mvc
-MainBenchmark.main      flux    ss   10  1.441 ± 0.084   s/op webflux
-MainBenchmark.main      demo    ss   10  1.435 ± 0.053   s/op flux.fn
-MainBenchmark.main      actr    ss   10  1.986 ± 0.128   s/op webflux
+MainBenchmark.main      demo    ss   10  1.124 ± 0.050   s/op mvc
+MainBenchmark.main      flux    ss   10  1.023 ± 0.080   s/op webflux
+MainBenchmark.main      actr    ss   10  1.548 ± 0.049   s/op mvc
+MainBenchmark.main      demo    ss   10  0.993 ± 0.027   s/op flux.fn
+MainBenchmark.main      actr    ss   10  1.397 ± 0.068   s/op webflux
 ```
-
-These are on slower hardware than most of the results in this study (I was travelling).
 
 Summary: webflux.fn and @webflux are comparable, and both are faster on Jetty than MVC on Tomcat (>~10%).
 

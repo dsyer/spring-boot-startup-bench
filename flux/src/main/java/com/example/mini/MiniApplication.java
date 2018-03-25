@@ -15,6 +15,7 @@
  */
 package com.example.mini;
 
+import com.example.config.BeanCountingApplicationListener;
 import com.example.config.ShutdownApplicationListener;
 import com.example.config.StartupApplicationListener;
 
@@ -65,6 +66,7 @@ public class MiniApplication {
 			((DefaultListableBeanFactory) context.getBeanFactory())
 					.registerDisposableBean(SHUTDOWN_LISTENER,
 							new ShutdownApplicationListener());
+			new BeanCountingApplicationListener().log(context);
 			logger.info(STARTUP);
 			context.getBean(NettyContext.class).onClose().block();
 		}

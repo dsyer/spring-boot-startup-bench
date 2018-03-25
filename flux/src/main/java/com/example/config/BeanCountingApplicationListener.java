@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import org.springframework.beans.BeansException;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationContext;
@@ -50,8 +51,12 @@ public class BeanCountingApplicationListener
 		if (!event.getApplicationContext().equals(this.context)) {
 			return;
 		}
-		int count = 0;
 		ConfigurableApplicationContext context = event.getApplicationContext();
+		log(context);
+	}
+
+	public void log(ConfigurableApplicationContext context) {
+		int count = 0;
 		String id = context.getId();
 		List<String> names = new ArrayList<>();
 		while (context != null) {

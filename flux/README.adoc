@@ -12,6 +12,27 @@ MainBenchmark.main      demo    ss   10  0.993 ± 0.027   s/op flux.fn
 MainBenchmark.main      actr    ss   10  1.397 ± 0.068   s/op webflux
 ```
 
-Summary: webflux.fn and @webflux are comparable, and both are faster on Jetty than MVC on Tomcat (>~10%).
+Summary: webflux.fn and @webflux are comparable, and both are faster on Netty than MVC on Tomcat (>~10%).
 
 The "actr" sample is with Actuators. The others are a single HTTP endpoint.
+
+== Minimal Rest Controller
+
+How fast can Spring serve a simple rest endpoint? With full webflux features:
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units Classes
+MainBenchmark.main      jlog    ss   10  0.933 ± 0.065   s/op 4367
+MainBenchmark.main      demo    ss   10  1.081 ± 0.075   s/op 5779
+MiniBenchmark.boot      jlog    ss   10  0.631 ± 0.041   s/op 3468
+MiniBenchmark.boot      demo    ss   10  0.751 ± 0.057   s/op 4706
+MiniBenchmark.mini      jlog    ss   10  0.581 ± 0.041   s/op 2886
+MiniBenchmark.mini      demo    ss   10  0.715 ± 0.047   s/op 3751
+```
+
+Notes:
+
+* The `MainBenchmark.main(demo)` is full Boot + Webflux + autoconfiguration.
+* The `boot` samples use Spring Boot but no autoconfiguration.
+* The `jlog` samples exclude logback as well as Hibernate Validator and Jackson.
+* The `mini` samples do not use Spring Boot (just `@EnableWebFlux`).

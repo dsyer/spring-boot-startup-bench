@@ -15,6 +15,7 @@
  */
 package com.example.bench;
 
+import com.example.demo.DemoApplication;
 import com.example.mini.MiniApplication;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -23,6 +24,7 @@ import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
 import org.openjdk.jmh.annotations.Measurement;
 import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.Param;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
@@ -44,6 +46,28 @@ public class MiniBenchmark {
 	@State(Scope.Benchmark)
 	public static class MainState extends ProcessLauncherState {
 
+		public static enum Sample {
+			jlog, demo;
+
+			private Class<?> config;
+
+			private Sample(Class<?> config) {
+				this.config = config;
+			}
+
+			private Sample() {
+				this.config = DemoApplication.class;
+			}
+
+			public Class<?> getConfig() {
+				return config;
+			}
+
+		}
+
+		@Param
+		private Sample sample = Sample.demo;
+
 		public MainState() {
 			super("target", "--server.port=0");
 		}
@@ -55,6 +79,9 @@ public class MiniBenchmark {
 
 		@Setup(Level.Trial)
 		public void start() throws Exception {
+			if (sample != Sample.demo) {
+				setProfiles(sample.toString());
+			}
 			super.before();
 		}
 	}

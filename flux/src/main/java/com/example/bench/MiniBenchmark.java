@@ -15,6 +15,7 @@
  */
 package com.example.bench;
 
+import com.example.boot.BootApplication;
 import com.example.demo.DemoApplication;
 import com.example.mini.MiniApplication;
 
@@ -36,6 +37,12 @@ import org.openjdk.jmh.annotations.Warmup;
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.SingleShotTime)
 public class MiniBenchmark {
+
+	@Benchmark
+	public void boot(MainState state) throws Exception {
+		state.setMainClass(BootApplication.class.getName());
+		state.run();
+	}
 
 	@Benchmark
 	public void mini(MainState state) throws Exception {

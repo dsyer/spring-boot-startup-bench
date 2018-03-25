@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.mini;
-
-import com.example.config.ShutdownApplicationListener;
-import com.example.config.StartupApplicationListener;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+package com.example.boot;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
@@ -49,23 +44,14 @@ import reactor.ipc.netty.http.server.HttpServer;
 @SpringBootConfiguration
 @EnableWebFlux
 @RestController
-public class MiniApplication {
-
-	private static final String SHUTDOWN_LISTENER = "SHUTDOWN_LISTENER";
-	public static final String STARTUP = "Benchmark app started";
-	private static Log logger = LogFactory.getLog(StartupApplicationListener.class);
+public class BootApplication {
 
 	@Value("${server.port:8080}")
 	private int port = 8080;
 
 	public static void main(String[] args) throws Exception {
-		try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
-			context.register(MiniApplication.class);
-			context.refresh();
-			((DefaultListableBeanFactory) context.getBeanFactory())
-					.registerDisposableBean(SHUTDOWN_LISTENER,
-							new ShutdownApplicationListener());
-			logger.info(STARTUP);
+		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
+				BootApplication.class).web(WebApplicationType.NONE).run(args)) {
 			context.getBean(NettyContext.class).onClose().block();
 		}
 	}

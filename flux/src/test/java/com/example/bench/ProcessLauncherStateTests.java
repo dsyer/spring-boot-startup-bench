@@ -37,7 +37,7 @@ public class ProcessLauncherStateTests {
 		// System.setProperty("bench.args", "-verbose:class");
 		ProcessLauncherState state = new ProcessLauncherState("target",
 				"--server.port=0");
-		state.setProfiles("old", "jlog");
+		state.setProfiles("actr");
 		state.before();
 		state.run();
 		state.after();

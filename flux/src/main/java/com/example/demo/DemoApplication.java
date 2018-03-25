@@ -1,8 +1,7 @@
 package com.example.demo;
 
-import com.example.config.ApplicationBuilder;
-
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.reactive.function.server.RouterFunction;
 
@@ -21,7 +20,7 @@ public class DemoApplication {
 	}
 
 	public static void main(String[] args) throws Exception {
-		ApplicationBuilder.builder(DemoApplication.class).run(args);
+		new SpringApplicationBuilder(DemoApplication.class).run(args);
 	}
 
 }

@@ -15,8 +15,11 @@
  */
 package com.example.bench;
 
+import java.util.List;
+
 import com.example.boot.BootApplication;
 import com.example.demo.DemoApplication;
+import com.example.micro.MicroApplication;
 import com.example.mini.MiniApplication;
 
 import org.openjdk.jmh.annotations.Benchmark;
@@ -50,6 +53,12 @@ public class MiniBenchmark {
 		state.run();
 	}
 
+	@Benchmark
+	public void micro(MainState state) throws Exception {
+		state.setMainClass(MicroApplication.class.getName());
+		state.run();
+	}
+
 	@State(Scope.Benchmark)
 	public static class MainState extends ProcessLauncherState {
 
@@ -76,12 +85,17 @@ public class MiniBenchmark {
 		private Sample sample = Sample.demo;
 
 		public MainState() {
-			super("target", "--server.port=0");
+			super("target");
 		}
 
 		@TearDown(Level.Iteration)
 		public void stop() throws Exception {
 			super.after();
+		}
+
+		@Override
+		protected void customize(List<String> args) {
+			args.add("-Dserver.port=0");
 		}
 
 		@Setup(Level.Trial)

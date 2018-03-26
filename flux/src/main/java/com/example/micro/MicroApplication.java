@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.boot;
+package com.example.micro;
 
 import com.example.config.ApplicationBuilder;
 
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.server.WebHandler;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 import reactor.core.publisher.Mono;
@@ -36,21 +31,15 @@ import reactor.core.publisher.Mono;
  * @author Dave Syer
  *
  */
-@SpringBootConfiguration
-@EnableWebFlux
-@RestController
-public class BootApplication {
+public class MicroApplication {
 
 	public static void main(String[] args) throws Exception {
-		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				BootApplication.class).web(WebApplicationType.NONE).run(args)) {
-			ApplicationBuilder.start(context);
-		}
+		GenericApplicationContext context = new GenericApplicationContext();
+		context.registerBean(RouterFunction.class, () -> RouterFunctions.route(GET("/"),
+				request -> ok().body(Mono.just("Hello"), String.class)));
+		context.registerBean("webHandler", WebHandler.class, () -> RouterFunctions
+				.toWebHandler(context.getBean(RouterFunction.class)));
+		context.refresh();
+		ApplicationBuilder.start(context);
 	}
-
-	@Bean
-	public RouterFunction<?> userEndpoints() {
-		return route(GET("/"), request -> ok().body(Mono.just("Hello"), String.class));
-	}
-
 }

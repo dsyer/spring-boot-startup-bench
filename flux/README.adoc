@@ -28,7 +28,12 @@ MiniBenchmark.boot      jlog    ss   10  0.631 ± 0.041   s/op 3468
 MiniBenchmark.boot      demo    ss   10  0.751 ± 0.057   s/op 4706
 MiniBenchmark.mini      jlog    ss   10  0.581 ± 0.041   s/op 2886
 MiniBenchmark.mini      demo    ss   10  0.715 ± 0.047   s/op 3751
+MiniBenchmark.micro     jlog    ss   10  0.186 ± 0.006   s/op 1371
+MiniBenchmark.micro     demo    ss   10  0.288 ± 0.006   s/op 2112
 ```
+
+.Number of Classes vs. Startup Time
+image::https://docs.google.com/spreadsheets/d/e/2PACX-1vR8B4l5WkWf-9gZWmIYTkmBWM7YWf5bRg852OakrV0G2-vtfM_UkVNRC3cTVk1079HagnMVHYZnvbib/pubchart?oid=976086548&format=image[]
 
 Notes:
 
@@ -36,3 +41,8 @@ Notes:
 * The `boot` samples use Spring Boot but no autoconfiguration.
 * The `jlog` samples exclude logback as well as Hibernate Validator and Jackson.
 * The `mini` samples do not use Spring Boot (just `@EnableWebFlux`).
+* The `micro` samples do not use `@EnableWebflux`, just a manual route registration.
+
+The mini jlog sample ran in about 52MB memory (16 heap, 36
+non-heap). The micro jlog sample ran in 44MB (14 heap, 30
+non-heap). Non-heap is really what matters for these smaller apps.￼ ￼

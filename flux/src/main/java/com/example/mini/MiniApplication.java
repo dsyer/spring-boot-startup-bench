@@ -20,7 +20,6 @@ import com.example.config.ApplicationBuilder;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.function.server.RouterFunction;
 
@@ -36,7 +35,6 @@ import reactor.core.publisher.Mono;
  */
 @SpringBootConfiguration
 @EnableWebFlux
-@RestController
 public class MiniApplication {
 
 	public static void main(String[] args) throws Exception {

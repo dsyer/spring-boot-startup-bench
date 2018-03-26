@@ -22,7 +22,6 @@ import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.function.server.RouterFunction;
 
@@ -38,7 +37,6 @@ import reactor.core.publisher.Mono;
  */
 @SpringBootConfiguration
 @EnableWebFlux
-@RestController
 public class BootApplication {
 
 	public static void main(String[] args) throws Exception {

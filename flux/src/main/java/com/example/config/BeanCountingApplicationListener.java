@@ -45,7 +45,6 @@ public class BeanCountingApplicationListener
 		this.context = context;
 	}
 
-	@SuppressWarnings("resource")
 	@Override
 	public void onApplicationEvent(ApplicationReadyEvent event) {
 		if (!event.getApplicationContext().equals(this.context)) {

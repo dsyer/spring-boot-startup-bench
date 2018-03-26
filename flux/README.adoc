@@ -21,15 +21,19 @@ The "actr" sample is with Actuators. The others are a single HTTP endpoint.
 How fast can Spring serve a simple rest endpoint? With full webflux features:
 
 ```
-Benchmark           (sample)  Mode  Cnt  Score   Error  Units Classes
-MainBenchmark.main      jlog    ss   10  0.933 ± 0.065   s/op 4367
-MainBenchmark.main      demo    ss   10  1.081 ± 0.075   s/op 5779
-MiniBenchmark.boot      jlog    ss   10  0.631 ± 0.041   s/op 3468
-MiniBenchmark.boot      demo    ss   10  0.751 ± 0.057   s/op 4706
-MiniBenchmark.mini      jlog    ss   10  0.581 ± 0.041   s/op 2886
-MiniBenchmark.mini      demo    ss   10  0.715 ± 0.047   s/op 3751
-MiniBenchmark.micro     jlog    ss   10  0.186 ± 0.006   s/op 1371
-MiniBenchmark.micro     demo    ss   10  0.288 ± 0.006   s/op 2112
+Benchmark            (sample)  Mode  Cnt  Score   Error  Units Classes
+MainBenchmark.main       jlog    ss   10  0.933 ± 0.065   s/op 4367
+MainBenchmark.main       demo    ss   10  1.081 ± 0.075   s/op 5779
+MiniBenchmark.boot       jlog    ss   10  0.631 ± 0.041   s/op 3468
+MiniBenchmark.boot       demo    ss   10  0.751 ± 0.057   s/op 4706
+MiniBenchmark.mini       jlog    ss   10  0.581 ± 0.041   s/op 2886
+MiniBenchmark.mini       demo    ss   10  0.715 ± 0.047   s/op 3751
+MiniBenchmark.micro      jlog    ss   10  0.186 ± 0.006   s/op 1371
+MiniBenchmark.micro      demo    ss   10  0.288 ± 0.006   s/op 2112
+MiniBenchmark.boot       jlog    ss   10  0.486 ± 0.020   s/op 2974
+MiniBenchmark.boot       demo    ss   10  0.579 ± 0.041   s/op 4138
+MiniBenchmark.mini       jlog    ss   10  0.420 ± 0.011   s/op 2351
+MiniBenchmark.mini       demo    ss   10  0.538 ± 0.009   s/op 3138
 ```
 
 .Number of Classes vs. Startup Time
@@ -42,7 +46,26 @@ Notes:
 * The `jlog` samples exclude logback as well as Hibernate Validator and Jackson.
 * The `mini` samples do not use Spring Boot (just `@EnableWebFlux`).
 * The `micro` samples do not use `@EnableWebflux`, just a manual route registration.
+* There are 2 runs of each webflux app. The slightly slower version had an extra bean definition to start the netty server.
 
 The mini jlog sample ran in about 52MB memory (16 heap, 36
 non-heap). The micro jlog sample ran in 44MB (14 heap, 30
-non-heap). Non-heap is really what matters for these smaller apps.￼ ￼
+non-heap). Non-heap is really what matters for these smaller apps.
+
+== Open J9
+
+Here are the results (pretty impressive):
+
+```
+Benchmark            (sample)  Mode  Cnt  Score   Error  Units Classes
+MiniBenchmark.boot       jlog    ss   10  0.406 ± 0.085   s/op 3090
+MiniBenchmark.boot       demo    ss   10  0.505 ± 0.035   s/op 4314
+MiniBenchmark.micro      jlog    ss   10  0.152 ± 0.045   s/op 1436
+MiniBenchmark.micro      demo    ss   10  0.204 ± 0.019   s/op 2238
+MiniBenchmark.mini       jlog    ss   10  0.340 ± 0.018   s/op 2427
+MiniBenchmark.mini       demo    ss   10  0.432 ± 0.019   s/op 3256
+```
+
+The results are quite variable with Open J9. Those above are the
+best runs - the median results were the same, but the average was
+longer when the tail hit.

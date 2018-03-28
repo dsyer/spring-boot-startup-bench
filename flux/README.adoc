@@ -69,3 +69,25 @@ MiniBenchmark.mini       demo    ss   10  0.432 ± 0.019   s/op 3256
 The results are quite variable with Open J9. Those above are the
 best runs - the median results were the same, but the average was
 longer when the tail hit.
+
+== Lazy Beans
+
+There's a bean factory post processor in
+https://github.com/spring-projects/spring-boot/issues/9685[Spring Boot
+issue 9685] that makes all beans lazy by default. It's quite
+interesting to see what happens if we add that to our mini
+applications:
+
+```
+Benchmark            (sample)  Mode  Cnt  Score   Error  Units Classes 
+MiniBenchmark.boot       jlog    ss   10  0.356 ± 0.020   s/op 2238
+MiniBenchmark.boot       demo    ss   10  0.401 ± 0.022   s/op 2644
+MiniBenchmark.mini       jlog    ss   10  0.278 ± 0.015   s/op 1735
+MiniBenchmark.mini       demo    ss   10  0.327 ± 0.014   s/op 2132
+```
+
+It's cheating a bit, because those beans end up being initialized on
+the first HTTP request, but probably most of them are not needed in
+this sample, so they could stay uninitialized and no-one would
+care. We'd need more logic / conditions in `@EnableWebFlux` to
+capitalize on it without cheating

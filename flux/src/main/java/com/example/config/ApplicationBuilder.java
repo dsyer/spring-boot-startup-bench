@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
@@ -37,16 +38,36 @@ public class ApplicationBuilder {
 	private static Log logger = LogFactory.getLog(StartupApplicationListener.class);
 
 	public static void start(ConfigurableApplicationContext context) {
-		((DefaultListableBeanFactory) context.getBeanFactory()).registerDisposableBean(
-				SHUTDOWN_LISTENER, new ShutdownApplicationListener());
-		new BeanCountingApplicationListener().log(context);
-		logger.info(STARTUP);
+		if (!hasListeners(context)) {
+			((DefaultListableBeanFactory) context.getBeanFactory())
+					.registerDisposableBean(SHUTDOWN_LISTENER,
+							new ShutdownApplicationListener());
+			new BeanCountingApplicationListener().log(context);
+			logger.info(STARTUP);
+		}
 
 		HttpHandler handler = WebHttpHandlerBuilder.applicationContext(context).build();
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
 		HttpServer httpServer = HttpServer.create("localhost",
 				context.getEnvironment().getProperty("server.port", Integer.class, 8080));
 		httpServer.startAndAwait(adapter);
+	}
+
+	private static boolean hasListeners(ConfigurableApplicationContext context) {
+		if (context.getBeanNamesForType(ShutdownApplicationListener.class).length != 0) {
+			return true;
+		}
+		if (context instanceof AbstractApplicationContext) {
+			if (((AbstractApplicationContext) context).getApplicationListeners().stream()
+					.anyMatch(l -> l instanceof ShutdownApplicationListener)) {
+				return true;
+			}
+		}
+		if ((DefaultListableBeanFactory) context.getBeanFactory()
+				.getSingleton(SHUTDOWN_LISTENER) != null) {
+			return true;
+		}
+		return false;
 	}
 
 }

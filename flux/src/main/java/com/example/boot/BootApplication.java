@@ -15,13 +15,19 @@
  */
 package com.example.boot;
 
-import com.example.config.ApplicationBuilder;
+import java.util.Collections;
 
+import com.example.config.ApplicationBuilder;
+import com.example.config.LazyInitBeanFactoryPostProcessor;
+
+import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.function.server.RouterFunction;
 
@@ -37,11 +43,16 @@ import reactor.core.publisher.Mono;
  */
 @SpringBootConfiguration
 @EnableWebFlux
+@Import(LazyInitBeanFactoryPostProcessor.class)
 public class BootApplication {
 
 	public static void main(String[] args) throws Exception {
-		try (ConfigurableApplicationContext context = new SpringApplicationBuilder(
-				BootApplication.class).web(WebApplicationType.NONE).run(args)) {
+		SpringApplicationBuilder builder = new SpringApplicationBuilder(
+				BootApplication.class).web(WebApplicationType.NONE)
+						.contextClass(AnnotationConfigApplicationContext.class)
+						.bannerMode(Mode.OFF);
+		builder.application().setListeners(Collections.emptyList());
+		try (ConfigurableApplicationContext context = builder.run(args)) {
 			ApplicationBuilder.start(context);
 		}
 	}

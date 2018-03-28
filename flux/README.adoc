@@ -80,6 +80,8 @@ applications:
 
 ```
 Benchmark            (sample)  Mode  Cnt  Score   Error  Units Classes 
+MainBenchmark.main       jlog    ss   10  0.729 ± 0.059   s/op 3949
+MainBenchmark.main       demo    ss   10  0.887 ± 0.012   s/op 5311
 MiniBenchmark.boot       jlog    ss   10  0.356 ± 0.020   s/op 2238
 MiniBenchmark.boot       demo    ss   10  0.401 ± 0.022   s/op 2644
 MiniBenchmark.mini       jlog    ss   10  0.278 ± 0.015   s/op 1735

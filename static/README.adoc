@@ -235,6 +235,62 @@ MainBenchmark.main      demo    ss   10  1.253 ± 0.076   s/op OpenJDK10
 MainBenchmark.main      demo    ss   10  1.280 ± 0.066   s/op 9.0.4-zulu
 ```
 
+== Lazy Beans
+
+There's a bean factory post processor in
+https://github.com/spring-projects/spring-boot/issues/9685[Spring Boot
+issue 9685] that makes all beans lazy by default. It's quite
+interesting to see what happens if we add that to our sample
+applications:
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units Classes
+MainBenchmark.main      empt    ss   10  0.477 ± 0.018   s/op 3233   
+MainBenchmark.main      jlog    ss   10  0.811 ± 0.016   s/op 4374   
+MainBenchmark.main      demo    ss   10  0.913 ± 0.035   s/op 5463   
+MainBenchmark.main      flux    ss   10  0.885 ± 0.030   s/op 5325   
+MainBenchmark.main      actr    ss   10  1.241 ± 0.030   s/op 6225   
+MainBenchmark.main      jdbc    ss   10  1.001 ± 0.033   s/op 5618   
+MainBenchmark.main      actj    ss   10  1.388 ± 0.062   s/op 6432   
+MainBenchmark.main      jpae    ss   10  1.994 ± 0.055   s/op 8824   
+MainBenchmark.main      conf    ss   10  1.599 ± 0.118   s/op 6711   
+MainBenchmark.main      erka    ss   10  1.819 ± 0.045   s/op 6804   
+MainBenchmark.main      busr    ss   10  2.431 ± 0.068   s/op 7721   
+MainBenchmark.main      zuul    ss   10  3.029 ± 0.086   s/op 8348
+MainBenchmark.main      erkb    ss   10  2.886 ± 0.107   s/op 8083
+MainBenchmark.main      slth    ss   10  3.127 ± 0.041   s/op 8314
+```
+
+c.f. the non-lazy results for the same samples:
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units Classes Lazy Premium
+MainBenchmark.main      empt    ss   10  0.578 ± 0.028   s/op 3703    17.47%
+MainBenchmark.main      jlog    ss   10  0.953 ± 0.012   s/op 4647    14.90%
+MainBenchmark.main      demo    ss   10  1.105 ± 0.049   s/op 5808    17.38%
+MainBenchmark.main      flux    ss   10  0.988 ± 0.038   s/op 5726    10.43%
+MainBenchmark.main      actr    ss   10  1.542 ± 0.043   s/op 6692    19.52%
+MainBenchmark.main      jdbc    ss   10  1.281 ± 0.045   s/op 6068    21.86%
+MainBenchmark.main      actj    ss   10  1.819 ± 0.191   s/op 6953    23.69%
+MainBenchmark.main      jpae    ss   10  2.003 ± 0.053   s/op 8824    0.45% 
+MainBenchmark.main      conf    ss   10  1.948 ± 0.097   s/op 7216    17.92%
+MainBenchmark.main      erka    ss   10  2.703 ± 0.106   s/op 8909    32.70%
+MainBenchmark.main      busr    ss   10  3.111 ± 0.157   s/op 8282    21.86%
+MainBenchmark.main      zuul    ss   10  3.834 ± 0.086   s/op 9325    21.00%
+MainBenchmark.main      erkb    ss   10  4.026 ± 0.119   s/op 10176   28.32%
+MainBenchmark.main      slth    ss   10  4.066 ± 0.073   s/op 8901    23.09%
+```
+
+and the same thng for the Petclinic:
+
+```
+Benchmark                              (sample)  Mode  Cnt  Score   Error  Units Classes Lazy Premium
+PetclinicLatestBenchmark.noverify        (lazy)  avgt   10  3.495 ± 0.059   s/op 10065   25.80% 
+PetclinicLatestBenchmark.explodedJarMain (lazy)  avgt   10  3.023 ± 0.092   s/op 11030   27.40%
+PetclinicLatestBenchmark.noverify                avgt   10  4.710 ± 0.053   s/op 12482
+PetclinicLatestBenchmark.explodedJarMain         avgt   10  4.164 ± 0.068   s/op 11466
+```
+
 == New Data
 
 Spring Boot 2.0.0 snapshots (before RC2):

@@ -18,7 +18,6 @@ package com.example.boot;
 import java.util.Collections;
 
 import com.example.config.ApplicationBuilder;
-import com.example.config.LazyInitBeanFactoryPostProcessor;
 
 import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.SpringBootConfiguration;
@@ -27,7 +26,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.function.server.RouterFunction;
 
@@ -43,7 +41,7 @@ import reactor.core.publisher.Mono;
  */
 @SpringBootConfiguration
 @EnableWebFlux
-@Import(LazyInitBeanFactoryPostProcessor.class)
+// @Import(LazyInitBeanFactoryPostProcessor.class)
 public class BootApplication {
 
 	public static void main(String[] args) throws Exception {

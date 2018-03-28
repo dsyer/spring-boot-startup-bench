@@ -35,6 +35,7 @@ import reactor.core.publisher.Mono;
  */
 @SpringBootConfiguration
 @EnableWebFlux
+// @Import(LazyInitBeanFactoryPostProcessor.class)
 public class MiniApplication {
 
 	public static void main(String[] args) throws Exception {

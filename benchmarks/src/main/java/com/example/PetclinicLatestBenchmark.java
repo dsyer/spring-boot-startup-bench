@@ -38,8 +38,8 @@ import org.openjdk.jmh.annotations.Warmup;
 @BenchmarkMode(Mode.AverageTime)
 public class PetclinicLatestBenchmark {
 
-	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator
-			+ "BOOT-INF/lib/*";
+	private static final String CLASSPATH = "." + File.pathSeparator + "BOOT-INF/classes"
+			+ File.pathSeparator + "BOOT-INF/lib/*";
 
 	@Benchmark
 	public void fatJar(BasicState state) throws Exception {

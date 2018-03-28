@@ -1,10 +1,8 @@
 package com.example.demo;
 
 import com.example.config.ApplicationBuilder;
-import com.example.config.LazyInitBeanFactoryPostProcessor;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Import;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

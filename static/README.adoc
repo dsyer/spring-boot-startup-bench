@@ -285,10 +285,10 @@ and the same thng for the Petclinic:
 
 ```
 Benchmark                              (sample)  Mode  Cnt  Score   Error  Units Classes Lazy Premium
-PetclinicLatestBenchmark.noverify        (lazy)  avgt   10  3.495 ± 0.059   s/op 10065   25.80% 
-PetclinicLatestBenchmark.explodedJarMain (lazy)  avgt   10  3.023 ± 0.092   s/op 11030   27.40%
-PetclinicLatestBenchmark.noverify                avgt   10  4.710 ± 0.053   s/op 12482
-PetclinicLatestBenchmark.explodedJarMain         avgt   10  4.164 ± 0.068   s/op 11466
+PetclinicLatestBenchmark.noverify        (lazy)  avgt   10  3.495 ± 0.059   s/op 9687    25.80% 
+PetclinicLatestBenchmark.explodedJarMain (lazy)  avgt   10  3.023 ± 0.092   s/op 10644   27.40%
+PetclinicLatestBenchmark.noverify        none    avgt   10  4.710 ± 0.053   s/op 11099
+PetclinicLatestBenchmark.explodedJarMain none    avgt   10  4.164 ± 0.068   s/op 12132
 ```
 
 == New Data

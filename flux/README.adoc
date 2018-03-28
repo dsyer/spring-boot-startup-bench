@@ -58,6 +58,8 @@ Here are the results (pretty impressive):
 
 ```
 Benchmark            (sample)  Mode  Cnt  Score   Error  Units Classes
+MainBenchmark.main       jlog    ss   10  0.709 ± 0.034   s/op 4536
+MainBenchmark.main       demo    ss   10  0.939 ± 0.027   s/op 5954
 MiniBenchmark.boot       jlog    ss   10  0.406 ± 0.085   s/op 3090
 MiniBenchmark.boot       demo    ss   10  0.505 ± 0.035   s/op 4314
 MiniBenchmark.micro      jlog    ss   10  0.152 ± 0.045   s/op 1436
@@ -93,3 +95,18 @@ the first HTTP request, but probably most of them are not needed in
 this sample, so they could stay uninitialized and no-one would
 care. We'd need more logic / conditions in `@EnableWebFlux` to
 capitalize on it without cheating
+
+== Open J9 and Lazy Beans
+
+```
+Benchmark            (sample)  Mode  Cnt  Score   Error  Units Classes
+MainBenchmark.main       jlog    ss   10  0.618 ± 0.020   s/op 4097
+MainBenchmark.main       demo    ss   10  0.827 ± 0.027   s/op 5524
+MiniBenchmark.boot       jlog    ss   10  0.364 ± 0.007   s/op 2744
+MiniBenchmark.boot       demo    ss   10  0.483 ± 0.015   s/op 3576
+MiniBenchmark.mini       jlog    ss   10  0.214 ± 0.004   s/op 1826
+MiniBenchmark.mini       demo    ss   10  0.255 ± 0.007   s/op 2255
+```
+
+Strangely the "boot" sample doesn't benefit at all from the
+combination (it's not faster with J9 once the lazy beans are on).

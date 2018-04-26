@@ -23,6 +23,7 @@
 		<module>alt</module>
 		<module>benchmarks</module>
 		<module>static</module>
+		<module>flux</module>
 	</modules>
 
 	<properties>

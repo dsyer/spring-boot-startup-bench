@@ -7,7 +7,7 @@ the UI (they filter out Spring classes by default).
 
 ## Hotspots for Vanilla Application
 
-Includes actuator and MVC and uses Spring BOot 1.5.4. Startup time
+Includes actuator and MVC and uses Spring Boot 1.5.4. Startup time
 approx 1100ms without the profiler.
 
 Nothing from Spring Boot makes it into the top 10 hostspots, but
@@ -18,7 +18,7 @@ performance hit but happens in a background thread. The most expensive
 thing that actually happens in Spring Boot in a blocking thread is
 condition evaluation (right down at number 36), accounting for about
 7% of startup time. `OnBeanCondition` and `OnPropertyCondition` are
-the top two if you follow down th call stack.
+the top two if you follow down the call stack.
 
 |===
 |  | Method | Time (ms) | Count

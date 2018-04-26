@@ -85,11 +85,13 @@ public class ProcessLauncherState {
 		PathResolver resolver = new PathResolver(DependencyResolver.instance());
 		Archive root = ArchiveUtils.getArchive(getClass());
 		List<Archive> resolved = resolver.resolve(root, name, profiles);
-		File app = new File("target/original-benchmarks.jar");
-		if (!app.exists()) {
-			app = new File("target/classes");
+		StringBuilder builder = new StringBuilder();
+		File app = new File("target/classes");
+		builder.append(app.getAbsolutePath());
+		app = new File("target/original-benchmarks.jar");
+		if (app.exists()) {
+			builder.append(File.pathSeparator).append(app.getAbsolutePath());
 		}
-		StringBuilder builder = new StringBuilder(app.getAbsolutePath());
 		try {
 			for (Archive archive : resolved) {
 				if (archive.getUrl().equals(root.getUrl())) {

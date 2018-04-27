@@ -1,0 +1,24 @@
+This module provides a general purpose benchmark for any Spring Boot fat jar. You pass it the jar file to measure on the command line.
+
+Example usage:
+
+```
+$ java -jar target/benchmarks.jar ~/dev/spring/spring-petclinic/target/spring-petclinic-2.0.0.jar
+...
+# Run complete. Total time: 00:02:44
+
+Benchmark               Mode  Cnt  Score   Error  Units
+MainBenchmark.fat       avgt   10  4.890 ± 0.055   s/op
+MainBenchmark.launcher  avgt   10  4.976 ± 0.050   s/op
+MainBenchmark.main      avgt   10  3.668 ± 0.095   s/op
+```
+
+For the "fat" benchmark is has to emit a log containing "started on port" by default when it is ready. You can change the "marker" that the benchmark looks for with --marker='Foo Bar' (for instance). Multiple values are acceptable, and any will terminate the measurement.
+
+For the "main" (exploded jar with main class) and "launcher" (exploded jar with Boot launcher) benchmarks it also installs a listener that prints the number of classes loaded and the number of beans.
+
+To pass arguments to JMH you need to put them after a single argument of `--`. E.g.
+
+```
+$ java -jar target/benchmarks.jar target/it/support/target/demo-1.0.0-exec.jar -- MainBenchmark.launcher
+```

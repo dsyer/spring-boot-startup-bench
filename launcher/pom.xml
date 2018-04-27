@@ -1,0 +1,148 @@
+<!-- Copyright (c) 2014, Oracle America, Inc. All rights reserved. Redistribution 
+	and use in source and binary forms, with or without modification, are permitted 
+	provided that the following conditions are met: * Redistributions of source 
+	code must retain the above copyright notice, this list of conditions and 
+	the following disclaimer. * Redistributions in binary form must reproduce 
+	the above copyright notice, this list of conditions and the following disclaimer 
+	in the documentation and/or other materials provided with the distribution. 
+	* Neither the name of Oracle nor the names of its contributors may be used 
+	to endorse or promote products derived from this software without specific 
+	prior written permission. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS 
+	AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+	BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+	FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT 
+	HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+	EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
+	OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+	STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+	ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
+	OF SUCH DAMAGE. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.example</groupId>
+	<artifactId>launcher</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.1.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<name>JMH benchmark sample: Java</name>
+
+	<!-- This is the demo/sample template build script for building Java benchmarks 
+		with JMH. Edit as needed. -->
+
+	<prerequisites>
+		<maven>3.0</maven>
+	</prerequisites>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-core</artifactId>
+			<version>${jmh.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openjdk.jmh</groupId>
+			<artifactId>jmh-generator-annprocess</artifactId>
+			<version>${jmh.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<jmh.version>1.16</jmh.version>
+		<java.version>1.8</java.version>
+		<uberjar.name>benchmarks</uberjar.name>
+		<start-class>com.example.LauncherMain</start-class>
+	</properties>
+
+	<build>
+		<finalName>${uberjar.name}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-invoker-plugin</artifactId>
+				<configuration>
+					<localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+				</configuration>
+				<executions>
+					<execution>
+						<id>prepare-test</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+							<settingsFile>src/it/settings.xml</settingsFile>
+							<addTestClassPath>true</addTestClassPath>
+							<skipInvocation>${skipTests}</skipInvocation>
+							<streamLogs>true</streamLogs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-invoker-plugin
+										</artifactId>
+										<versionRange>
+											[1.10,)
+										</versionRange>
+										<goals>
+											<goal>run</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>

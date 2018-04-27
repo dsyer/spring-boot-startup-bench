@@ -388,7 +388,9 @@ Java10CdsBenchmark.thinMain         latest  avgt   10  3.747 ± 1.026   s/op
 ```
 
 The "older" is Boot 1.5, and "latest" is 2.0, so the effect is more
-dramatic for Boot 1.5.
+dramatic for Boot 1.5. Things are a bit better with Java 11 (apparently
+there was a bug in Java 10 that made it slower on startup overall). See
+the link:static/README.adoc[static] module for more data.
 
 #### Logback
 

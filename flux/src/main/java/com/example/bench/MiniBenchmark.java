@@ -88,7 +88,7 @@ public class MiniBenchmark {
 			super("target");
 		}
 
-		@TearDown(Level.Iteration)
+		@TearDown(Level.Invocation)
 		public void stop() throws Exception {
 			super.after();
 		}

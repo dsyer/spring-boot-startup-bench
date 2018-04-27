@@ -77,7 +77,7 @@ public class SnapBenchmark {
 			super("target", "--server.port=0");
 		}
 
-		@TearDown(Level.Iteration)
+		@TearDown(Level.Invocation)
 		public void stop() throws Exception {
 			super.after();
 		}
@@ -101,7 +101,7 @@ public class SnapBenchmark {
 			super("target", "--server.port=0", "--endpoints.default.web.enabled=true");
 		}
 
-		@TearDown(Level.Iteration)
+		@TearDown(Level.Invocation)
 		public void stop() throws Exception {
 			super.after();
 		}

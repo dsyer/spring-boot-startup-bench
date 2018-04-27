@@ -70,7 +70,7 @@ public class StripBenchmark {
 			super("target", "--server.port=0");
 		}
 
-		@TearDown(Level.Iteration)
+		@TearDown(Level.Invocation)
 		public void stop() throws Exception {
 			super.after();
 		}

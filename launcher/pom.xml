@@ -92,16 +92,31 @@
 				<executions>
 					<execution>
 						<id>prepare-test</id>
-						<phase>test-compile</phase>
+						<phase>compile</phase>
 						<goals>
 							<goal>run</goal>
 						</goals>
 						<configuration>
+							<cloneClean>false</cloneClean>
 							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
 							<settingsFile>src/it/settings.xml</settingsFile>
-							<addTestClassPath>true</addTestClassPath>
 							<skipInvocation>${skipTests}</skipInvocation>
-							<streamLogs>true</streamLogs>
+						</configuration>
+					</execution>
+					<execution>
+						<id>prepare-thin</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<cloneClean>false</cloneClean>
+							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+							<settingsFile>src/it/settings.xml</settingsFile>
+							<skipInvocation>${skipTests}</skipInvocation>
+							<profiles>
+								<profile>thin</profile>
+							</profiles>
 						</configuration>
 					</execution>
 				</executions>

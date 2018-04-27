@@ -28,11 +28,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import com.example.config.StartupApplicationListener;
+
+import org.openjdk.jmh.util.FileUtils;
 
 public class ProcessLauncherState {
 
@@ -197,22 +200,42 @@ public class ProcessLauncherState {
 		if (!args.contains("-cp")) {
 			unpack();
 			args.add("-cp");
-			unpackBenchmarkJar();
 			args.add(".");
 			args.add(findAttribute(Attributes.Name.MAIN_CLASS.toString()));
+			classpathWithBenchmarkJar();
 		}
 	}
 
-	private void unpackBenchmarkJar() {
+	private void classpathWithBenchmarkJar() {
 		try {
 			File base = new File(ProcessLauncherState.class.getProtectionDomain()
 					.getCodeSource().getLocation().toURI());
-			if (base.getName().endsWith(".jar")) {
-				FileCopyUtils.copy(base,
-						new File(new File(home, "BOOT-INF/lib"), base.getName()));
+			File classes = new File(home, "BOOT-INF/classes");
+			if (classes.exists()) {
+				// It's a fat jar
+				if (base.getName().endsWith(".jar")) {
+					FileCopyUtils.copy(base,
+							new File(new File(home, "BOOT-INF/lib"), base.getName()));
+				}
+				else {
+					// Need to merge spring factories, but only for tests, so no biggy
+					FileCopyUtils.copyRecursively(base, classes);
+				}
 			}
 			else {
-				FileCopyUtils.copyRecursively(base, new File(home, "BOOT-INF/classes"));
+				File bench = new File("target/bench");
+				if (base.getName().endsWith(".jar")) {
+					bench.mkdirs();
+					unpack(bench, base.getAbsolutePath());
+				}
+				else {
+					bench = base;
+				}
+				FileCopyUtils.copyRecursively(new File(bench, "com"),
+						new File(home, "com"));
+				// TODO: Need to merge spring factories
+				FileCopyUtils.copy(new File(bench, "META-INF/spring.factories"),
+						new File(home, "META-INF/spring.factories"));
 			}
 		}
 		catch (Exception e) {
@@ -223,10 +246,42 @@ public class ProcessLauncherState {
 	public void startClassFromManifest() {
 		if (!args.contains("-cp")) {
 			unpack();
+			String path = classpath(CLASSPATH);
 			args.add("-cp");
-			args.add(addBenchmarkJar(CLASSPATH));
+			args.add(addBenchmarkJar(path));
 			args.add(findAttribute("Start-Class"));
 		}
+	}
+
+	private String classpath(String path) {
+		File classes = new File(home, "BOOT-INF/classes");
+		if (classes.exists()) {
+			return path;
+		}
+		List<String> args = new ArrayList<>(this.args);
+		args.add("-jar");
+		args.add(jar);
+		Process started = exec(args.toArray(new String[0]),
+				new String[] { "--thin.classpath" });
+		InputStream stream = started.getInputStream();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+		List<String> lines;
+		try {
+			started.waitFor(10, TimeUnit.SECONDS);
+			lines = new ArrayList<>(FileUtils.readAllLines(reader));
+		}
+		catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+		if (lines.isEmpty()) {
+			throw new IllegalStateException("Cannot find classpath from " + jar);
+		}
+		String result = lines.get(0);
+		if (!result.contains(jar)) {
+			throw new IllegalStateException(
+					"Cannot find classpath from " + jar + ", found " + result);
+		}
+		return result;
 	}
 
 	private String addBenchmarkJar(String path) {

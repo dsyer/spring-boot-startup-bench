@@ -34,7 +34,7 @@ import org.openjdk.jmh.annotations.Warmup;
 public class MainBenchmark {
 
 	@Benchmark
-	public void fat(FatState state) throws Exception {
+	public void jar(FatState state) throws Exception {
 		state.run();
 	}
 

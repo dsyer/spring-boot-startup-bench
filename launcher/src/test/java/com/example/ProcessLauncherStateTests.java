@@ -16,7 +16,6 @@
 
 package com.example;
 
-import java.io.File;
 import java.util.List;
 
 import org.junit.Rule;
@@ -32,34 +31,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ProcessLauncherStateTests {
 
-	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator
-			+ "BOOT-INF/lib/*" + File.pathSeparator + new File(".").getAbsolutePath()
-			+ "/target/classes";
-
 	@Rule
 	public OutputCapture output = new OutputCapture();
-
-	@Test
-	public void unpack() throws Exception {
-		// System.setProperty("debug", "true");
-		ProcessLauncherState
-				.setLauncherArgs("target/it/support/target/demo-1.0.0-exec.jar");
-		ProcessLauncherState state = new ProcessLauncherState("target/test",
-				"--server.port=0") {
-			@Override
-			protected void customize(List<String> args) {
-				args.add("-cp");
-				args.add(CLASSPATH);
-				args.add("com.example.demo.DemoApplication");
-			}
-		};
-		state.unpack();
-		state.run();
-		state.after();
-		output.flush();
-		assertThat(output.toString()).contains("Benchmark app started");
-		state.clean();
-	}
 
 	@Test
 	public void main() throws Exception {
@@ -102,10 +75,72 @@ public class ProcessLauncherStateTests {
 	}
 
 	@Test
-	public void jar() throws Exception {
+	public void fatJar() throws Exception {
 		// System.setProperty("debug", "true");
 		ProcessLauncherState
 				.setLauncherArgs("target/it/support/target/demo-1.0.0-exec.jar");
+		ProcessLauncherState state = new ProcessLauncherState("target/test",
+				"--server.port=0") {
+			@Override
+			protected void customize(List<String> args) {
+				args.add("-jar");
+				args.add(jarFile());
+			}
+
+		};
+		state.setMarker("Tomcat started");
+		state.run();
+		state.after();
+		output.flush();
+		assertThat(output.toString()).contains("Tomcat started");
+		state.clean();
+	}
+
+	@Test
+	public void thinMain() throws Exception {
+		System.setProperty("debug", "true");
+		ProcessLauncherState
+				.setLauncherArgs("target/it/support/target/demo-1.0.0-thin.jar");
+		ProcessLauncherState state = new ProcessLauncherState("target/test",
+				"--server.port=0", "--thin.debug") {
+			@Override
+			public void run() throws Exception {
+				mainClassFromManifest();
+				super.run();
+			}
+		};
+		state.run();
+		state.after();
+		output.flush();
+		assertThat(output.toString()).contains("Benchmark app started");
+		state.clean();
+	}
+
+	@Test
+	public void thinStart() throws Exception {
+		// System.setProperty("debug", "true");
+		ProcessLauncherState
+				.setLauncherArgs("target/it/support/target/demo-1.0.0-thin.jar");
+		ProcessLauncherState state = new ProcessLauncherState("target/test",
+				"--server.port=0", "--thin.debug") {
+			@Override
+			public void run() throws Exception {
+				startClassFromManifest();
+				super.run();
+			}
+		};
+		state.run();
+		state.after();
+		output.flush();
+		assertThat(output.toString()).contains("Benchmark app started");
+		state.clean();
+	}
+
+	@Test
+	public void thinJar() throws Exception {
+		// System.setProperty("debug", "true");
+		ProcessLauncherState
+				.setLauncherArgs("target/it/support/target/demo-1.0.0-thin.jar");
 		ProcessLauncherState state = new ProcessLauncherState("target/test",
 				"--server.port=0") {
 			@Override

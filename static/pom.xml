@@ -20,7 +20,7 @@
 		<spring-boot.version>2.0.2.RELEASE</spring-boot.version>
 		<spring-cloud.version>Finchley.BUILD-SNAPSHOT</spring-cloud.version>
 		<locator.version>1.0.0.RELEASE</locator.version>
-		<thin.version>1.0.11.RELEASE</thin.version>
+		<thin.version>1.0.8.RELEASE</thin.version>
 		<uberjar.name>benchmarks</uberjar.name>
 		<start-class>org.openjdk.jmh.Main</start-class>
 	</properties>

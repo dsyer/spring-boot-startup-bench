@@ -19,6 +19,7 @@
 		<java.version>1.8</java.version>
 		<wrapper.version>1.0.10.RELEASE</wrapper.version>
 		<jar.classifier>exec</jar.classifier>
+		<start-class>com.example.demo.DemoApplication</start-class>
 	</properties>
 
 	<dependencies>
@@ -53,6 +54,19 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>shade</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-shade-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 	<build>
 		<plugins>
@@ -64,6 +78,17 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<artifactId>maven-shade-plugin</artifactId>
+					<configuration>
+						<shadedArtifactAttached>true</shadedArtifactAttached>
+						<shadedClassifierName>shade</shadedClassifierName>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 	<repositories>
 		<repository>

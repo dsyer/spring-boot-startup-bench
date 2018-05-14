@@ -200,13 +200,13 @@ public class ProcessLauncherState {
 		if (!args.contains("-cp")) {
 			unpack();
 			args.add("-cp");
-			args.add(".");
+			args.add(classpathWithBenchmarkJar());
 			args.add(findAttribute(Attributes.Name.MAIN_CLASS.toString()));
-			classpathWithBenchmarkJar();
 		}
 	}
 
-	private void classpathWithBenchmarkJar() {
+	private String classpathWithBenchmarkJar() {
+		String path = ".";
 		try {
 			File base = new File(ProcessLauncherState.class.getProtectionDomain()
 					.getCodeSource().getLocation().toURI());
@@ -223,24 +223,36 @@ public class ProcessLauncherState {
 				}
 			}
 			else {
-				File bench = new File("target/bench");
-				if (base.getName().endsWith(".jar")) {
-					bench.mkdirs();
-					unpack(bench, base.getAbsolutePath());
+				if (isThinJar()) {
+					File bench = new File("target/bench");
+					if (base.getName().endsWith(".jar")) {
+						bench.mkdirs();
+						unpack(bench, base.getAbsolutePath());
+					}
+					else {
+						bench = base;
+					}
+					FileCopyUtils.copyRecursively(new File(bench, "com"),
+							new File(home, "com"));
+					// TODO: Need to merge spring factories
+					FileCopyUtils.copy(new File(bench, "META-INF/spring.factories"),
+							new File(home, "META-INF/spring.factories"));
 				}
 				else {
-					bench = base;
+					// Shaded Jar
+					path = path + File.pathSeparator + base;
 				}
-				FileCopyUtils.copyRecursively(new File(bench, "com"),
-						new File(home, "com"));
-				// TODO: Need to merge spring factories
-				FileCopyUtils.copy(new File(bench, "META-INF/spring.factories"),
-						new File(home, "META-INF/spring.factories"));
 			}
 		}
 		catch (Exception e) {
 			throw new IllegalStateException(e);
 		}
+		return path;
+	}
+
+	private boolean isThinJar() {
+		return new File(home,
+				"org/springframework/boot/loader/wrapper/ThinJarWrapper.class").exists();
 	}
 
 	public void startClassFromManifest() {
@@ -249,39 +261,47 @@ public class ProcessLauncherState {
 			String path = classpath(CLASSPATH);
 			args.add("-cp");
 			args.add(addBenchmarkJar(path));
-			args.add(findAttribute("Start-Class"));
+			String mainClass = findAttribute("Start-Class");
+			if (mainClass == null) {
+				// Could be shaded
+				mainClass = findAttribute(Attributes.Name.MAIN_CLASS.toString());
+			}
+			args.add(mainClass);
 		}
 	}
 
 	private String classpath(String path) {
+		if (isThinJar()) {
+			List<String> args = new ArrayList<>(this.args);
+			args.add("-jar");
+			args.add(jar);
+			Process started = exec(args.toArray(new String[0]),
+					new String[] { "--thin.classpath" });
+			InputStream stream = started.getInputStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+			List<String> lines;
+			try {
+				started.waitFor(10, TimeUnit.SECONDS);
+				lines = new ArrayList<>(FileUtils.readAllLines(reader));
+			}
+			catch (Exception e) {
+				throw new IllegalStateException(e);
+			}
+			if (lines.isEmpty()) {
+				throw new IllegalStateException("Cannot find classpath from " + jar);
+			}
+			String result = lines.get(0);
+			if (!result.contains(jar)) {
+				throw new IllegalStateException(
+						"Cannot find classpath from " + jar + ", found " + result);
+			}
+			return result;
+		}
 		File classes = new File(home, "BOOT-INF/classes");
 		if (classes.exists()) {
 			return path;
 		}
-		List<String> args = new ArrayList<>(this.args);
-		args.add("-jar");
-		args.add(jar);
-		Process started = exec(args.toArray(new String[0]),
-				new String[] { "--thin.classpath" });
-		InputStream stream = started.getInputStream();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-		List<String> lines;
-		try {
-			started.waitFor(10, TimeUnit.SECONDS);
-			lines = new ArrayList<>(FileUtils.readAllLines(reader));
-		}
-		catch (Exception e) {
-			throw new IllegalStateException(e);
-		}
-		if (lines.isEmpty()) {
-			throw new IllegalStateException("Cannot find classpath from " + jar);
-		}
-		String result = lines.get(0);
-		if (!result.contains(jar)) {
-			throw new IllegalStateException(
-					"Cannot find classpath from " + jar + ", found " + result);
-		}
-		return result;
+		return ".";
 	}
 
 	private String addBenchmarkJar(String path) {

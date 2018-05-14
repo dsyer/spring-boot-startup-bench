@@ -117,10 +117,50 @@ public class ProcessLauncherStateTests {
 	}
 
 	@Test
+	public void shadeMain() throws Exception {
+		System.setProperty("debug", "true");
+		ProcessLauncherState
+				.setLauncherArgs("target/it/support/target/demo-1.0.0-shade.jar");
+		ProcessLauncherState state = new ProcessLauncherState("target/test",
+				"--server.port=0", "--thin.debug") {
+			@Override
+			public void run() throws Exception {
+				mainClassFromManifest();
+				super.run();
+			}
+		};
+		state.run();
+		state.after();
+		output.flush();
+		assertThat(output.toString()).contains("Benchmark app started");
+		state.clean();
+	}
+
+	@Test
 	public void thinStart() throws Exception {
 		// System.setProperty("debug", "true");
 		ProcessLauncherState
 				.setLauncherArgs("target/it/support/target/demo-1.0.0-thin.jar");
+		ProcessLauncherState state = new ProcessLauncherState("target/test",
+				"--server.port=0", "--thin.debug") {
+			@Override
+			public void run() throws Exception {
+				startClassFromManifest();
+				super.run();
+			}
+		};
+		state.run();
+		state.after();
+		output.flush();
+		assertThat(output.toString()).contains("Benchmark app started");
+		state.clean();
+	}
+
+	@Test
+	public void shadeStart() throws Exception {
+		System.setProperty("debug", "true");
+		ProcessLauncherState
+				.setLauncherArgs("target/it/support/target/demo-1.0.0-shade.jar");
 		ProcessLauncherState state = new ProcessLauncherState("target/test",
 				"--server.port=0", "--thin.debug") {
 			@Override

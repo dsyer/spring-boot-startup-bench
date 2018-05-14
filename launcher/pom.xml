@@ -119,6 +119,22 @@
 							</profiles>
 						</configuration>
 					</execution>
+					<execution>
+						<id>prepare-shade</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<cloneClean>false</cloneClean>
+							<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+							<settingsFile>src/it/settings.xml</settingsFile>
+							<skipInvocation>${skipTests}</skipInvocation>
+							<profiles>
+								<profile>shade</profile>
+							</profiles>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>

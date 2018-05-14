@@ -24,7 +24,7 @@
 		<java.version>1.8</java.version>
 		<spring-boot.version>1.4.7.RELEASE</spring-boot.version>
 		<jar.classifier>14x</jar.classifier>
-		<thin-layout.version>1.0.11.BUILD-SNAPSHOT</thin-layout.version>
+		<thin-layout.version>1.0.11.RELEASE</thin-layout.version>
 	</properties>
 
 	<profiles>
@@ -71,7 +71,7 @@
 		<profile>
 			<id>boot20x</id>
 			<properties>
-				<spring-boot.version>2.0.0.BUILD-SNAPSHOT</spring-boot.version>
+				<spring-boot.version>2.0.2.RELEASE</spring-boot.version>
 				<jar.classifier>20x</jar.classifier>
 			</properties>
 			<build>

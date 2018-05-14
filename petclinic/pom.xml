@@ -33,7 +33,7 @@
 
 		<start-class>org.springframework.samples.petclinic.PetClinicApplication</start-class>
 
-		<thin-layout.version>1.0.11.RELEASE</thin-layout.version>
+		<thin.version>1.0.11.RELEASE</thin.version>
 		<spring-boot-plugin.version>1.5.12.RELEASE</spring-boot-plugin.version>
 		<spring-boot.version>1.5.12.RELEASE</spring-boot.version>
 
@@ -150,7 +150,7 @@
 							<dependency>
 								<groupId>org.springframework.boot.experimental</groupId>
 								<artifactId>spring-boot-thin-layout</artifactId>
-								<version>${thin-layout.version}</version>
+								<version>${thin.version}</version>
 							</dependency>
 						</dependencies>
 					</plugin>

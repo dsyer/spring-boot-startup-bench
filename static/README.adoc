@@ -281,7 +281,7 @@ MainBenchmark.main      erkb    ss   10  4.026 ± 0.119   s/op 10176   28.32%
 MainBenchmark.main      slth    ss   10  4.066 ± 0.073   s/op 8901    23.09%
 ```
 
-and the same thng for the Petclinic:
+and the same thing for the Petclinic:
 
 ```
 Benchmark                              (sample)  Mode  Cnt  Score   Error  Units Classes Lazy Premium
@@ -316,6 +316,7 @@ AutoBenchmark.auto      demo    ss   10  0.864 ± 0.033   s/op
 AutoBenchmark.auto      actr    ss   10  1.156 ± 0.060   s/op
 AutoBenchmark.auto      jdbc    ss   10  0.953 ± 0.063   s/op
 AutoBenchmark.auto      actj    ss   10  1.253 ± 0.036   s/op
+AutoBenchmark.auto      conf    ss   10  1.552 ± 0.044   s/op
 ```
 
 Spring Boot 2.0.0 snapshots (before RC2):

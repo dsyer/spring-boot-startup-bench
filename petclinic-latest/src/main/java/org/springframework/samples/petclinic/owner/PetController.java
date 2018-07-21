@@ -20,6 +20,7 @@ import java.util.Collection;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
@@ -45,7 +46,7 @@ class PetController {
     private final OwnerRepository owners;
 
     @Autowired
-    public PetController(PetRepository pets, OwnerRepository owners) {
+    public PetController(@Lazy PetRepository pets, @Lazy OwnerRepository owners) {
         this.pets = pets;
         this.owners = owners;
     }
@@ -80,13 +81,14 @@ class PetController {
 
     @RequestMapping(value = "/pets/new", method = RequestMethod.POST)
     public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model) {
-        if (StringUtils.hasLength(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null){
+        if (StringUtils.hasLength(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null) {
             result.rejectValue("name", "duplicate", "already exists");
         }
         if (result.hasErrors()) {
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-        } else {
+        }
+        else {
             owner.addPet(pet);
             this.pets.save(pet);
             return "redirect:/owners/{ownerId}";
@@ -105,7 +107,8 @@ class PetController {
         if (result.hasErrors()) {
             model.put("pet", pet);
             return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-        } else {
+        }
+        else {
             owner.addPet(pet);
             this.pets.save(pet);
             return "redirect:/owners/{ownerId}";

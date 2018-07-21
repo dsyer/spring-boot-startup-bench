@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.samples.petclinic.visit.Visit;
 import org.springframework.samples.petclinic.visit.VisitRepository;
 import org.springframework.stereotype.Controller;
@@ -44,9 +45,8 @@ class VisitController {
     private final VisitRepository visits;
     private final PetRepository pets;
 
-
     @Autowired
-    public VisitController(VisitRepository visits, PetRepository pets) {
+    public VisitController(@Lazy VisitRepository visits, @Lazy PetRepository pets) {
         this.visits = visits;
         this.pets = pets;
     }
@@ -57,11 +57,9 @@ class VisitController {
     }
 
     /**
-     * Called before each and every @RequestMapping annotated method.
-     * 2 goals:
-     * - Make sure we always have fresh data
-     * - Since we do not use the session scope, make sure that Pet object always has an id
-     * (Even though id is not part of the form fields)
+     * Called before each and every @RequestMapping annotated method. 2 goals: - Make sure
+     * we always have fresh data - Since we do not use the session scope, make sure that
+     * Pet object always has an id (Even though id is not part of the form fields)
      *
      * @param petId
      * @return Pet
@@ -86,7 +84,8 @@ class VisitController {
     public String processNewVisitForm(@Valid Visit visit, BindingResult result) {
         if (result.hasErrors()) {
             return "pets/createOrUpdateVisitForm";
-        } else {
+        }
+        else {
             this.visits.save(visit);
             return "redirect:/owners/{ownerId}";
         }

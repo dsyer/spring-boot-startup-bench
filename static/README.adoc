@@ -311,6 +311,7 @@ https://github.com/dsyer/spring-boot-auto-reflect[Auto reflect]:
 
 ```
 Benchmark           (sample)  Mode  Cnt  Score   Error  Units
+AutoBenchmark.auto      empt    ss   10  0.485 ± 0.024   s/op
 AutoBenchmark.auto      demo    ss   10  0.864 ± 0.033   s/op
 AutoBenchmark.auto      actr    ss   10  1.156 ± 0.060   s/op
 AutoBenchmark.auto      jdbc    ss   10  0.953 ± 0.063   s/op

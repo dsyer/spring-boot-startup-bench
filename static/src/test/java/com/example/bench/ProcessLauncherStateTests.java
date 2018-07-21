@@ -16,6 +16,7 @@
 
 package com.example.bench;
 
+import com.example.bench.AutoBenchmark.AutoState;
 import com.example.bench.StripBenchmark.ApplicationState;
 
 import org.junit.Rule;
@@ -41,6 +42,17 @@ public class ProcessLauncherStateTests {
 				"--server.port=0");
 		state.setProfiles("old", "jlog");
 		state.before();
+		state.run();
+		state.after();
+		output.flush();
+		assertThat(output.toString()).contains("Benchmark app started");
+	}
+
+	@Test
+	public void auto() throws Exception {
+		// System.setProperty("bench.args", "-verbose:class");
+		AutoState state = new AutoState();
+		state.start();
 		state.run();
 		state.after();
 		output.flush();

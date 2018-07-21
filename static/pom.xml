@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -17,16 +18,21 @@
 		<java.version>1.8</java.version>
 		<jmh.version>1.16</jmh.version>
 		<aspectj.version>1.8.13</aspectj.version>
-		<spring-boot.version>2.0.2.RELEASE</spring-boot.version>
+		<spring-boot.version>2.0.3.RELEASE</spring-boot.version>
 		<spring-cloud.version>Finchley.BUILD-SNAPSHOT</spring-cloud.version>
 		<locator.version>1.0.0.RELEASE</locator.version>
-		<thin.version>1.0.8.RELEASE</thin.version>
+		<thin.version>1.0.12.RELEASE</thin.version>
 		<uberjar.name>benchmarks</uberjar.name>
 		<start-class>org.openjdk.jmh.Main</start-class>
 	</properties>
 
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot.experimental</groupId>
+				<artifactId>spring-boot-auto-reflect</artifactId>
+				<version>1.0.0.BUILD-SNAPSHOT</version>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-aether-provider</artifactId>
@@ -155,21 +161,28 @@
 				<version>2.4.3</version>
 				<configuration>
 					<transformers>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 							<resource>META-INF/spring.handlers</resource>
 						</transformer>
-						<transformer implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
+						<transformer
+							implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
 							<resource>META-INF/spring.factories</resource>
 						</transformer>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 							<resource>META-INF/spring.schemas</resource>
 						</transformer>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 							<mainClass>${start-class}</mainClass>
 						</transformer>
-						<transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
-						<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-						<transformer implementation="org.springframework.boot.loader.thin.maven.RelocatingAppendingResourceTransformer">
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
+						<transformer
+							implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+						<transformer
+							implementation="org.springframework.boot.loader.thin.maven.RelocatingAppendingResourceTransformer">
 							<resource>META-INF/sisu/javax.inject.Named</resource>
 						</transformer>
 					</transformers>

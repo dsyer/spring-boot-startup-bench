@@ -293,6 +293,30 @@ PetclinicLatestBenchmark.explodedJarMain none    avgt   10  4.164 ± 0.068   s/o
 
 == New Data
 
+Spring Boot 2.1.0 snaphots (before M1):
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units
+SnapBenchmark.endp       N/A    ss   10  1.478 ± 0.110   s/op
+SnapBenchmark.snap      empt    ss   10  0.604 ± 0.032   s/op
+SnapBenchmark.snap      demo    ss   10  1.067 ± 0.050   s/op
+SnapBenchmark.snap      actr    ss   10  1.417 ± 0.036   s/op
+SnapBenchmark.snap      jdbc    ss   10  1.245 ± 0.144   s/op
+SnapBenchmark.snap      actj    ss   10  1.606 ± 0.074   s/op
+SnapBenchmark.snap      jpae    ss   10  2.013 ± 0.062   s/op
+SnapBenchmark.snap      conf    ss   10  1.792 ± 0.033   s/op
+```
+
+https://github.com/dsyer/spring-boot-auto-reflect[Auto reflect]:
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units
+AutoBenchmark.auto      demo    ss   10  0.864 ± 0.033   s/op
+AutoBenchmark.auto      actr    ss   10  1.156 ± 0.060   s/op
+AutoBenchmark.auto      jdbc    ss   10  0.953 ± 0.063   s/op
+AutoBenchmark.auto      actj    ss   10  1.253 ± 0.036   s/op
+```
+
 Spring Boot 2.0.0 snapshots (before RC2):
 
 ```

@@ -106,7 +106,7 @@ public class ProcessLauncherState {
 		catch (MalformedURLException e) {
 			throw new IllegalStateException("Cannot find archive", e);
 		}
-		log.debug("Classpath: " + builder);
+		log.info("Classpath: " + builder);
 		return builder.toString();
 	}
 

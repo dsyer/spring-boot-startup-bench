@@ -15,6 +15,8 @@
  */
 package com.example.config;
 
+import java.time.Duration;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -25,7 +27,7 @@ import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 
-import reactor.ipc.netty.http.server.HttpServer;
+import reactor.netty.http.server.HttpServer;
 
 /**
  * @author Dave Syer
@@ -48,9 +50,11 @@ public class ApplicationBuilder {
 
 		HttpHandler handler = WebHttpHandlerBuilder.applicationContext(context).build();
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
-		HttpServer httpServer = HttpServer.create("localhost",
-				context.getEnvironment().getProperty("server.port", Integer.class, 8080));
-		httpServer.startAndAwait(adapter);
+		HttpServer httpServer = HttpServer.create().host("localhost").port(
+				context.getEnvironment().getProperty("server.port", Integer.class, 8080))
+				.handle(adapter);
+		httpServer.bindUntilJavaShutdown(Duration.ofSeconds(60),
+				disposable -> disposable.dispose());
 	}
 
 	private static boolean hasListeners(ConfigurableApplicationContext context) {

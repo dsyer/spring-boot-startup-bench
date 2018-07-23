@@ -110,3 +110,23 @@ MiniBenchmark.mini       demo    ss   10  0.255 ± 0.007   s/op 2255
 
 Strangely the "boot" sample doesn't benefit at all from the
 combination (it's not faster with J9 once the lazy beans are on).
+
+== Spring Boot 2.1.0
+
+Spring 5.1 has some performance improvements.
+
+```
+Benchmark            (sample)  Mode  Cnt  Score   Error  Units
+MainBenchmark.main       empt    ss   10  0.596 ± 0.010   s/op
+MainBenchmark.main       jlog    ss   10  0.770 ± 0.022   s/op
+MainBenchmark.main       demo    ss   10  0.939 ± 0.037   s/op
+MainBenchmark.main       actr    ss   10  1.270 ± 0.025   s/op
+MainBenchmark.main       jdbc    ss   10  1.057 ± 0.018   s/op
+MainBenchmark.main       actj    ss   10  1.449 ± 0.059   s/op
+MiniBenchmark.boot       jlog    ss   10  0.458 ± 0.007   s/op
+MiniBenchmark.boot       demo    ss   10  0.572 ± 0.014   s/op
+MiniBenchmark.micro      jlog    ss   10  0.199 ± 0.013   s/op
+MiniBenchmark.micro      demo    ss   10  0.304 ± 0.003   s/op
+MiniBenchmark.mini       jlog    ss   10  0.412 ± 0.022   s/op
+MiniBenchmark.mini       demo    ss   10  0.529 ± 0.013   s/op
+```

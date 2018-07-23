@@ -16,6 +16,7 @@
 package com.example.bench;
 
 import com.example.demo.DemoApplication;
+import com.example.empt.EmptyApplication;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -46,7 +47,7 @@ public class MainBenchmark {
 	public static class MainState extends ProcessLauncherState {
 
 		public static enum Sample {
-			empt, jlog, demo, actr, jdbc, actj;
+			empt(EmptyApplication.class), jlog, demo, actr, jdbc, actj;
 
 			private Class<?> config;
 

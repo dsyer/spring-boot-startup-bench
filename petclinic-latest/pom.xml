@@ -33,7 +33,7 @@
 		<start-class>org.springframework.samples.petclinic.PetClinicApplication</start-class>
 
 		<thin.version>1.0.12.RELEASE</thin.version>
-		<spring-boot-plugin.version>1.5.12.RELEASE</spring-boot-plugin.version>
+		<spring.version>5.1.0.BUILD-SNAPSHOT</spring.version>
 
 	</properties>
 
@@ -185,7 +185,6 @@
 				<plugin>
 					<groupId>org.springframework.boot</groupId>
 					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>${spring-boot-plugin.version}</version>
 					<configuration>
 						<classifier>${jar.classifier}</classifier>
 					</configuration>

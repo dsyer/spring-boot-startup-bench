@@ -130,3 +130,14 @@ MiniBenchmark.micro      demo    ss   10  0.304 ± 0.003   s/op
 MiniBenchmark.mini       jlog    ss   10  0.412 ± 0.022   s/op
 MiniBenchmark.mini       demo    ss   10  0.529 ± 0.013   s/op
 ```
+
+On J9:
+
+```
+MainBenchmark.main       empt    ss   10  0.455 ± 0.053   s/op
+MainBenchmark.main       jlog    ss   10  0.644 ± 0.038   s/op
+MainBenchmark.main       demo    ss   10  0.851 ± 0.026   s/op
+MainBenchmark.main       actr    ss   10  1.231 ± 0.048   s/op
+MainBenchmark.main       jdbc    ss   10  0.973 ± 0.040   s/op
+MainBenchmark.main       actj    ss   10  1.389 ± 0.040   s/op
+```

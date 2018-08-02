@@ -165,10 +165,10 @@ before Spring Boot actually starts).
 
 ### Spring Boot 2.x
 
-Spring Boot is slower. Early milestones were fine, but degradation
-continued through the 2.0 development cycle. A lot of progress was
-made between M7 and RC1, so I suppose it could be worse. Results
-(before RC2):
+Spring Boot is 2.0 is a bit slower and 2.1 is a bit faster. Early
+milestones were fine, but degradation continued through the 2.0
+development cycle. A lot of progress was made between M7 and RC1, so I
+suppose it could be worse. Results (before RC2):
 
 ```
 Benchmark                                        Mode  Cnt  Score   Error  Units

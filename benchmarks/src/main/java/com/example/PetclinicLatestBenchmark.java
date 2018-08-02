@@ -57,6 +57,11 @@ public class PetclinicLatestBenchmark {
 	}
 
 	@Benchmark
+	public void explodedJarFlags(FlagsState state) throws Exception {
+		state.run();
+	}
+
+	@Benchmark
 	public void devtoolsRestart(ExplodedDevtoolsState state) throws Exception {
 		state.run();
 	}
@@ -98,6 +103,24 @@ public class PetclinicLatestBenchmark {
 	public static class MainState extends ProcessLauncherState {
 		public MainState() {
 			super("target/demo", "-cp", CLASSPATH,
+					"org.springframework.samples.petclinic.PetClinicApplication",
+					"--server.port=0");
+			unpack("target/demo", jarFile("com.example:petclinic-latest:jar:boot:1.4.2"));
+		}
+
+		@TearDown(Level.Iteration)
+		public void stop() throws Exception {
+			super.after();
+		}
+	}
+
+	@State(Scope.Benchmark)
+	public static class FlagsState extends ProcessLauncherState {
+		public FlagsState() {
+			super("target/demo", "-noverify", "-XX:TieredStopAtLevel=1",
+					"-Djava.security.egd=file:/dev/./urandom",
+					"-Dspring.config.location=classpath:/application.properties",
+					"-Dspring.jmx.enabled=false", "-cp", CLASSPATH,
 					"org.springframework.samples.petclinic.PetClinicApplication",
 					"--server.port=0");
 			unpack("target/demo", jarFile("com.example:petclinic-latest:jar:boot:1.4.2"));

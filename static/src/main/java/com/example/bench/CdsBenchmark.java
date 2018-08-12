@@ -114,6 +114,11 @@ public class CdsBenchmark {
 		}
 
 		@Override
+		protected String getClasspath() {
+			return super.getClasspath(false);
+		}
+
+		@Override
 		protected void customize(List<String> args) {
 			args.addAll(Arrays.asList("-Xshare:on", "-XX:+UseAppCDS",
 					"-XX:SharedArchiveFile=app.jsa"));

@@ -61,7 +61,7 @@ public class PetclinicLatestBenchmark {
 		state.run();
 	}
 
-	@Benchmark
+	// @Benchmark
 	public void devtoolsRestart(ExplodedDevtoolsState state) throws Exception {
 		state.run();
 	}

@@ -34,6 +34,7 @@
 
 		<thin.version>1.0.12.RELEASE</thin.version>
 		<spring.version>5.1.0.BUILD-SNAPSHOT</spring.version>
+		<spring-data-releasetrain.version>Lovelace-BUILD-SNAPSHOT</spring-data-releasetrain.version>
 
 	</properties>
 

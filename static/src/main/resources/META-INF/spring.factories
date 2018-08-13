@@ -5,7 +5,3 @@ com.example.config.ShutdownApplicationListener
 
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.example.config.CustomConfiguration
-
-# BeanInfo Factory (doesn't have much of an impact)
-#org.springframework.beans.BeanInfoFactory=\
-#org.springframework.boot.beans.SpringBeanInfoFactory

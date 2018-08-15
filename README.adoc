@@ -204,6 +204,19 @@ PetclinicLatestBenchmark.devtoolsRestart  avgt   10  1.208 ± 0.070   s/op
 PetclinicLatestBenchmark.explodedJarMain  avgt   10  3.897 ± 0.067   s/op
 PetclinicLatestBenchmark.fatJar           avgt   10  4.996 ± 0.032   s/op
 PetclinicLatestBenchmark.noverify         avgt   10  4.399 ± 0.029   s/op
+PetclinicLatestBenchmark.explodedJarFlags avgt   10  3.325 ± 0.053   s/op
+```
+
+With the new Spring Data
+https://jira.spring.io/browse/DATACMNS-1368[LAZY repositories]
+feature (and https://jira.spring.io/browse/DATAJPA-1397[JPA]):
+
+```
+Benchmark                                  Mode  Cnt  Score   Error  Units
+PetclinicLatestBenchmark.explodedJarMain   avgt   10  3.751 ± 0.021   s/op
+PetclinicLatestBenchmark.fatJar            avgt   10  4.771 ± 0.039   s/op
+PetclinicLatestBenchmark.noverify          avgt   10  4.063 ± 0.051   s/op
+PetclinicLatestBenchmark.explodedJarFlags  avgt   10  3.095 ± 0.051   s/op
 ```
 
 ### Spring Boot 1.5

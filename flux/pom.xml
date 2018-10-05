@@ -16,11 +16,11 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<jmh.version>1.16</jmh.version>
-		<aspectj.version>1.8.13</aspectj.version>
+		<aspectj.version>1.9.1</aspectj.version>
 		<spring-boot.version>2.1.0.BUILD-SNAPSHOT</spring-boot.version>
-		<spring-cloud.version>Finchley.BUILD-SNAPSHOT</spring-cloud.version>
+		<spring-cloud.version>Greenwich.BUILD-SNAPSHOT</spring-cloud.version>
 		<locator.version>1.0.0.RELEASE</locator.version>
-		<thin.version>1.0.12.RELEASE</thin.version>
+		<thin.version>1.0.15.RELEASE</thin.version>
 		<uberjar.name>benchmarks</uberjar.name>
 		<start-class>org.openjdk.jmh.Main</start-class>
 	</properties>

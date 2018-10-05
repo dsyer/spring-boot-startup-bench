@@ -293,7 +293,24 @@ PetclinicLatestBenchmark.explodedJarMain none    avgt   10  4.164 ± 0.068   s/o
 
 == New Data
 
-Spring Boot 2.1.0 snaphots before M1:
+With 2.1.0 snapshots after M4:
+
+```
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units
+SnapBenchmark.endp       N/A    ss   10  1.447 ± 0.038   s/op
+SnapBenchmark.snap      empt    ss   10  0.572 ± 0.012   s/op
+SnapBenchmark.snap      demo    ss   10  1.063 ± 0.023   s/op
+SnapBenchmark.snap      actr    ss   10  1.447 ± 0.019   s/op
+SnapBenchmark.snap      jdbc    ss   10  1.207 ± 0.023   s/op
+SnapBenchmark.snap      actj    ss   10  1.616 ± 0.030   s/op
+SnapBenchmark.snap      jpae    ss   10  2.062 ± 0.093   s/op
+SnapBenchmark.snap      conf    ss   10  1.979 ± 0.183   s/op
+MainBenchmark.main      demo    ss   10  1.147 ± 0.023   s/op
+StripBenchmark.strip    slim    ss   10  1.083 ± 0.031   s/op
+StripBenchmark.strip    thin    ss   10  0.919 ± 0.019   s/op
+```
+
+And before M1:
 
 ```
 Benchmark           (sample)  Mode  Cnt  Score   Error  Units

@@ -174,7 +174,7 @@ class WebAppInitializer
 			DispatcherServlet dispatcherServlet, ServerProperties serverProperties,
 			WebMvcProperties webMvcProperties) {
 		ServletRegistrationBean<DispatcherServlet> registration = new ServletRegistrationBean<>(
-				dispatcherServlet, serverProperties.getServlet().getServletMapping());
+				dispatcherServlet, webMvcProperties.getServlet().getServletMapping());
 		registration.setName(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME);
 		registration.setLoadOnStartup(webMvcProperties.getServlet().getLoadOnStartup());
 		return registration;

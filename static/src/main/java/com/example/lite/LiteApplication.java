@@ -127,12 +127,8 @@ class DispatcherServletConfiguration {
 
 	public static final String DEFAULT_DISPATCHER_SERVLET_BEAN_NAME = "dispatcherServlet";
 
-	private final ServerProperties serverProperties;
-
-	public DispatcherServletConfiguration(WebMvcProperties webMvcProperties,
-			ServerProperties serverProperties) {
+	public DispatcherServletConfiguration(WebMvcProperties webMvcProperties) {
 		this.webMvcProperties = webMvcProperties;
-		this.serverProperties = serverProperties;
 	}
 
 	@Bean
@@ -152,7 +148,7 @@ class DispatcherServletConfiguration {
 			DispatcherServlet dispatcherServlet) {
 		ServletRegistrationBean<DispatcherServlet> registration = new ServletRegistrationBean<>(
 				dispatcherServlet,
-				this.serverProperties.getServlet().getServletMapping());
+				this.webMvcProperties.getServlet().getServletMapping());
 		registration.setName(DEFAULT_DISPATCHER_SERVLET_BEAN_NAME);
 		registration
 				.setLoadOnStartup(this.webMvcProperties.getServlet().getLoadOnStartup());

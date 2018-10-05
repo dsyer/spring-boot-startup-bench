@@ -49,7 +49,7 @@ public class StripBenchmark {
 
 		public static enum Sample {
 
-			thin(ThinApplication.class), slim(SlimApplication.class), lite(
+			slim(SlimApplication.class), thin(ThinApplication.class), lite(
 					LiteApplication.class), func(FuncApplication.class);
 
 			private Class<?> config;

@@ -81,6 +81,10 @@ public class ProcessLauncherState {
 		this.profiles = profiles;
 	}
 
+	public void addArgs(String... args) {
+		this.args.addAll(Arrays.asList(args));
+	}
+
 	protected String getClasspath() {
 		return getClasspath(true);
 	}

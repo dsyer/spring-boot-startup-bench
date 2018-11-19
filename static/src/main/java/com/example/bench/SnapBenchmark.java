@@ -77,6 +77,10 @@ public class SnapBenchmark {
 			super("target", "--server.port=0");
 		}
 
+		public void setSample(Sample sample) {
+			this.sample = sample;
+		}
+
 		@TearDown(Level.Invocation)
 		public void stop() throws Exception {
 			super.after();

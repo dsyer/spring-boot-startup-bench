@@ -48,6 +48,19 @@ public class ProcessLauncherStateTests {
 	}
 
 	@Test
+	public void snap() throws Exception {
+		// System.setProperty("bench.args", "-verbose:class");
+		SnapBenchmark.ApplicationState state = new SnapBenchmark.ApplicationState();
+		// state.addArgs("-agentlib:jdwp=transport=dt_socket,server=y,address=8000");
+		state.setSample(SnapBenchmark.ApplicationState.Sample.demo);
+		state.start();
+		state.run();
+		state.after();
+		output.flush();
+		assertThat(output.toString()).contains("Benchmark app started");
+	}
+
+	@Test
 	public void func() throws Exception {
 		ApplicationState state = new ApplicationState();
 		state.sample = ApplicationState.Sample.func;

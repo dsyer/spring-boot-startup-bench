@@ -4,7 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionEvaluationReport;
@@ -59,4 +59,5 @@ public class StaticApplicationTests {
 		return !name.contains("#") && !name.contains("$")
 				&& name.contains("AutoConfiguration");
 	}
+
 }

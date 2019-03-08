@@ -16,12 +16,10 @@
 
 package com.example.bench;
 
+import com.example.bench.CaptureSystemOutput.OutputCapture;
 import com.example.demo.DemoApplication;
 
-import org.junit.Rule;
-import org.junit.Test;
-
-import org.springframework.boot.test.rule.OutputCapture;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,11 +29,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ProcessLauncherStateTests {
 
-	@Rule
-	public OutputCapture output = new OutputCapture();
-
 	@Test
-	public void vanilla() throws Exception {
+	@CaptureSystemOutput
+	public void vanilla(OutputCapture output) throws Exception {
 		// System.setProperty("bench.args", "-verbose:class");
 		ProcessLauncherState state = new ProcessLauncherState("target",
 				"--server.port=0");
@@ -44,7 +40,6 @@ public class ProcessLauncherStateTests {
 		state.before();
 		state.run();
 		state.after();
-		output.flush();
 		assertThat(output.toString()).contains("Benchmark app started");
 		assertThat(state.getHeap()).isGreaterThan(0);
 	}

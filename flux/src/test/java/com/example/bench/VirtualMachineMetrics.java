@@ -47,15 +47,28 @@ public class VirtualMachineMetrics {
 					.getProperty(CONNECTOR_ADDRESS);
 			JMXServiceURL url = new JMXServiceURL(connectorAddress);
 			JMXConnector connector = JMXConnectorFactory.connect(url);
-			Map<String, Long> metrics = new BufferPools(
-					connector.getMBeanServerConnection()).getMetrics();
+			MBeanServerConnection connection = connector.getMBeanServerConnection();
+			gc(connection);
+			Map<String, Long> metrics = new HashMap<>(
+					new BufferPools(connection).getMetrics());
+			metrics.putAll(new Threads(connection).getMetrics());
+			metrics.putAll(new Classes(connection).getMetrics());
 			vm.detach();
 			return metrics;
 		}
 		catch (Exception e) {
-			System.err.println("Unable to load memory pool MBeans for: " + pid);
-			e.printStackTrace();
 			return Collections.emptyMap();
+		}
+	}
+
+	private static void gc(MBeanServerConnection mBeanServer) {
+		try {
+			final ObjectName on = new ObjectName("java.lang:type=Memory");
+			mBeanServer.getMBeanInfo(on);
+			mBeanServer.invoke(on, "gc", new Object[0], new String[0]);
+		}
+		catch (Exception ignored) {
+			System.err.println("Unable to gc");
 		}
 	}
 
@@ -65,6 +78,64 @@ public class VirtualMachineMetrics {
 
 	public static long heap(Map<String, Long> metrics) {
 		return BufferPools.heap(metrics);
+	}
+
+}
+
+class Threads {
+
+	private final MBeanServerConnection mBeanServer;
+
+	public Threads(MBeanServerConnection mBeanServer) {
+		this.mBeanServer = mBeanServer;
+	}
+
+	public Map<String, Long> getMetrics() {
+		final Map<String, Long> gauges = new HashMap<>();
+		final String name = "Threads";
+		try {
+			final ObjectName on = new ObjectName("java.lang:type=Threading");
+			mBeanServer.getMBeanInfo(on);
+			Integer value = (Integer) mBeanServer.getAttribute(on, "ThreadCount");
+			gauges.put(name(name), new Long(value) * 1024 * 1024);
+		}
+		catch (Exception ignored) {
+			System.err.println("Unable to load thread pool MBeans: " + name);
+		}
+		return Collections.unmodifiableMap(gauges);
+	}
+
+	private static String name(String name) {
+		return name.replace(" ", "-");
+	}
+
+}
+
+class Classes {
+
+	private final MBeanServerConnection mBeanServer;
+
+	public Classes(MBeanServerConnection mBeanServer) {
+		this.mBeanServer = mBeanServer;
+	}
+
+	public Map<String, Long> getMetrics() {
+		final Map<String, Long> gauges = new HashMap<>();
+		final String name = "Classes";
+		try {
+			final ObjectName on = new ObjectName("java.lang:type=ClassLoading");
+			mBeanServer.getMBeanInfo(on);
+			Integer value = (Integer) mBeanServer.getAttribute(on, "LoadedClassCount");
+			gauges.put(name(name), new Long(value));
+		}
+		catch (Exception ignored) {
+			System.err.println("Unable to load thread pool MBeans: " + name);
+		}
+		return Collections.unmodifiableMap(gauges);
+	}
+
+	private static String name(String name) {
+		return name.replace(" ", "-");
 	}
 
 }
@@ -86,6 +157,7 @@ class BufferPools {
 			final String name = name(ATTRIBUTES[i]);
 			total += metrics.containsKey(name) ? metrics.get(name) : 0;
 		}
+		total += metrics.getOrDefault("Threads", 0L);
 		return total;
 	}
 

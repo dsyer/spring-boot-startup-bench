@@ -1,35 +1,19 @@
 [.lead]
 In this module we study the effect of Spring and Spring Boot on startup time using the webflux and functional webflux programming models.
 
-Results:
-
 ```
-Benchmark           (sample)  Mode  Cnt  Score   Error  Units Webstack
-MainBenchmark.main      demo    ss   10  1.124 ± 0.050   s/op mvc
-MainBenchmark.main      flux    ss   10  1.023 ± 0.080   s/op webflux
-MainBenchmark.main      actr    ss   10  1.548 ± 0.049   s/op mvc
-MainBenchmark.main      demo    ss   10  0.993 ± 0.027   s/op flux.fn
-MainBenchmark.main      actr    ss   10  1.397 ± 0.068   s/op webflux
-```
-
-Summary: webflux.fn and @webflux are comparable, and both are faster on Netty than MVC on Tomcat (>~10%).
-
-The "actr" sample is with Actuators. The others are a single HTTP endpoint.
-
-== Minimal Rest Controller
-
-How fast can Spring serve a simple rest endpoint? With full webflux features:
-
-```
-Benchmark            (sample)  Mode  Cnt  Score   Error  Units Classes
-MainBenchmark.main       jlog    ss   10  0.933 ± 0.065   s/op 4367
-MainBenchmark.main       demo    ss   10  1.081 ± 0.075   s/op 5779
-MiniBenchmark.boot       jlog    ss   10  0.486 ± 0.020   s/op 2974
-MiniBenchmark.boot       demo    ss   10  0.579 ± 0.041   s/op 4138
-MiniBenchmark.mini       jlog    ss   10  0.420 ± 0.011   s/op 2351
-MiniBenchmark.mini       demo    ss   10  0.538 ± 0.009   s/op 3138
-MiniBenchmark.micro      jlog    ss   10  0.186 ± 0.006   s/op 1371
-MiniBenchmark.micro      demo    ss   10  0.288 ± 0.006   s/op 2112
+class        method sample  beans   classes   heap    memory  median  mean  range
+MainBenchmark  main  jlog  158.000  3671.000  6.580   44.277  0.693  0.698  0.005
+MainBenchmark  main  demo  184.000  4449.000  8.362   50.860  0.787  0.803  0.018
+MainBenchmark  main  actr  370.000  5241.000  9.993   56.583  0.943  0.960  0.016
+MainBenchmark  main  jdbc  264.000  5124.000  9.171   55.068  0.885  0.897  0.015
+MainBenchmark  main  actj  454.000  5423.000  9.887   57.530  1.021  1.036  0.028
+MiniBenchmark  boot  jlog  112.000  3255.000  6.739   41.243  0.571  0.576  0.006
+MiniBenchmark  boot  demo  56.000   3936.000  6.381   45.139  0.669  0.679  0.017
+MiniBenchmark  mini  jlog  108.000  2990.000  5.448   38.589  0.510  0.518  0.010
+MiniBenchmark  mini  demo  81.000   3664.000  6.015   43.440  0.613  0.623  0.021
+MiniBenchmark  micro jlog  8.000    2211.000  4.800   33.275  0.337  0.344  0.011
+MiniBenchmark  micro demo  8.000    2944.000  7.497   40.718  0.440  0.449  0.012
 ```
 
 .Number of Classes vs. Startup Time
@@ -43,84 +27,39 @@ Notes:
 * The `mini` samples do not use Spring Boot (just `@EnableWebFlux`).
 * The `micro` samples do not use `@EnableWebflux`, just a manual route registration.
 
-The mini jlog sample ran in about 52MB memory (16 heap, 36
-non-heap). The micro jlog sample ran in 44MB (14 heap, 30
-non-heap). Non-heap is really what matters for these smaller apps.
+Non-heap is really what matters for these smaller apps.
 
-== Open J9
-
-Here are the results (pretty impressive):
-
-```
-Benchmark            (sample)  Mode  Cnt  Score   Error  Units Classes
-MainBenchmark.main       jlog    ss   10  0.709 ± 0.034   s/op 4536
-MainBenchmark.main       demo    ss   10  0.939 ± 0.027   s/op 5954
-MiniBenchmark.boot       jlog    ss   10  0.406 ± 0.085   s/op 3090
-MiniBenchmark.boot       demo    ss   10  0.505 ± 0.035   s/op 4314
-MiniBenchmark.mini       jlog    ss   10  0.340 ± 0.018   s/op 2427
-MiniBenchmark.mini       demo    ss   10  0.432 ± 0.019   s/op 3256
-MiniBenchmark.micro      jlog    ss   10  0.152 ± 0.045   s/op 1436
-MiniBenchmark.micro      demo    ss   10  0.204 ± 0.019   s/op 2238
-```
-
-The results are quite variable with Open J9. Those above are the
-best runs - the median results were the same, but the average was
-longer when the tail hit.
-
-== Lazy Beans
-
-There's a bean factory post processor in
-https://github.com/spring-projects/spring-boot/issues/9685[Spring Boot
-issue 9685] that makes all beans lazy by default. It's quite
-interesting to see what happens if we add that to our mini
-applications:
-
-```
-Benchmark            (sample)  Mode  Cnt  Score   Error  Units Classes 
-MainBenchmark.main       jlog    ss   10  0.729 ± 0.059   s/op 3949
-MainBenchmark.main       demo    ss   10  0.887 ± 0.012   s/op 5311
-MiniBenchmark.boot       jlog    ss   10  0.356 ± 0.020   s/op 2238
-MiniBenchmark.boot       demo    ss   10  0.401 ± 0.022   s/op 2644
-MiniBenchmark.mini       jlog    ss   10  0.278 ± 0.015   s/op 1735
-MiniBenchmark.mini       demo    ss   10  0.327 ± 0.014   s/op 2132
-```
-
-It's cheating a bit, because those beans end up being initialized on
+There's a flag in Spring Boot 2.2 that makes all beans lazy by
+default. It is switched on in all the above benchmarks.
+Some of those beans end up being initialized on
 the first HTTP request, but probably most of them are not needed in
 this sample, so they could stay uninitialized and no-one would
 care. We'd need more logic / conditions in `@EnableWebFlux` to
 capitalize on it without cheating
 
-Spring Boot 2.2 has a new flag that does this: `spring.main.lazy-initialization=true`
+== Open J9
+
+The results are quite variable with Open J9, but once the CDS cache is
+created you usually see about 10-15% improvement.
+
+== Old Results
+
+Comparison of different Webflux options in Spring Boot 2.0:
 
 ```
-Benchmark            (sample)  Mode  Cnt  Score   Error  Units Faster
-MainBenchmark.main       empt    ss   10  0.495 ± 0.008   s/op 9.91% 
-MainBenchmark.main       jlog    ss   10  0.692 ± 0.017   s/op 21.04%
-MainBenchmark.main       demo    ss   10  0.805 ± 0.016   s/op 19.45%
-MainBenchmark.main       actr    ss   10  0.946 ± 0.021   s/op 27.03%
-MainBenchmark.main       jdbc    ss   10  0.860 ± 0.010   s/op 19.95%
-MainBenchmark.main       actj    ss   10  1.015 ± 0.020   s/op 29.11%
+Benchmark           (sample)  Mode  Cnt  Score   Error  Units Webstack
+MainBenchmark.main      demo    ss   10  1.124 ± 0.050   s/op mvc
+MainBenchmark.main      flux    ss   10  1.023 ± 0.080   s/op webflux
+MainBenchmark.main      actr    ss   10  1.548 ± 0.049   s/op mvc
+MainBenchmark.main      demo    ss   10  0.993 ± 0.027   s/op flux.fn
+MainBenchmark.main      actr    ss   10  1.397 ± 0.068   s/op webflux
 ```
 
-== Open J9 and Lazy Beans
+Summary: webflux.fn and @webflux are comparable, and both are faster on Netty than MVC on Tomcat (>~10%).
 
-```
-Benchmark            (sample)  Mode  Cnt  Score   Error  Units Classes
-MainBenchmark.main       jlog    ss   10  0.618 ± 0.020   s/op 4097
-MainBenchmark.main       demo    ss   10  0.827 ± 0.027   s/op 5524
-MiniBenchmark.boot       jlog    ss   10  0.364 ± 0.007   s/op 2744
-MiniBenchmark.boot       demo    ss   10  0.483 ± 0.015   s/op 3576
-MiniBenchmark.mini       jlog    ss   10  0.214 ± 0.004   s/op 1826
-MiniBenchmark.mini       demo    ss   10  0.255 ± 0.007   s/op 2255
-```
+=== Spring Boot 2.1.0
 
-Strangely the "boot" sample doesn't benefit at all from the
-combination (it's not faster with J9 once the lazy beans are on).
-
-== Spring Boot 2.1.0
-
-Spring 5.1 has some performance improvements.
+Spring 5.1 had some performance improvements.
 
 ```
 Benchmark            (sample)  Mode  Cnt  Score   Error  Units

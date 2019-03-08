@@ -179,7 +179,6 @@ public class ProcessLauncherState {
 
 	public void after() throws Exception {
 		if (started != null && started.isAlive()) {
-			Runtime.getRuntime().gc();
 			Map<String, Long> metrics = VirtualMachineMetrics.fetch(getPid());
 			this.memory = VirtualMachineMetrics.total(metrics);
 			this.heap = VirtualMachineMetrics.heap(metrics);

@@ -16,6 +16,8 @@
 
 package com.example.bench;
 
+import com.example.demo.DemoApplication;
+
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -37,12 +39,14 @@ public class ProcessLauncherStateTests {
 		// System.setProperty("bench.args", "-verbose:class");
 		ProcessLauncherState state = new ProcessLauncherState("target",
 				"--server.port=0");
-		state.setProfiles("actr");
+		state.setMainClass(DemoApplication.class.getName());
+		state.setProfiles("jlog");
 		state.before();
 		state.run();
 		state.after();
 		output.flush();
 		assertThat(output.toString()).contains("Benchmark app started");
+		assertThat(state.getHeap()).isGreaterThan(0);
 	}
 
 }

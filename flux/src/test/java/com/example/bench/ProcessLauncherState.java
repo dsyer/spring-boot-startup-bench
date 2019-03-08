@@ -19,10 +19,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import com.example.config.ShutdownApplicationListener;
 import com.example.config.StartupApplicationListener;
@@ -35,22 +37,59 @@ import org.springframework.boot.loader.archive.Archive;
 import org.springframework.boot.loader.thin.ArchiveUtils;
 import org.springframework.boot.loader.thin.DependencyResolver;
 import org.springframework.boot.loader.thin.PathResolver;
+import org.springframework.util.ReflectionUtils;
 
 public class ProcessLauncherState {
 
 	private static final Logger log = LoggerFactory.getLogger(ProcessLauncherState.class);
 
+	public static final String CLASS_COUNT_MARKER = "Class count";
+
+	public static final String BEAN_COUNT_MARKER = "Bean count";
+
 	private Process started;
+
 	private List<String> args = new ArrayList<>();
+
 	private List<String> progs = new ArrayList<>();
+
 	private static List<String> DEFAULT_JVM_ARGS = Arrays.asList("-Xmx128m", "-cp", "",
-			"-Djava.security.egd=file:/dev/./urandom", "-noverify");
+			"-Djava.security.egd=file:/dev/./urandom", "-noverify",
+			"-Dspring.main.lazy-initialization=true");
+
 	private File home;
+
 	private String mainClass = DemoApplication.class.getName();
+
 	private String name = "thin";
+
 	private String[] profiles = new String[0];
 
 	private BufferedReader buffer;
+
+	private int classes;
+
+	private int beans;
+
+	private long memory;
+
+	private long heap;
+
+	public int getClasses() {
+		return classes;
+	}
+
+	public int getBeans() {
+		return beans;
+	}
+
+	public double getMemory() {
+		return memory / (1024. * 1024);
+	}
+
+	public double getHeap() {
+		return heap / (1024. * 1024);
+	}
 
 	public ProcessLauncherState(String dir, String... args) {
 		this.args.addAll(DEFAULT_JVM_ARGS);
@@ -81,15 +120,18 @@ public class ProcessLauncherState {
 		this.profiles = profiles;
 	}
 
+	public void addArgs(String... args) {
+		this.args.addAll(Arrays.asList(args));
+	}
+
 	private String getClasspath() {
 		PathResolver resolver = new PathResolver(DependencyResolver.instance());
-		Archive root = ArchiveUtils.getArchive(getClass());
+		Archive root = ArchiveUtils.getArchive(ProcessLauncherState.class);
 		List<Archive> resolved = resolver.resolve(root, name, profiles);
-		File app = new File("target/original-benchmarks.jar");
-		if (!app.exists()) {
-			app = new File("target/classes");
-		}
+		File app = new File("target/classes");
 		StringBuilder builder = new StringBuilder(app.getAbsolutePath());
+		app = new File("target/test-classes");
+		builder.append(File.pathSeparator).append(app.getAbsolutePath());
 		try {
 			for (Archive archive : resolved) {
 				if (archive.getUrl().equals(root.getUrl())) {
@@ -121,8 +163,26 @@ public class ProcessLauncherState {
 		return path;
 	}
 
+	public String getPid() {
+		String pid = null;
+		try {
+			if (started != null) {
+				Field field = ReflectionUtils.findField(started.getClass(), "pid");
+				ReflectionUtils.makeAccessible(field);
+				pid = "" + ReflectionUtils.getField(field, started);
+			}
+		}
+		catch (Exception e) {
+		}
+		return pid;
+	}
+
 	public void after() throws Exception {
 		if (started != null && started.isAlive()) {
+			Runtime.getRuntime().gc();
+			Map<String, Long> metrics = VirtualMachineMetrics.fetch(getPid());
+			this.memory = VirtualMachineMetrics.total(metrics);
+			this.heap = VirtualMachineMetrics.heap(metrics);
 			System.err.println(
 					"Stopped " + mainClass + ": " + started.destroyForcibly().waitFor());
 		}
@@ -194,7 +254,7 @@ public class ProcessLauncherState {
 		output(getBuffer(), null);
 	}
 
-	protected static void output(BufferedReader br, String marker) throws Exception {
+	protected void output(BufferedReader br, String marker) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		String line = null;
 		if (!"false".equals(System.getProperty("debug", "false"))) {
@@ -205,6 +265,14 @@ public class ProcessLauncherState {
 			sb.append(line + System.getProperty("line.separator"));
 			if (!"false".equals(System.getProperty("debug", "false"))) {
 				System.out.println(line);
+			}
+			if (line.contains(CLASS_COUNT_MARKER)) {
+				classes = Integer
+						.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
+			}
+			if (line.contains(BEAN_COUNT_MARKER)) {
+				beans += Integer
+						.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
 			}
 			line = null;
 		}
@@ -220,4 +288,5 @@ public class ProcessLauncherState {
 	public File getHome() {
 		return home;
 	}
+
 }

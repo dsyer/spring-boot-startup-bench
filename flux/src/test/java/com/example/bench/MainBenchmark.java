@@ -15,13 +15,11 @@
  */
 package com.example.bench;
 
-import java.util.List;
-
-import com.example.boot.BootApplication;
 import com.example.demo.DemoApplication;
-import com.example.micro.MicroApplication;
-import com.example.mini.MiniApplication;
+import com.example.empt.EmptyApplication;
 
+import org.openjdk.jmh.annotations.AuxCounters;
+import org.openjdk.jmh.annotations.AuxCounters.Type;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -35,35 +33,28 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
-@Measurement(iterations = 5)
-@Warmup(iterations = 1)
+import jmh.mbr.junit5.Microbenchmark;
+
+@Measurement(iterations = 5, time = 1)
+@Warmup(iterations = 1, time = 1)
 @Fork(value = 2, warmups = 0)
-@BenchmarkMode(Mode.SingleShotTime)
-public class MiniBenchmark {
+@BenchmarkMode(Mode.AverageTime)
+@Microbenchmark
+public class MainBenchmark {
 
 	@Benchmark
-	public void boot(MainState state) throws Exception {
-		state.setMainClass(BootApplication.class.getName());
+	public void main(MainState state) throws Exception {
+		state.setMainClass(state.sample.getConfig().getName());
 		state.run();
 	}
 
-	@Benchmark
-	public void mini(MainState state) throws Exception {
-		state.setMainClass(MiniApplication.class.getName());
-		state.run();
-	}
-
-	@Benchmark
-	public void micro(MainState state) throws Exception {
-		state.setMainClass(MicroApplication.class.getName());
-		state.run();
-	}
-
-	@State(Scope.Benchmark)
+	@State(Scope.Thread)
+	@AuxCounters(Type.EVENTS)
 	public static class MainState extends ProcessLauncherState {
 
 		public static enum Sample {
-			jlog, demo;
+
+			empt(EmptyApplication.class), jlog, demo, actr, jdbc, actj;
 
 			private Class<?> config;
 
@@ -85,17 +76,33 @@ public class MiniBenchmark {
 		private Sample sample = Sample.demo;
 
 		public MainState() {
-			super("target");
+			super("target", "--server.port=0");
+			// "--spring.main.lazy-initialization=true");
+		}
+
+		@Override
+		public int getClasses() {
+			return super.getClasses();
+		}
+
+		@Override
+		public int getBeans() {
+			return super.getBeans();
+		}
+
+		@Override
+		public double getMemory() {
+			return super.getMemory();
+		}
+
+		@Override
+		public double getHeap() {
+			return super.getHeap();
 		}
 
 		@TearDown(Level.Invocation)
 		public void stop() throws Exception {
 			super.after();
-		}
-
-		@Override
-		protected void customize(List<String> args) {
-			args.add("-Dserver.port=0");
 		}
 
 		@Setup(Level.Trial)
@@ -105,6 +112,7 @@ public class MiniBenchmark {
 			}
 			super.before();
 		}
+
 	}
 
 }

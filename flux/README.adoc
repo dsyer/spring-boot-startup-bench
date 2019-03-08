@@ -91,6 +91,18 @@ this sample, so they could stay uninitialized and no-one would
 care. We'd need more logic / conditions in `@EnableWebFlux` to
 capitalize on it without cheating
 
+Spring Boot 2.2 has a new flag that does this: `spring.main.lazy-initialization=true`
+
+```
+Benchmark            (sample)  Mode  Cnt  Score   Error  Units Faster
+MainBenchmark.main       empt    ss   10  0.495 ± 0.008   s/op 9.91% 
+MainBenchmark.main       jlog    ss   10  0.692 ± 0.017   s/op 21.04%
+MainBenchmark.main       demo    ss   10  0.805 ± 0.016   s/op 19.45%
+MainBenchmark.main       actr    ss   10  0.946 ± 0.021   s/op 27.03%
+MainBenchmark.main       jdbc    ss   10  0.860 ± 0.010   s/op 19.95%
+MainBenchmark.main       actj    ss   10  1.015 ± 0.020   s/op 29.11%
+```
+
 == Open J9 and Lazy Beans
 
 ```

@@ -19,6 +19,8 @@ import java.util.Collections;
 
 import com.example.config.ApplicationBuilder;
 
+import reactor.core.publisher.Mono;
+
 import org.springframework.boot.Banner.Mode;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.WebApplicationType;
@@ -32,8 +34,6 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-
-import reactor.core.publisher.Mono;
 
 /**
  * @author Dave Syer
@@ -50,9 +50,23 @@ public class BootApplication {
 						.contextClass(AnnotationConfigApplicationContext.class)
 						.bannerMode(Mode.OFF);
 		builder.application().setListeners(Collections.emptyList());
-		try (ConfigurableApplicationContext context = builder.run(args)) {
-			ApplicationBuilder.start(context);
-		}
+		ConfigurableApplicationContext context = builder.run(args);
+		ApplicationBuilder.start(context);
+		Thread thread = new Thread() {
+			@Override
+			public void run() {
+				while (true) {
+					try {
+						Thread.sleep(100L);
+					}
+					catch (InterruptedException e) {
+						Thread.currentThread().interrupt();
+					}
+				}
+			}
+		};
+		thread.setDaemon(false);
+		thread.start();
 	}
 
 	@Bean

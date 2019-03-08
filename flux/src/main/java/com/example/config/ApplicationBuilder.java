@@ -20,14 +20,14 @@ import java.time.Duration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import reactor.netty.http.server.HttpServer;
+
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
-
-import reactor.netty.http.server.HttpServer;
 
 /**
  * @author Dave Syer
@@ -36,25 +36,27 @@ import reactor.netty.http.server.HttpServer;
 public class ApplicationBuilder {
 
 	private static final String SHUTDOWN_LISTENER = "SHUTDOWN_LISTENER";
+
 	public static final String STARTUP = "Benchmark app started";
+
 	private static Log logger = LogFactory.getLog(StartupApplicationListener.class);
 
 	public static void start(ConfigurableApplicationContext context) {
-		if (!hasListeners(context)) {
-			((DefaultListableBeanFactory) context.getBeanFactory())
-					.registerDisposableBean(SHUTDOWN_LISTENER,
-							new ShutdownApplicationListener());
-			new BeanCountingApplicationListener().log(context);
-			logger.info(STARTUP);
-		}
-
 		HttpHandler handler = WebHttpHandlerBuilder.applicationContext(context).build();
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
 		HttpServer httpServer = HttpServer.create().host("localhost").port(
 				context.getEnvironment().getProperty("server.port", Integer.class, 8080))
 				.handle(adapter);
-		httpServer.bindUntilJavaShutdown(Duration.ofSeconds(60),
-				disposable -> disposable.dispose());
+		httpServer.bindUntilJavaShutdown(Duration.ofSeconds(60), disposable -> {
+			System.err.println("Netty started on port: " + disposable.port());
+			if (!hasListeners(context)) {
+				((DefaultListableBeanFactory) context.getBeanFactory())
+						.registerDisposableBean(SHUTDOWN_LISTENER,
+								new ShutdownApplicationListener());
+				new BeanCountingApplicationListener().log(context);
+				logger.info(STARTUP);
+			}
+		});
 	}
 
 	private static boolean hasListeners(ConfigurableApplicationContext context) {

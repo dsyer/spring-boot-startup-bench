@@ -120,7 +120,7 @@ public class CdsBenchmark {
 
 		@Override
 		protected void customize(List<String> args) {
-			args.addAll(Arrays.asList("-Xshare:on", "-XX:+UseAppCDS",
+			args.addAll(Arrays.asList("-Xshare:on", // "-XX:+UseAppCDS",
 					"-XX:SharedArchiveFile=app.jsa"));
 			super.customize(args);
 		}
@@ -131,14 +131,13 @@ public class CdsBenchmark {
 		}
 
 		protected void start() throws Exception {
-			Process started = exec(
-					new String[] { "-Xshare:off", "-XX:+UseAppCDS",
-							"-XX:DumpLoadedClassList=app.classlist", "-cp", "" },
+			Process started = exec(new String[] { "-Xshare:off", // "-XX:+UseAppCDS",
+					"-XX:DumpLoadedClassList=app.classlist", "-cp", "" },
 					"--server.port=0");
 			output(new BufferedReader(new InputStreamReader(started.getInputStream())),
 					"Started");
 			started.destroyForcibly();
-			Process dump = exec(new String[] { "-Xshare:dump", "-XX:+UseAppCDS",
+			Process dump = exec(new String[] { "-Xshare:dump", // "-XX:+UseAppCDS",
 					"-XX:SharedClassListFile=app.classlist",
 					"-XX:SharedArchiveFile=app.jsa", "-cp", "" });
 			FileUtils.readAllLines(dump.getInputStream());

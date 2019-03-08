@@ -15,9 +15,13 @@
  */
 package com.example.bench;
 
-import com.example.demo.DemoApplication;
-import com.example.empt.EmptyApplication;
+import java.net.URL;
 
+import com.example.bench.SpringBenchmark.MainState.Sample;
+import com.example.demo.DemoApplication;
+
+import org.openjdk.jmh.annotations.AuxCounters;
+import org.openjdk.jmh.annotations.AuxCounters.Type;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -31,23 +35,36 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
-@Measurement(iterations = 5)
-@Warmup(iterations = 1)
+import jmh.mbr.junit5.Microbenchmark;
+
+@Measurement(iterations = 5, time = 1)
+@Warmup(iterations = 1, time = 1)
 @Fork(value = 2, warmups = 0)
-@BenchmarkMode(Mode.SingleShotTime)
-public class MainBenchmark {
+@BenchmarkMode(Mode.AverageTime)
+@Microbenchmark
+public class SpringBenchmark {
 
 	@Benchmark
 	public void main(MainState state) throws Exception {
 		state.setMainClass(state.sample.getConfig().getName());
 		state.run();
+		if (state.sample == Sample.first) {
+			try {
+				new URL("http://localhost:8080").getContent();
+			}
+			catch (Exception e) {
+				// ignore
+			}
+		}
 	}
 
-	@State(Scope.Benchmark)
+	@State(Scope.Thread)
+	@AuxCounters(Type.EVENTS)
 	public static class MainState extends ProcessLauncherState {
 
 		public static enum Sample {
-			empt(EmptyApplication.class), jlog, demo, actr, jdbc, actj;
+
+			lazy, eager, first;
 
 			private Class<?> config;
 
@@ -66,10 +83,30 @@ public class MainBenchmark {
 		}
 
 		@Param
-		private Sample sample = Sample.demo;
+		private Sample sample = Sample.eager;
 
 		public MainState() {
 			super("target", "--server.port=0");
+		}
+
+		@Override
+		public int getClasses() {
+			return super.getClasses();
+		}
+
+		@Override
+		public int getBeans() {
+			return super.getBeans();
+		}
+
+		@Override
+		public double getMemory() {
+			return super.getMemory();
+		}
+
+		@Override
+		public double getHeap() {
+			return super.getHeap();
 		}
 
 		@TearDown(Level.Invocation)
@@ -79,11 +116,12 @@ public class MainBenchmark {
 
 		@Setup(Level.Trial)
 		public void start() throws Exception {
-			if (sample != Sample.demo) {
-				setProfiles(sample.toString());
+			if (sample != Sample.eager) {
+				addArgs("-Dspring.main.lazy-initialization=true");
 			}
 			super.before();
 		}
+
 	}
 
 }

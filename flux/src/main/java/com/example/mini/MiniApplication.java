@@ -17,6 +17,8 @@ package com.example.mini;
 
 import com.example.config.ApplicationBuilder;
 
+import reactor.core.publisher.Mono;
+
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -26,8 +28,6 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-
-import reactor.core.publisher.Mono;
 
 /**
  * @author Dave Syer
@@ -39,11 +39,10 @@ import reactor.core.publisher.Mono;
 public class MiniApplication {
 
 	public static void main(String[] args) throws Exception {
-		try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
-			context.register(MiniApplication.class);
-			context.refresh();
-			ApplicationBuilder.start(context);
-		}
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+		context.register(MiniApplication.class);
+		context.refresh();
+		ApplicationBuilder.start(context);
 	}
 
 	@Bean

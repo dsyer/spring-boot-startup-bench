@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import reactor.core.publisher.Mono;
+
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
@@ -9,9 +11,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
-import reactor.core.publisher.Mono;
-
-@SpringBootApplication
+@SpringBootApplication(proxyBeanMethods = false)
 // @Import(LazyInitBeanFactoryPostProcessor.class)
 public class DemoApplication {
 

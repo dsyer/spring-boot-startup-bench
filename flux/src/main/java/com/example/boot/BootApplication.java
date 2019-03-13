@@ -39,7 +39,7 @@ import static org.springframework.web.reactive.function.server.ServerResponse.ok
  * @author Dave Syer
  *
  */
-@SpringBootConfiguration
+@SpringBootConfiguration(proxyBeanMethods = false)
 @EnableWebFlux
 // @Import(LazyInitBeanFactoryPostProcessor.class)
 public class BootApplication {

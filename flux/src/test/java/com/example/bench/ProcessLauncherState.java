@@ -270,8 +270,9 @@ public class ProcessLauncherState {
 						.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
 			}
 			if (line.contains(BEAN_COUNT_MARKER)) {
-				beans += Integer
+				int count = Integer
 						.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
+				beans = count > beans ? count : beans;
 			}
 			line = null;
 		}

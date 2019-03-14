@@ -16,7 +16,6 @@
 package com.example.bench;
 
 import com.example.demo.DemoApplication;
-import com.example.jpa.JpaApplication;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -33,66 +32,19 @@ import org.openjdk.jmh.annotations.Warmup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Measurement(iterations = 5)
-@Warmup(iterations = 1)
+import jmh.mbr.junit5.Microbenchmark;
+
+@Measurement(iterations = 5, time = 1)
+@Warmup(iterations = 1, time = 1)
 @Fork(value = 2, warmups = 0)
 @BenchmarkMode(Mode.SingleShotTime)
-public class MainBenchmark {
+@Microbenchmark
+public class DevToolsBenchmark {
 
 	@Benchmark
-	public void main(MainState state) throws Exception {
+	public void demo(DevtoolsState state) throws Exception {
 		state.setMainClass(state.sample.getConfig().getName());
 		state.run();
-	}
-
-	@Benchmark
-	public void devtools(DevtoolsState state) throws Exception {
-		state.setMainClass(state.sample.getConfig().getName());
-		state.run();
-	}
-
-	@State(Scope.Benchmark)
-	public static class MainState extends ProcessLauncherState {
-
-		public static enum Sample {
-			empt, jlog, demo, flux, actr, jdbc, actj, jpae(
-					JpaApplication.class), conf, erka, busr, zuul, erkb, slth;
-
-			private Class<?> config;
-
-			private Sample(Class<?> config) {
-				this.config = config;
-			}
-
-			private Sample() {
-				this.config = DemoApplication.class;
-			}
-
-			public Class<?> getConfig() {
-				return config;
-			}
-
-		}
-
-		@Param
-		private Sample sample = Sample.demo;
-
-		public MainState() {
-			super("target", "--server.port=0");
-		}
-
-		@TearDown(Level.Invocation)
-		public void stop() throws Exception {
-			super.after();
-		}
-
-		@Setup(Level.Trial)
-		public void start() throws Exception {
-			if (sample != Sample.demo) {
-				setProfiles(sample.toString());
-			}
-			super.before();
-		}
 	}
 
 	@State(Scope.Benchmark)
@@ -101,8 +53,8 @@ public class MainBenchmark {
 		private static final Logger log = LoggerFactory.getLogger(DevtoolsState.class);
 
 		public static enum Sample {
-			demo, actr, jdbc, actj, jpae(
-					JpaApplication.class), conf, erka, busr, zuul, erkb, slth;
+
+			demo, jdbc, actr, actj;
 
 			private Class<?> config;
 
@@ -150,5 +102,7 @@ public class MainBenchmark {
 			}
 			super.before();
 		}
+
 	}
+
 }

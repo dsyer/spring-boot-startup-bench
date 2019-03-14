@@ -15,9 +15,16 @@
  */
 package com.example.bench;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.List;
+
 import com.example.demo.DemoApplication;
 import com.example.jpa.JpaApplication;
 
+import org.openjdk.jmh.annotations.AuxCounters;
+import org.openjdk.jmh.annotations.AuxCounters.Type;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -30,29 +37,28 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.util.FileUtils;
 
-@Measurement(iterations = 5)
-@Warmup(iterations = 1)
+import jmh.mbr.junit5.Microbenchmark;
+
+@Measurement(iterations = 5, time = 1)
+@Warmup(iterations = 1, time = 1)
 @Fork(value = 2, warmups = 0)
-@BenchmarkMode(Mode.SingleShotTime)
-public class SnapBenchmark {
+@BenchmarkMode(Mode.AverageTime)
+@Microbenchmark
+public class CdsBenchmark {
 
 	@Benchmark
-	public void endp(EndpointState state) throws Exception {
-		state.setMainClass(DemoApplication.class.getName());
+	public void main(ApplicationState state) throws Exception {
 		state.run();
 	}
 
-	@Benchmark
-	public void snap(ApplicationState state) throws Exception {
-		state.setMainClass(state.sample.getConfig().getName());
-		state.run();
-	}
-
-	@State(Scope.Benchmark)
+	@State(Scope.Thread)
+	@AuxCounters(Type.EVENTS)
 	public static class ApplicationState extends ProcessLauncherState {
 
 		public static enum Sample {
+
 			empt, demo, actr, jdbc, actj, jpae(JpaApplication.class), conf;
 
 			private Class<?> config;
@@ -68,17 +74,46 @@ public class SnapBenchmark {
 			public Class<?> getConfig() {
 				return config;
 			}
+
 		}
 
 		@Param
 		private Sample sample = Sample.demo;
 
+		@Override
+		public int getClasses() {
+			return super.getClasses();
+		}
+
+		@Override
+		public int getBeans() {
+			return super.getBeans();
+		}
+
+		@Override
+		public double getMemory() {
+			return super.getMemory();
+		}
+
+		@Override
+		public double getHeap() {
+			return super.getHeap();
+		}
+
 		public ApplicationState() {
 			super("target", "--server.port=0");
 		}
 
-		public void setSample(Sample sample) {
-			this.sample = sample;
+		@Override
+		protected String getClasspath() {
+			return super.getClasspath(false);
+		}
+
+		@Override
+		protected void customize(List<String> args) {
+			args.addAll(Arrays.asList("-Xshare:on", // "-XX:+UseAppCDS",
+					"-XX:SharedArchiveFile=app.jsa"));
+			super.customize(args);
 		}
 
 		@TearDown(Level.Invocation)
@@ -94,27 +129,21 @@ public class SnapBenchmark {
 			else {
 				setProfiles("snapshot");
 			}
+			setMainClass(sample.getConfig().getName());
+			Process started = exec(new String[] { "-Xshare:off", // "-XX:+UseAppCDS",
+					"-XX:DumpLoadedClassList=app.classlist", "-cp", "" },
+					"--server.port=0");
+			output(new BufferedReader(new InputStreamReader(started.getInputStream())),
+					"Started");
+			started.destroyForcibly();
+			Process dump = exec(new String[] { "-Xshare:dump", // "-XX:+UseAppCDS",
+					"-XX:SharedClassListFile=app.classlist",
+					"-XX:SharedArchiveFile=app.jsa", "-cp", "" });
+			FileUtils.readAllLines(dump.getInputStream());
+			dump.waitFor();
 			super.before();
 		}
-	}
 
-	@State(Scope.Benchmark)
-	public static class EndpointState extends ProcessLauncherState {
-
-		public EndpointState() {
-			super("target", "--server.port=0", "--endpoints.default.web.enabled=true");
-		}
-
-		@TearDown(Level.Invocation)
-		public void stop() throws Exception {
-			super.after();
-		}
-
-		@Setup(Level.Trial)
-		public void start() throws Exception {
-			setProfiles("actr", "snapshot");
-			super.before();
-		}
 	}
 
 }

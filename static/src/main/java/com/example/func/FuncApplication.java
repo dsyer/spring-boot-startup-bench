@@ -31,8 +31,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryCustomizer;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
-import org.springframework.boot.context.properties.ConfigurationBeanFactoryMetadata;
-import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessorRegistrar;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizerBeanPostProcessor;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
@@ -105,10 +104,8 @@ class WebAppInitializer
 
 	@Override
 	public void initialize(GenericApplicationContext context) {
-		context.registerBean(ConfigurationPropertiesBindingPostProcessor.class,
-				() -> new ConfigurationPropertiesBindingPostProcessor());
-		context.registerBean(ConfigurationBeanFactoryMetadata.class,
-				() -> new ConfigurationBeanFactoryMetadata());
+		new ConfigurationPropertiesBindingPostProcessorRegistrar()
+				.registerBeanDefinitions(null, context);
 		context.registerBean(WebMvcProperties.class, () -> new WebMvcProperties());
 		context.registerBean(ServerProperties.class, () -> new ServerProperties());
 		context.registerBean(ServletWebServerFactoryCustomizer.class,
@@ -386,6 +383,7 @@ class WebAppInitializer
 		@Override
 		public void validate(Object target, Errors errors) {
 		}
+
 	}
 
 }

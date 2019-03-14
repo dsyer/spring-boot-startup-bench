@@ -18,6 +18,8 @@ package com.example.bench;
 import com.example.demo.DemoApplication;
 import com.example.jpa.JpaApplication;
 
+import org.openjdk.jmh.annotations.AuxCounters;
+import org.openjdk.jmh.annotations.AuxCounters.Type;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -30,33 +32,30 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-@Measurement(iterations = 5)
-@Warmup(iterations = 1)
+import jmh.mbr.junit5.Microbenchmark;
+
+@Measurement(iterations = 5, time = 1)
+@Warmup(iterations = 1, time = 1)
 @Fork(value = 2, warmups = 0)
-@BenchmarkMode(Mode.SingleShotTime)
-public class OldBenchmark {
+@BenchmarkMode(Mode.AverageTime)
+@Microbenchmark
+public class MainBenchmark {
 
 	@Benchmark
-	public void old(OldState state) throws Exception {
+	public void main(MainState state) throws Exception {
 		state.setMainClass(state.sample.getConfig().getName());
 		state.run();
 	}
 
-	@Benchmark
-	public void restart(DynamicState state) throws Exception {
-		state.setMainClass(state.sample.getConfig().getName());
-		state.run();
-	}
-
-	@State(Scope.Benchmark)
-	public static class OldState extends ProcessLauncherState {
+	@State(Scope.Thread)
+	@AuxCounters(Type.EVENTS)
+	public static class MainState extends ProcessLauncherState {
 
 		public static enum Sample {
-			empt, jlog, demo, actr, jdbc, actj, jpae(
-					JpaApplication.class), conf, erka, buna, busr, zuul, erkb, slth;
+
+			empt, flux, jlog, demo, jdbc, actr, actj, jpae(
+					JpaApplication.class), conf, erka, busr, zuul, erkb; // , slth;
 
 			private Class<?> config;
 
@@ -71,13 +70,34 @@ public class OldBenchmark {
 			public Class<?> getConfig() {
 				return config;
 			}
+
 		}
 
 		@Param
 		private Sample sample = Sample.demo;
 
-		public OldState() {
+		public MainState() {
 			super("target", "--server.port=0");
+		}
+
+		@Override
+		public int getClasses() {
+			return super.getClasses();
+		}
+
+		@Override
+		public int getBeans() {
+			return super.getBeans();
+		}
+
+		@Override
+		public double getMemory() {
+			return super.getMemory();
+		}
+
+		@Override
+		public double getHeap() {
+			return super.getHeap();
 		}
 
 		@TearDown(Level.Invocation)
@@ -88,69 +108,14 @@ public class OldBenchmark {
 		@Setup(Level.Trial)
 		public void start() throws Exception {
 			if (sample != Sample.demo) {
-				setProfiles(sample.toString(), "old");
+				setProfiles(sample.toString());
 			}
-			else {
-				setProfiles("old");
-			}
-			super.before();
-		}
-	}
-
-	@State(Scope.Benchmark)
-	public static class DynamicState extends DevToolsLauncherState {
-
-		private static final Logger log = LoggerFactory.getLogger(DynamicState.class);
-
-		public static enum Sample {
-			demo, actr, jdbc, actj, jpae(
-					JpaApplication.class), conf, erka, buna, busr, zuul, erkb, slth;
-
-			private Class<?> config;
-
-			private Sample(Class<?> config) {
-				this.config = config;
-			}
-
-			private Sample() {
-				this.config = DemoApplication.class;
-			}
-
-			public Class<?> getConfig() {
-				return config;
-			}
-
-		}
-
-		@Param
-		private Sample sample = Sample.demo;
-
-		public DynamicState() {
-			super("target", "classes/.restart");
-		}
-
-		@TearDown(Level.Trial)
-		public void stop() throws Exception {
-			super.after();
-		}
-
-		@Setup(Level.Iteration)
-		public void touch() throws Exception {
-			log.info("Starting iteration");
-			super.update();
-			log.info("Wrote trigger file");
-		}
-
-		@Setup(Level.Trial)
-		public void start() throws Exception {
-			log.info("Starting trial");
-			if (sample != Sample.demo) {
-				setProfiles(sample.toString(), "old", "devtools");
-			}
-			else {
-				setProfiles("old", "devtools");
+			if (sample.toString().startsWith("jpa")) {
+				addArgs("-Dspring.data.jpa.repositories.bootstrap-mode=lazy");
 			}
 			super.before();
 		}
+
 	}
+
 }

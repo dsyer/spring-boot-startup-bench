@@ -15,6 +15,13 @@
  */
 package com.example.bench;
 
+import com.example.func.FuncApplication;
+import com.example.lite.LiteApplication;
+import com.example.slim.SlimApplication;
+import com.example.thin.ThinApplication;
+
+import org.openjdk.jmh.annotations.AuxCounters;
+import org.openjdk.jmh.annotations.AuxCounters.Type;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -28,40 +35,66 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
 
-@Measurement(iterations = 5)
-@Warmup(iterations = 1)
+import jmh.mbr.junit5.Microbenchmark;
+
+@Measurement(iterations = 5, time = 1)
+@Warmup(iterations = 1, time = 1)
 @Fork(value = 2, warmups = 0)
-@BenchmarkMode(Mode.SingleShotTime)
-public class AutoBenchmark {
+@BenchmarkMode(Mode.AverageTime)
+@Microbenchmark
+public class StripBenchmark {
 
 	@Benchmark
-	public void auto(AutoState state) throws Exception {
-		state.setMainClass(state.sample.getConfig());
+	public void strip(ApplicationState state) throws Exception {
 		state.run();
 	}
 
-	@State(Scope.Benchmark)
-	public static class AutoState extends ProcessLauncherState {
+	@State(Scope.Thread)
+	@AuxCounters(Type.EVENTS)
+	public static class ApplicationState extends ProcessLauncherState {
 
 		public static enum Sample {
-			empt, demo, actr, jdbc, actj, conf;
 
-			private String config;
+			slim(SlimApplication.class), thin(ThinApplication.class), lite(
+					LiteApplication.class), func(FuncApplication.class);
 
-			private Sample() {
-				this.config = "com.example.auto.AutoApplication";
+			private Class<?> config;
+
+			private Sample(Class<?> config) {
+				this.config = config;
 			}
 
-			public String getConfig() {
-				return config;
+			public Class<?> getConfig() {
+				return this.config;
 			}
+
 		}
 
 		@Param
-		private Sample sample = Sample.demo;
+		Sample sample = Sample.thin;
 
-		public AutoState() {
+		public ApplicationState() {
 			super("target", "--server.port=0");
+		}
+
+		@Override
+		public int getClasses() {
+			return super.getClasses();
+		}
+
+		@Override
+		public int getBeans() {
+			return super.getBeans();
+		}
+
+		@Override
+		public double getMemory() {
+			return super.getMemory();
+		}
+
+		@Override
+		public double getHeap() {
+			return super.getHeap();
 		}
 
 		@TearDown(Level.Invocation)
@@ -71,14 +104,10 @@ public class AutoBenchmark {
 
 		@Setup(Level.Trial)
 		public void start() throws Exception {
-			if (sample != Sample.demo) {
-				setProfiles(sample.toString(), "auto");
-			}
-			else {
-				setProfiles("auto");
-			}
+			setMainClass(sample.getConfig().getName());
 			super.before();
 		}
+
 	}
 
 }

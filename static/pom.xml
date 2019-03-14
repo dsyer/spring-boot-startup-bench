@@ -9,6 +9,12 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.0.BUILD-SNAPSHOT</version>
+	</parent>
+
 	<name>static</name>
 	<description>Demo project for Spring Boot</description>
 
@@ -18,12 +24,9 @@
 		<java.version>1.8</java.version>
 		<jmh.version>1.16</jmh.version>
 		<aspectj.version>1.8.13</aspectj.version>
-		<spring-boot.version>2.1.2.RELEASE</spring-boot.version>
-		<spring-cloud.version>Greenwich.RC2</spring-cloud.version>
-		<locator.version>1.0.0.RELEASE</locator.version>
+		<spring-cloud.version>Hoxton.BUILD-SNAPSHOT</spring-cloud.version>
 		<thin.version>1.0.15.RELEASE</thin.version>
 		<uberjar.name>benchmarks</uberjar.name>
-		<start-class>org.openjdk.jmh.Main</start-class>
 	</properties>
 
 	<dependencyManagement>
@@ -47,13 +50,6 @@
 				<groupId>org.aspectj</groupId>
 				<artifactId>aspectjweaver</artifactId>
 				<version>${aspectj.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>${spring-boot.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.cloud</groupId>
@@ -105,22 +101,29 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.openjdk.jmh</groupId>
-			<artifactId>jmh-core</artifactId>
-			<version>${jmh.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.openjdk.jmh</groupId>
-			<artifactId>jmh-generator-annprocess</artifactId>
-			<version>${jmh.version}</version>
-			<scope>provided</scope>
+			<groupId>com.github.mp911de.microbenchmark-runner</groupId>
+			<artifactId>microbenchmark-runner-junit5</artifactId>
+			<version>0.1.0.RELEASE</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>junit</groupId>
+					<artifactId>junit</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.sun</groupId>
+			<artifactId>tools</artifactId>
+			<version>${java.version}</version>
+			<scope>system</scope>
+			<systemPath>${java.home}/../lib/tools.jar</systemPath>
 		</dependency>
 	</dependencies>
 
@@ -130,8 +133,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
 				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.openjdk.jmh</groupId>
+							<artifactId>jmh-generator-annprocess</artifactId>
+							<version>${jmh.version}</version>
+						</path>
+					</annotationProcessorPaths>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 				</configuration>
@@ -139,7 +148,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
 				<configuration>
 					<includes>
 						<include>**/*Tests.java</include>
@@ -150,63 +158,14 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.4.3</version>
-				<configuration>
-					<transformers>
-						<transformer
-							implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-							<resource>META-INF/spring.handlers</resource>
-						</transformer>
-						<transformer
-							implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
-							<resource>META-INF/spring.factories</resource>
-						</transformer>
-						<transformer
-							implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-							<resource>META-INF/spring.schemas</resource>
-						</transformer>
-						<transformer
-							implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-							<mainClass>${start-class}</mainClass>
-						</transformer>
-						<transformer
-							implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
-						<transformer
-							implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-						<transformer
-							implementation="org.springframework.boot.loader.thin.maven.RelocatingAppendingResourceTransformer">
-							<resource>META-INF/sisu/javax.inject.Named</resource>
-						</transformer>
-					</transformers>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-				<dependencies>
-					<dependency>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<version>${spring-boot.version}</version>
-					</dependency>
-					<dependency>
-						<groupId>org.springframework.boot.experimental</groupId>
-						<artifactId>spring-boot-thin-launcher-shade-locator</artifactId>
-						<version>${locator.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
 		</plugins>
 	</build>
 
 	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 		<repository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>

@@ -16,12 +16,10 @@
 
 package com.example.bench;
 
+import com.example.bench.CaptureSystemOutput.OutputCapture;
 import com.example.bench.StripBenchmark.ApplicationState;
 
-import org.junit.Rule;
-import org.junit.Test;
-
-import org.springframework.boot.test.rule.OutputCapture;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,43 +29,28 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ProcessLauncherStateTests {
 
-	@Rule
-	public OutputCapture output = new OutputCapture();
-
 	@Test
-	public void vanilla() throws Exception {
+	@CaptureSystemOutput
+	public void vanilla(OutputCapture output) throws Exception {
 		// System.setProperty("bench.args", "-verbose:class");
 		ProcessLauncherState state = new ProcessLauncherState("target",
 				"--server.port=0");
-		state.setProfiles("old", "jlog");
+		state.setProfiles("jlog");
 		state.before();
 		state.run();
 		state.after();
-		output.flush();
 		assertThat(output.toString()).contains("Benchmark app started");
 	}
 
 	@Test
-	public void snap() throws Exception {
-		// System.setProperty("bench.args", "-verbose:class");
-		SnapBenchmark.ApplicationState state = new SnapBenchmark.ApplicationState();
-		// state.addArgs("-agentlib:jdwp=transport=dt_socket,server=y,address=8000");
-		state.setSample(SnapBenchmark.ApplicationState.Sample.demo);
-		state.start();
-		state.run();
-		state.after();
-		output.flush();
-		assertThat(output.toString()).contains("Benchmark app started");
-	}
-
-	@Test
-	public void func() throws Exception {
+	@CaptureSystemOutput
+	public void func(OutputCapture output) throws Exception {
 		ApplicationState state = new ApplicationState();
 		state.sample = ApplicationState.Sample.func;
+		state.addArgs("-Ddebug=true");
 		state.start();
 		state.run();
 		state.after();
-		output.flush();
 		assertThat(output.toString()).contains("FuncApplication");
 		assertThat(output.toString()).contains("Benchmark app started");
 	}

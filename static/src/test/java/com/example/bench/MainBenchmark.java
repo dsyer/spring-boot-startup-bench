@@ -73,7 +73,7 @@ public class MainBenchmark {
 
 		}
 
-		@Param
+		@Param("demo")
 		private Sample sample = Sample.demo;
 
 		public MainState() {

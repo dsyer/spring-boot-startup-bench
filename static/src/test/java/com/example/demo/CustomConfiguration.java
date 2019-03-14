@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.config;
+package com.example.demo;
 
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.zuul.ZuulFilter;
@@ -35,12 +35,14 @@ public class CustomConfiguration {
 	@ConditionalOnClass(EurekaClientConfig.class)
 	@EnableDiscoveryClient
 	public static class EurekaConfiguration {
+
 	}
 
 	@Configuration
 	@ConditionalOnClass(ZuulFilter.class)
 	@EnableZuulProxy
 	public static class ZuulConfiguration {
+
 	}
 
 }

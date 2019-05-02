@@ -72,12 +72,11 @@ public class MainBenchmark {
 
 		}
 
-		@Param
+		@Param("jlog")
 		private Sample sample = Sample.demo;
 
 		public MainState() {
 			super("target", "--server.port=0");
-			// "--spring.main.lazy-initialization=true");
 		}
 
 		@Override

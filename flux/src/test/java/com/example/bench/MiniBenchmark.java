@@ -15,7 +15,7 @@
  */
 package com.example.bench;
 
-import java.util.List;
+import java.net.URL;
 
 import com.example.boot.BootApplication;
 import com.example.demo.DemoApplication;
@@ -62,6 +62,18 @@ public class MiniBenchmark {
 	public void micro(MainState state) throws Exception {
 		state.setMainClass(MicroApplication.class.getName());
 		state.run();
+	}
+
+	@Benchmark
+	public void first(MainState state) throws Exception {
+		state.setMainClass(MicroApplication.class.getName());
+		state.run();
+		try {
+			new URL("http://localhost:8080/").getContent();
+		}
+		catch (Exception e) {
+			// ignore
+		}
 	}
 
 	@State(Scope.Thread)
@@ -118,11 +130,6 @@ public class MiniBenchmark {
 		@TearDown(Level.Invocation)
 		public void stop() throws Exception {
 			super.after();
-		}
-
-		@Override
-		protected void customize(List<String> args) {
-			args.add("-Dserver.port=0");
 		}
 
 		@Setup(Level.Trial)

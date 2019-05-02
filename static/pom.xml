@@ -25,7 +25,7 @@
 		<jmh.version>1.16</jmh.version>
 		<aspectj.version>1.8.13</aspectj.version>
 		<spring-cloud.version>Hoxton.BUILD-SNAPSHOT</spring-cloud.version>
-		<thin.version>1.0.15.RELEASE</thin.version>
+		<thin.version>1.0.21.RELEASE</thin.version>
 		<uberjar.name>benchmarks</uberjar.name>
 	</properties>
 

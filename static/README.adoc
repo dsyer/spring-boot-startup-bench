@@ -163,41 +163,14 @@ SnapBenchmark.snap      demo    ss   10  1.014 ± 0.027   s/op
 
 == Running the Benchmarks
 
-TL;DR: You need Java 8.
-
-```
-$ ../mvnw clean install
-$ java -jar target/benchmarks.jar
-```
-
-and the whole suite takes quite a long time to run, so to just try it out quickly, it's best to cherry pick some specific samples, e.g.
-
-```
-$ java -jar target/benchmarks.jar main -p sample=actr
-```
+You need Java 8. You can run the benchmarks in your IDE (they are JUnit 5 tests). Also set `-DpublishTo=csv:target/file.csv` (the location of a CSV output file) to get the nicely formatted output data.
 
 There are 4 groups of benchmarks:
 
 1. `MainBenchmark` - add features to the "main" demo by manipulating the classpath
 2. `StripBenchmark` - "slim", "thin", "lite", "func" - stripping away from the "main" demo by hardcoding config
-3. `OldBenchmark` - same as `MainBenchmarks` but with Spring Boot 1.5.6.
-4. `SnapBenchmark` - same as `MainBenchmarks` but with Spring Boot 2.0.0 snapshots (and a restricted set of samples, "empt", "demo", "actr", "jdbc").
-
-The JMH benchmarks are mostly just named after the class (so
-`StripBenchmarks` are all called "strip") but they have a `@Param`
-called "sample" whose value is the name of the sample. They can be run
-individually or as a group using a comma-separated list of sample
-names, e.g:
-
-```
-$ java -jar target/benchmarks.jar strip -p sample=func,slim
-```
-
-or altogether as 
-
-```
-$ java -jar target/benchmarks.jar strip
-```
+3. `DevtoolsBenchmark` - same as `MainBenchmarks` but with Spring Boot Devtools
+4. `CdsBenchmark` - if the JVM you use supports CDS this benchmark will try to enabled it
 
 Also to get decent results from the `erk*` samples you need Eureka running locally on port 8761. You can do that with the Spring Boot CLI (for example):
 

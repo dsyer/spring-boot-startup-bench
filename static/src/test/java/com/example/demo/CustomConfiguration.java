@@ -16,11 +16,9 @@
 
 package com.example.demo;
 
-import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.zuul.ZuulFilter;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Configuration;
 
@@ -30,13 +28,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class CustomConfiguration {
-
-	@Configuration
-	@ConditionalOnClass(EurekaClientConfig.class)
-	@EnableDiscoveryClient
-	public static class EurekaConfiguration {
-
-	}
 
 	@Configuration
 	@ConditionalOnClass(ZuulFilter.class)

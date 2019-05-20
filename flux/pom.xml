@@ -24,7 +24,7 @@
 		<jmh.version>1.21</jmh.version>
 		<aspectj.version>1.9.1</aspectj.version>
 		<spring-boot.version>2.2.0.BUILD-SNAPSHOT</spring-boot.version>
-		<spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
+		<spring-cloud.version>Hoxton.BUILD-SNAPSHOT</spring-cloud.version>
 		<locator.version>1.0.0.RELEASE</locator.version>
 		<thin.version>1.0.21.RELEASE</thin.version>
 	</properties>

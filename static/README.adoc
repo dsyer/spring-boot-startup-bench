@@ -14,34 +14,28 @@ Results:
 Since more beans mean more features, you are paying at startup for actual functionality, so in some ways it should be an acceptable cost. On the other hand, there might be features that you end up never using, or don't use until later and you would be willing to defer the cost. Spring doesn't allow you to do that easily. It has some features that might defer the cost of creating beans, but that might not even help if the bean definitions still have to be created and most of the cost is actually to do with loading and parsing classes.
 
 ```
-Benchmark   (sample) Mode  Cnt  Score   Error  Units Beans Classes
-MainBenchmark  zuul  avgt   10  4.510 ± 0.095   s/op 516   9656
-MainBenchmark  erkb  avgt   10  3.137 ± 0.049   s/op 494   7654
-MainBenchmark  busr  avgt   10  2.525 ± 0.038   s/op 392   7129
-MainBenchmark  erko  avgt   10  2.237 ± 0.071   s/op 313   6392
-MainBenchmark  jpaa  avgt   10  3.232 ± 0.057   s/op 257   8297
-MainBenchmark  jpag  avgt   10  2.897 ± 0.023   s/op 178   8294
-MainBenchmark  jpaf  avgt   10  2.865 ± 0.043   s/op 177   8291
-MainBenchmark  jpae  avgt   10  2.829 ± 0.038   s/op 176   8284
-MainBenchmark  jpad  avgt   10  2.739 ± 0.073   s/op 175   7946
-MainBenchmark  conf  avgt   10  1.636 ± 0.029   s/op 250   6232
-MainBenchmark  actj  avgt   10  1.540 ± 0.049   s/op 226   6033
-MainBenchmark  actr  avgt   10  1.316 ± 0.060   s/op 186   5666
-MainBenchmark  jdbc  avgt   10  1.237 ± 0.050   s/op 147   5625
-MainBenchmark  demo  avgt   10  1.056 ± 0.040   s/op 111   5266
-MainBenchmark  slim  avgt   10  1.003 ± 0.011   s/op 105   5208
-MainBenchmark  thin  avgt   10  0.855 ± 0.028   s/op 60    4892
-MainBenchmark  lite  avgt   10  0.694 ± 0.015   s/op 30    4580
-MainBenchmark  func  avgt   10  0.652 ± 0.017   s/op 25    4378
+class        method  sample  beans  classes    heap   memory  median  mean  range
+MainBenchmark  main  empt  25.000   3268.000  5.158   39.014  0.555  0.564  0.015
+MainBenchmark  main  flux  95.000   5091.000  7.592   52.693  0.809  0.837  0.028
+MainBenchmark  main  jlog  105.000  4375.000  9.348   65.787  0.821  0.844  0.034
+MainBenchmark  main  demo  123.000  5525.000  9.511   72.140  0.910  0.934  0.028
+MainBenchmark  main  jdbc  158.000  5696.000  10.836  74.504  0.994  1.016  0.035
+MainBenchmark  main  actr  212.000  5983.000  11.543  76.910  1.098  1.112  0.020
+MainBenchmark  main  actj  252.000  6265.000  12.356  78.859  1.206  1.225  0.023
+MainBenchmark  main  jpae  193.000  6870.000  15.344  97.361  1.335  1.359  0.031
+MainBenchmark  main  conf  282.000  6564.000  13.154  81.778  1.453  1.520  0.074
+MainBenchmark  main  erka  348.000  8203.000  17.541  101.212 2.166  2.233  0.073
+MainBenchmark  main  busr  443.000  7626.000  16.032  91.780  2.127  2.178  0.062
+MainBenchmark  main  zuul  478.000  7845.000  16.462  93.298  2.262  2.345  0.120
+MainBenchmark  main  erkb  515.000  9487.000  21.122  113.213 2.921  2.976  0.052
+StripBenchmark strip slim  105.000  5343.000  10.108  71.763  0.847  0.871  0.032
+StripBenchmark strip thin  64.000   5120.000  8.825   69.182  0.778  0.806  0.069
+StripBenchmark strip lite  30.000   4897.000  7.816   66.857  0.699  0.719  0.027
+StripBenchmark strip func  26.000   4831.000  7.738   66.411  0.671  0.684  0.029
 ```
 
 .Number of Classes vs. Startup Time
-image::https://docs.google.com/spreadsheets/d/e/2PACX-1vR8B4l5WkWf-9gZWmIYTkmBWM7YWf5bRg852OakrV0G2-vtfM_UkVNRC3cTVk1079HagnMVHYZnvbib/pubchart?oid=88442446&amp;format=image[]
-
-{empty} +
-
-.Number of Beans vs. Startup Time
-image::https://docs.google.com/spreadsheets/d/e/2PACX-1vR8B4l5WkWf-9gZWmIYTkmBWM7YWf5bRg852OakrV0G2-vtfM_UkVNRC3cTVk1079HagnMVHYZnvbib/pubchart?oid=2090464856&format=image[]
+image::https://docs.google.com/spreadsheets/d/e/2PACX-1vQpSEfx0Y1W9aD3XVyn91-S0jtUp2DRCQSy_W_LMGyMR91YLAQ1mL7MiR1BRd8VzshvtuxzL6WAnlxf/pubchart?oid=1452854557&amp;format=image[]
 
 {empty} +
 
@@ -69,6 +63,30 @@ Legend:
 N.B. The "thin" sample has `@EnableWebMvc` (implicitly), but "lite"
 and "func" pulled the relevant features of that out into a separate
 class (so a few beans were dropped).
+
+Older data (Spring Boot 2.0):
+
+```
+Benchmark   (sample) Mode  Cnt  Score   Error  Units Beans Classes
+MainBenchmark  zuul  avgt   10  4.510 ± 0.095   s/op 516   9656
+MainBenchmark  erkb  avgt   10  3.137 ± 0.049   s/op 494   7654
+MainBenchmark  busr  avgt   10  2.525 ± 0.038   s/op 392   7129
+MainBenchmark  erko  avgt   10  2.237 ± 0.071   s/op 313   6392
+MainBenchmark  jpaa  avgt   10  3.232 ± 0.057   s/op 257   8297
+MainBenchmark  jpag  avgt   10  2.897 ± 0.023   s/op 178   8294
+MainBenchmark  jpaf  avgt   10  2.865 ± 0.043   s/op 177   8291
+MainBenchmark  jpae  avgt   10  2.829 ± 0.038   s/op 176   8284
+MainBenchmark  jpad  avgt   10  2.739 ± 0.073   s/op 175   7946
+MainBenchmark  conf  avgt   10  1.636 ± 0.029   s/op 250   6232
+MainBenchmark  actj  avgt   10  1.540 ± 0.049   s/op 226   6033
+MainBenchmark  actr  avgt   10  1.316 ± 0.060   s/op 186   5666
+MainBenchmark  jdbc  avgt   10  1.237 ± 0.050   s/op 147   5625
+MainBenchmark  demo  avgt   10  1.056 ± 0.040   s/op 111   5266
+MainBenchmark  slim  avgt   10  1.003 ± 0.011   s/op 105   5208
+MainBenchmark  thin  avgt   10  0.855 ± 0.028   s/op 60    4892
+MainBenchmark  lite  avgt   10  0.694 ± 0.015   s/op 30    4580
+MainBenchmark  func  avgt   10  0.652 ± 0.017   s/op 25    4378
+```
 
 == Outliers
 

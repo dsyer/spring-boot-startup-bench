@@ -72,7 +72,7 @@ public class MainBenchmark {
 
 		}
 
-		@Param("jlog")
+		@Param // ("jlog")
 		private Sample sample = Sample.demo;
 
 		public MainState() {

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
-// @Import(LazyInitBeanFactoryPostProcessor.class)
 public class DemoApplication {
 
 	@GetMapping("/")

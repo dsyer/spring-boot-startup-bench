@@ -88,6 +88,8 @@ MainBenchmark  lite  avgt   10  0.694 ± 0.015   s/op 30    4580
 MainBenchmark  func  avgt   10  0.652 ± 0.017   s/op 25    4378
 ```
 
+The rest of the results in this document are from the same (older) version. They are useful for comparison purposes and to follow the analysis. Spring Boot 2.2 will be faster for all of them.
+
 == Outliers
 
 Only 2 samples didn't fit the trend for classes vs. startup. One starts up slower (Sleuth) and one faster (Erka). The JPA and Zuul samples are outliers for the beans vs. startup correlation, so we include those here again.

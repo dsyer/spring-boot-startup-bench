@@ -18,7 +18,7 @@ MiniBenchmark  micro demo  2.000    2948.000  7.514  40.747  0.440  0.444  0.005
 ```
 
 .Number of Classes vs. Startup Time
-image::https://docs.google.com/spreadsheets/d/e/2PACX-1vR8B4l5WkWf-9gZWmIYTkmBWM7YWf5bRg852OakrV0G2-vtfM_UkVNRC3cTVk1079HagnMVHYZnvbib/pubchart?oid=976086548&format=image[]
+image::https://docs.google.com/spreadsheets/d/e/2PACX-1vQpSEfx0Y1W9aD3XVyn91-S0jtUp2DRCQSy_W_LMGyMR91YLAQ1mL7MiR1BRd8VzshvtuxzL6WAnlxf/pubchart?oid=1452854557&amp;format=image[]
 
 Notes:
 

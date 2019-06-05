@@ -32,6 +32,7 @@ import com.sun.tools.attach.VirtualMachine;
  * @author Dave Syer
  *
  */
+@SuppressWarnings("restriction")
 public class VirtualMachineMetrics {
 
 	static final String CONNECTOR_ADDRESS = "com.sun.management.jmxremote.localConnectorAddress";

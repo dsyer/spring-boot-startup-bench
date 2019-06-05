@@ -97,7 +97,7 @@ class Threads {
 			final ObjectName on = new ObjectName("java.lang:type=Threading");
 			mBeanServer.getMBeanInfo(on);
 			Integer value = (Integer) mBeanServer.getAttribute(on, "ThreadCount");
-			gauges.put(name(name), new Long(value) * 1024 * 1024);
+			gauges.put(name(name), Long.valueOf(value) * 1024 * 1024);
 		}
 		catch (Exception ignored) {
 			System.err.println("Unable to load thread pool MBeans: " + name);
@@ -126,7 +126,7 @@ class Classes {
 			final ObjectName on = new ObjectName("java.lang:type=ClassLoading");
 			mBeanServer.getMBeanInfo(on);
 			Integer value = (Integer) mBeanServer.getAttribute(on, "LoadedClassCount");
-			gauges.put(name(name), new Long(value));
+			gauges.put(name(name), Long.valueOf(value));
 		}
 		catch (Exception ignored) {
 			System.err.println("Unable to load thread pool MBeans: " + name);
@@ -143,7 +143,9 @@ class Classes {
 class BufferPools {
 
 	private static final String[] ATTRIBUTES = { "Code Cache", "Compressed Class Space",
-			"Metaspace", "PS Eden Space", "PS Old Gen", "PS Survivor Space" };
+			"Metaspace", "PS Eden Space", "PS Old Gen", "PS Survivor Space",
+			"G1 Eden Space", "G1 Old Gen", "G1 Survivor Space", "CodeHeap 'non-nmethods'",
+			"CodeHeap 'non-profiled nmethods'", "CodeHeap 'profiled nmethods'" };
 
 	private final MBeanServerConnection mBeanServer;
 
@@ -165,7 +167,7 @@ class BufferPools {
 		long total = 0;
 		for (int i = 0; i < ATTRIBUTES.length; i++) {
 			final String name = name(ATTRIBUTES[i]);
-			if (name.startsWith("PS")) {
+			if (name.startsWith("PS") || name.startsWith("G1")) {
 				total += metrics.containsKey(name) ? metrics.get(name) : 0;
 			}
 		}

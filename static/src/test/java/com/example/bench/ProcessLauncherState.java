@@ -139,7 +139,7 @@ public class ProcessLauncherState {
 		}
 		try {
 			for (Archive archive : resolved) {
-				if (archive.getUrl().equals(root.getUrl())) {
+				if (includeTargetClasses && archive.getUrl().equals(root.getUrl())) {
 					continue;
 				}
 				if (builder.length() > 0) {

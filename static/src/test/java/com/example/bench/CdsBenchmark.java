@@ -77,7 +77,7 @@ public class CdsBenchmark {
 
 		}
 
-		@Param
+		@Param("demo")
 		private Sample sample = Sample.demo;
 
 		@Override
@@ -102,11 +102,6 @@ public class CdsBenchmark {
 
 		public ApplicationState() {
 			super("target", "--server.port=0");
-		}
-
-		@Override
-		protected String getClasspath() {
-			return super.getClasspath(false);
 		}
 
 		@Override

@@ -73,7 +73,7 @@ public class MainBenchmark {
 
 		}
 
-		@Param // ({ "demo", "jdbc", "actr" })
+		@Param("demo") // ({ "demo", "jdbc", "actr" })
 		private Sample sample = Sample.demo;
 
 		public MainState() {

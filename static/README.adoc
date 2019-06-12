@@ -92,7 +92,7 @@ The rest of the results in this document are from the same (older) version. They
 
 == Outliers
 
-Only 2 samples didn't fit the trend for classes vs. startup. One starts up slower (Sleuth) and one faster (Erka). The JPA and Zuul samples are outliers for the beans vs. startup correlation, so we include those here again.
+Only 2 samples didn't fit the trend for classes vs. startup at first. One starts up slower (Sleuth) and one faster (Erka). The JPA and Zuul samples are outliers for the beans vs. startup correlation, so we include those here again.
 
 ```
 Benchmark   (sample) Mode  Cnt  Score   Error  Units Beans Trend Delta Classes
@@ -195,28 +195,35 @@ Eclipse J9 is about 10% faster than HotSpot, probably owing to the
 ability to cache class data between runs (which is switched on by
 default in the benchmarks but not in general).
 
-== Java 10
+== Java 11
 
-Java 10 is quite a bit slower than Java 8, but you can get back most
-or all of the difference by switching on Class Data Sharing (CDS):
+Java 11 is quite a bit slower than Java 8, but you can get back most
+or all of the difference by switching on Class Data Sharing (CDS). Some results
+comparing the same samples with and without CDS:
+
 
 ```
-Benchmark           (sample)  Mode  Cnt  Score   Error  Units  JVM
-OldBenchmark.old        demo    ss   10  1.070 ± 0.031   s/op  8u152-zulu
-OldBenchmark.old        actr    ss   10  1.370 ± 0.042   s/op  8u152-zulu
-MainBenchmark.main      demo    ss   10  1.128 ± 0.044   s/op  8u152-zulu
-MainBenchmark.main      actr    ss   10  1.554 ± 0.068   s/op  8u152-zulu
-OldBenchmark.old        demo    ss   10  1.155 ± 0.035   s/op  jdk-10
-OldBenchmark.old        actr    ss   10  1.432 ± 0.043   s/op  jdk-10
-MainBenchmark.main      demo    ss   10  1.195 ± 0.061   s/op  jdk-10
-MainBenchmark.main      actr    ss   10  1.605 ± 0.060   s/op  jdk-10
-CdsBenchmark.main       demo    ss   10  0.912 ± 0.051   s/op  jdk-10
-CdsBenchmark.main       actr    ss   10  1.286 ± 0.044   s/op  jdk-10
-CdsBenchmark.old        demo    ss   10  0.875 ± 0.050   s/op  jdk-10
-CdsBenchmark.old        actr    ss   10  1.134 ± 0.032   s/op  jdk-10
+class        method  sample  beans  classes     heap  memory  median  mean  range
+MainBenchmark  main  demo  118.000  6080.000  10.350  86.797  1.332  1.386  0.083
+MainBenchmark  main  jdbc  153.000  6255.000  11.107  88.934  1.398  1.466  0.050
+MainBenchmark  main  actr  207.000  6746.000  12.685  93.063  1.645  1.736  0.113
+CdsBenchmark   main  demo  118.000  6052.000  9.931   52.772  0.863  0.931  0.094
+CdsBenchmark   main  jdbc  153.000  6229.000  10.672  54.221  0.967  1.051  0.088
+CdsBenchmark   main  actr  207.000  6722.000  11.299  57.186  1.157  1.307  0.138
 ```
 
-Spring Boot 1.5 still wins all the races though (the "old" benchmarks above).
+The non-CDS results do *not* include `-noverify` (which would get you
+back most or all of the difference). But `-noverify` is going to be
+deprecated soon, and it's good to see that you can get close to the
+Java 8 results with CDS, even without that (it's redundant if all the
+classes are cached). The improvement with CDS above is not
+proportional to the size of the app (classes loaded), which is odd, so
+maybe there are more improvements to come if we can understand
+that. It's disappointing though, that the CDS cache doesn't get
+anywhere close to devtools (warm JVM) speeds.
+
+Interestingly the memory usage is much lower with CDS, both heap and
+non-heap, but mostly "Compressed Class Space" (part of non-heap).
 
 == Other versions of Java
 

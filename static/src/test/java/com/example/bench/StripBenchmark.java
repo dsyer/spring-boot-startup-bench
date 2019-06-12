@@ -19,7 +19,7 @@ import com.example.func.FuncApplication;
 import com.example.lite.LiteApplication;
 import com.example.slim.SlimApplication;
 import com.example.thin.ThinApplication;
-
+import jmh.mbr.junit5.Microbenchmark;
 import org.openjdk.jmh.annotations.AuxCounters;
 import org.openjdk.jmh.annotations.AuxCounters.Type;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -34,8 +34,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
-
-import jmh.mbr.junit5.Microbenchmark;
 
 @Measurement(iterations = 5, time = 1)
 @Warmup(iterations = 1, time = 1)

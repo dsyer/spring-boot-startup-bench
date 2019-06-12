@@ -29,7 +29,6 @@ import java.util.Map;
 import com.example.config.ShutdownApplicationListener;
 import com.example.config.StartupApplicationListener;
 import com.example.demo.DemoApplication;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +53,7 @@ public class ProcessLauncherState {
 	private List<String> progs = new ArrayList<>();
 
 	private static List<String> DEFAULT_JVM_ARGS = Arrays.asList("-Xmx128m", "-cp", "",
-			"-Djava.security.egd=file:/dev/./urandom", "-noverify",
+			"-Djava.security.egd=file:/dev/./urandom", "-Xlog:class+path=info", // "-noverify",
 			"-Dspring.main.lazy-initialization=true", "-Dspring.jmx.enabled=false");
 
 	private File home;
@@ -74,6 +73,8 @@ public class ProcessLauncherState {
 	private long memory;
 
 	private long heap;
+
+	private String classpath;
 
 	public int getClasses() {
 		return classes;
@@ -99,7 +100,7 @@ public class ProcessLauncherState {
 					"-Xscmx128m"));
 		}
 		else {
-			this.args.addAll(Arrays.asList("-XX:TieredStopAtLevel=1"));
+			// this.args.addAll(Arrays.asList("-XX:TieredStopAtLevel=1"));
 		}
 		if (System.getProperty("bench.args") != null) {
 			this.args.addAll(Arrays.asList(System.getProperty("bench.args").split(" ")));
@@ -129,30 +130,37 @@ public class ProcessLauncherState {
 	}
 
 	protected String getClasspath(boolean includeTargetClasses) {
-		PathResolver resolver = new PathResolver(DependencyResolver.instance());
-		Archive root = ArchiveUtils.getArchive(ProcessLauncherState.class);
-		List<Archive> resolved = resolver.resolve(root, name, profiles);
-		StringBuilder builder = new StringBuilder();
-		if (includeTargetClasses) {
-			builder.append(new File("target/classes").getAbsolutePath());
-			builder.append(File.pathSeparator);
-		}
-		try {
-			for (Archive archive : resolved) {
-				if (includeTargetClasses && archive.getUrl().equals(root.getUrl())) {
-					continue;
-				}
-				if (builder.length() > 0) {
-					builder.append(File.pathSeparator);
-				}
-				builder.append(file(archive.getUrl().toString()));
+		if (this.classpath == null) {
+			PathResolver resolver = new PathResolver(DependencyResolver.instance());
+			Archive root = ArchiveUtils.getArchive(ProcessLauncherState.class);
+			List<Archive> resolved = resolver.resolve(root, name, profiles);
+			StringBuilder builder = new StringBuilder();
+			if (includeTargetClasses) {
+				builder.append(new File("target/classes").getAbsolutePath());
 			}
+			else {
+				builder.append(
+						new File("target/static-0.0.1-SNAPSHOT.jar").getAbsolutePath());
+			}
+			try {
+				for (Archive archive : resolved) {
+					if (!includeTargetClasses
+							&& !archive.getUrl().toString().endsWith(".jar")) {
+						continue;
+					}
+					if (builder.length() > 0) {
+						builder.append(File.pathSeparator);
+					}
+					builder.append(file(archive.getUrl().toString()));
+				}
+			}
+			catch (MalformedURLException e) {
+				throw new IllegalStateException("Cannot find archive", e);
+			}
+			log.info("Classpath: " + builder);
+			this.classpath = builder.toString();
 		}
-		catch (MalformedURLException e) {
-			throw new IllegalStateException("Cannot find archive", e);
-		}
-		log.debug("Classpath: " + builder);
-		return builder.toString();
+		return this.classpath;
 	}
 
 	private String file(String path) {

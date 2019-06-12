@@ -17,8 +17,8 @@
 package com.example.bench;
 
 import com.example.bench.CaptureSystemOutput.OutputCapture;
+import com.example.bench.CdsBenchmark.CdsState;
 import com.example.bench.StripBenchmark.ApplicationState;
-
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,6 +52,19 @@ public class ProcessLauncherStateTests {
 		state.run();
 		state.after();
 		assertThat(output.toString()).contains("FuncApplication");
+		assertThat(output.toString()).contains("Benchmark app started");
+	}
+
+	@Test
+	@CaptureSystemOutput
+	public void cds(OutputCapture output) throws Exception {
+		CdsState state = new CdsState();
+		state.sample = CdsState.Sample.demo;
+		state.addArgs("-Ddebug=true");
+		state.start();
+		state.run();
+		state.after();
+		assertThat(output.toString()).contains("DemoApplication");
 		assertThat(output.toString()).contains("Benchmark app started");
 	}
 

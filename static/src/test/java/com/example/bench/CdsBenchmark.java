@@ -22,7 +22,7 @@ import java.util.List;
 
 import com.example.demo.DemoApplication;
 import com.example.jpa.JpaApplication;
-
+import jmh.mbr.junit5.Microbenchmark;
 import org.openjdk.jmh.annotations.AuxCounters;
 import org.openjdk.jmh.annotations.AuxCounters.Type;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -37,9 +37,6 @@ import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
-import org.openjdk.jmh.util.FileUtils;
-
-import jmh.mbr.junit5.Microbenchmark;
 
 @Measurement(iterations = 5, time = 1)
 @Warmup(iterations = 1, time = 1)
@@ -49,13 +46,13 @@ import jmh.mbr.junit5.Microbenchmark;
 public class CdsBenchmark {
 
 	@Benchmark
-	public void main(ApplicationState state) throws Exception {
+	public void main(CdsState state) throws Exception {
 		state.run();
 	}
 
 	@State(Scope.Thread)
 	@AuxCounters(Type.EVENTS)
-	public static class ApplicationState extends ProcessLauncherState {
+	public static class CdsState extends ProcessLauncherState {
 
 		public static enum Sample {
 
@@ -77,8 +74,8 @@ public class CdsBenchmark {
 
 		}
 
-		@Param("demo")
-		private Sample sample = Sample.demo;
+		@Param("actr") // ({ "demo", "jdbc", "actr" })
+		Sample sample = Sample.demo;
 
 		@Override
 		public int getClasses() {
@@ -100,7 +97,7 @@ public class CdsBenchmark {
 			return super.getHeap();
 		}
 
-		public ApplicationState() {
+		public CdsState() {
 			super("target", "--server.port=0");
 		}
 
@@ -134,9 +131,14 @@ public class CdsBenchmark {
 			Process dump = exec(new String[] { "-Xshare:dump", // "-XX:+UseAppCDS",
 					"-XX:SharedClassListFile=app.classlist",
 					"-XX:SharedArchiveFile=app.jsa", "-cp", "" });
-			FileUtils.readAllLines(dump.getInputStream());
+			// System.err.println(FileUtils.readAllLines(dump.getInputStream()));
 			dump.waitFor();
 			super.before();
+		}
+
+		@Override
+		protected String getClasspath() {
+			return getClasspath(false);
 		}
 
 	}

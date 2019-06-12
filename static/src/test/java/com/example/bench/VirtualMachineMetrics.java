@@ -44,14 +44,12 @@ public class VirtualMachineMetrics {
 		try {
 			VirtualMachine vm = VirtualMachine.attach(pid);
 			vm.startLocalManagementAgent();
-			String connectorAddress = vm.getAgentProperties()
-					.getProperty(CONNECTOR_ADDRESS);
+			String connectorAddress = vm.getAgentProperties().getProperty(CONNECTOR_ADDRESS);
 			JMXServiceURL url = new JMXServiceURL(connectorAddress);
 			JMXConnector connector = JMXConnectorFactory.connect(url);
 			MBeanServerConnection connection = connector.getMBeanServerConnection();
 			gc(connection);
-			Map<String, Long> metrics = new HashMap<>(
-					new BufferPools(connection).getMetrics());
+			Map<String, Long> metrics = new HashMap<>(new BufferPools(connection).getMetrics());
 			metrics.putAll(new Threads(connection).getMetrics());
 			metrics.putAll(new Classes(connection).getMetrics());
 			vm.detach();
@@ -143,10 +141,7 @@ class Classes {
 
 class BufferPools {
 
-	private static final String[] ATTRIBUTES = { "Code Cache", "Compressed Class Space",
-			"Metaspace", "PS Eden Space", "PS Old Gen", "PS Survivor Space",
-			"G1 Eden Space", "G1 Old Gen", "G1 Survivor Space", "CodeHeap 'non-nmethods'",
-			"CodeHeap 'non-profiled nmethods'", "CodeHeap 'profiled nmethods'" };
+	private static final String[] ATTRIBUTES = { "HeapMemoryUsage", "NonHeapMemoryUsage" };
 
 	private final MBeanServerConnection mBeanServer;
 
@@ -156,6 +151,7 @@ class BufferPools {
 
 	public static long total(Map<String, Long> metrics) {
 		long total = 0;
+		System.err.println(metrics);
 		for (int i = 0; i < ATTRIBUTES.length; i++) {
 			final String name = name(ATTRIBUTES[i]);
 			total += metrics.containsKey(name) ? metrics.get(name) : 0;
@@ -168,7 +164,7 @@ class BufferPools {
 		long total = 0;
 		for (int i = 0; i < ATTRIBUTES.length; i++) {
 			final String name = name(ATTRIBUTES[i]);
-			if (name.startsWith("PS") || name.startsWith("G1")) {
+			if (name.startsWith("Heap")) {
 				total += metrics.containsKey(name) ? metrics.get(name) : 0;
 			}
 		}
@@ -178,17 +174,15 @@ class BufferPools {
 	public Map<String, Long> getMetrics() {
 		final Map<String, Long> gauges = new HashMap<>();
 		for (int i = 0; i < ATTRIBUTES.length; i++) {
-			final String name = ATTRIBUTES[i];
 			try {
-				final ObjectName on = new ObjectName(
-						"java.lang:type=MemoryPool,name=" + name);
+				final ObjectName on = new ObjectName("java.lang:type=Memory");
+				final String name = ATTRIBUTES[i];
 				mBeanServer.getMBeanInfo(on);
-				CompositeData value = (CompositeData) mBeanServer.getAttribute(on,
-						"Usage");
+				CompositeData value = (CompositeData) mBeanServer.getAttribute(on, name);
 				gauges.put(name(name), (Long) value.get("used"));
 			}
 			catch (Exception ignored) {
-				System.err.println("Unable to load memory pool MBeans: " + name);
+				System.err.println("Unable to load memory pool MBeans");
 			}
 		}
 		return Collections.unmodifiableMap(gauges);

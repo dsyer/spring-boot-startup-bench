@@ -35,13 +35,16 @@ public class LauncherMain {
 		String[] argv = cmd.getJmhArgs();
 		ProcessLauncherState.setLauncherArgs(cmd.getProgArgs());
 		CommandLineOptions cmdOptions = new CommandLineOptions(argv);
-		OutputFormat output = OutputFormatFactory.createFormatInstance(System.out, VerboseMode.NORMAL);
+		OutputFormat output = OutputFormatFactory.createFormatInstance(System.out,
+				VerboseMode.NORMAL);
 		Runner runner = new Runner(cmdOptions, output);
 		Collection<RunResult> result = runner.run();
 		new CsvResultsWriter().write(output, result);
 		if (!ProcessLauncherState.toolsAvailable()) {
 			System.out.println();
-			System.out.println("JDK not available. Please consider adding tools.jar to your classpath for more metrics (e.g. ava -Xbootclasspath/a:tools.jar");
+			System.out.println(
+					"JDK not available. Please consider adding tools.jar to your classpath for more ");
+			System.out.println("metrics (e.g. java -Xbootclasspath/a:tools.jar).");
 		}
 	}
 

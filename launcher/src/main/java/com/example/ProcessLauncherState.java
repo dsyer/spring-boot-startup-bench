@@ -53,8 +53,8 @@ public class ProcessLauncherState {
 	private Process started;
 	private List<String> args = new ArrayList<>();
 	private List<String> progs = new ArrayList<>();
-	private static List<String> DEFAULT_JVM_ARGS = Arrays.asList("-Xmx128m",
-			"-Djava.security.egd=file:/dev/./urandom", "-noverify");
+	private static List<String> DEFAULT_JVM_ARGS = Arrays
+			.asList("-Djava.security.egd=file:/dev/./urandom", "-noverify");
 	private File home;
 	private BufferedReader buffer;
 	private String[] marker = new String[] { StartupApplicationListener.MARKER };
@@ -123,16 +123,17 @@ public class ProcessLauncherState {
 	}
 
 	public void after() throws Exception {
-		if (started != null && started.isAlive() && toolsAvailable()) {
-			Map<String, Long> metrics = VirtualMachineMetrics.fetch(getPid());
-			System.err.println(metrics);
-			this.memory = VirtualMachineMetrics.total(metrics);
-			this.heap = VirtualMachineMetrics.heap(metrics);
-			if (metrics.containsKey("Classes")) {
-				this.classes = metrics.get("Classes");
+		if (started != null && started.isAlive()) {
+			if (toolsAvailable()) {
+				Map<String, Long> metrics = VirtualMachineMetrics.fetch(getPid());
+				System.err.println(metrics);
+				this.memory = VirtualMachineMetrics.total(metrics);
+				this.heap = VirtualMachineMetrics.heap(metrics);
+				if (metrics.containsKey("Classes")) {
+					this.classes = metrics.get("Classes");
+				}
 			}
-			System.err.println(
-					"Stopping: " + started.destroyForcibly().waitFor());
+			System.err.println("Stopping: " + started.destroyForcibly().waitFor());
 		}
 	}
 
@@ -152,9 +153,9 @@ public class ProcessLauncherState {
 	}
 
 	private static void makeAccessible(Field field) {
-		if ((!Modifier.isPublic(field.getModifiers()) ||
-				!Modifier.isPublic(field.getDeclaringClass().getModifiers()) ||
-				Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
+		if ((!Modifier.isPublic(field.getModifiers())
+				|| !Modifier.isPublic(field.getDeclaringClass().getModifiers())
+				|| Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
 			field.setAccessible(true);
 		}
 	}
@@ -172,7 +173,7 @@ public class ProcessLauncherState {
 		}
 		return null;
 	}
-	
+
 	public void clean() throws Exception {
 		FileCopyUtils.deleteRecursively(this.home);
 	}
@@ -221,8 +222,7 @@ public class ProcessLauncherState {
 		output(this.buffer, this.marker);
 	}
 
-	protected void output(BufferedReader br, String... markers)
-			throws IOException {
+	protected void output(BufferedReader br, String... markers) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		String line = null;
 		if (!"false".equals(System.getProperty("debug", "false"))) {
@@ -286,7 +286,8 @@ public class ProcessLauncherState {
 		try {
 			Class.forName("com.sun.tools.attach.VirtualMachine");
 			return true;
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 		}
 		return false;
 	}

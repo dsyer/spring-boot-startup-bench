@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -188,10 +189,24 @@ public class ProcessLauncherState {
 	public void run() throws Exception {
 		List<String> jvmArgs = new ArrayList<>(this.args);
 		customize(jvmArgs);
+		serverPort();
 		started = exec(jvmArgs.toArray(new String[0]), this.progs.toArray(new String[0]));
 		InputStream stream = started.getInputStream();
 		this.buffer = new BufferedReader(new InputStreamReader(stream));
 		monitor();
+		String uri = System.getProperty("request.uri");
+		if (uri!=null) {
+			new URL(uri).getContent();
+		}
+	}
+
+	private void serverPort() {
+		for (String arg : this.progs) {
+			if (arg.startsWith("--server.port")) {
+				return;
+			}
+		}
+		this.progs.add("--server.port=0");
 	}
 
 	protected void customize(List<String> args) {

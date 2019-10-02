@@ -59,7 +59,7 @@ public class MainBenchmark {
 	@AuxCounters(Type.EVENTS)
 	public static class FatState extends ProcessLauncherState {
 		public FatState() {
-			super("target/demo", "--server.port=0");
+			super("target/demo");
 			fatJar();
 			setMarker("started on port");
 		}
@@ -100,7 +100,7 @@ public class MainBenchmark {
 	@AuxCounters(Type.EVENTS)
 	public static class LauncherState extends ProcessLauncherState {
 		public LauncherState() {
-			super("target/demo", "--server.port=0");
+			super("target/demo");
 			mainClassFromManifest();
 		}
 
@@ -139,7 +139,7 @@ public class MainBenchmark {
 	@AuxCounters(Type.EVENTS)
 	public static class MainState extends ProcessLauncherState {
 		public MainState() {
-			super("target/demo", "--server.port=0");
+			super("target/demo");
 			startClassFromManifest();
 		}
 

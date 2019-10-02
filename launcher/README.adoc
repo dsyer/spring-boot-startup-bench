@@ -3,7 +3,7 @@ This module provides a general purpose benchmark for any Spring Boot jar. You pa
 Example usage:
 
 ```
-$ java -jar target/benchmarks.jar ~/dev/spring/spring-petclinic/target/spring-petclinic-2.0.0.jar
+$ java -jar target/benchmarks.jar ~/dev/spring/spring-petclinic/target/spring-petclinic-2.1.0.jar
 ...
 # Run complete. Total time: 00:02:44
 
@@ -16,6 +16,8 @@ MainBenchmark.main      avgt   10  3.668 ± 0.095   s/op
 For the "jar" benchmark the app has to emit a log containing "started on port" (by default) when it is ready. You can change the "marker" that the benchmark looks for with --marker='Foo Bar' (for instance). Multiple values are acceptable, and any will terminate the measurement.
 
 For the "main" (exploded jar with main class) and "launcher" (exploded jar with Boot launcher) benchmarks it also installs a listener that prints the number of classes loaded and the number of beans.
+
+To measure the time to first request, add `-Drequest.uri=http://localhost:8080` (or whatever) and `--server.port=8080` (by default the port will be set to 0). To add JVM command line options for the launched application processes, use `-Dbench.args`.
 
 To pass arguments to JMH you need to put them after a single argument of `--`. E.g.
 

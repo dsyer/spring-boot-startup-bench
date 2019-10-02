@@ -17,6 +17,7 @@
 package com.example;
 
 import org.openjdk.jmh.annotations.AuxCounters;
+import org.openjdk.jmh.annotations.AuxCounters.Type;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -27,7 +28,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
-import org.openjdk.jmh.annotations.AuxCounters.Type;
 
 @Measurement(iterations = 5)
 @Warmup(iterations = 1)
@@ -70,7 +70,7 @@ public class MainBenchmark {
 		}
 
 		@Override
-		public int getBeans() {
+		public long getBeans() {
 			return super.getBeans();
 		}
 
@@ -110,7 +110,7 @@ public class MainBenchmark {
 		}
 
 		@Override
-		public int getBeans() {
+		public long getBeans() {
 			return super.getBeans();
 		}
 
@@ -149,7 +149,7 @@ public class MainBenchmark {
 		}
 
 		@Override
-		public int getBeans() {
+		public long getBeans() {
 			return super.getBeans();
 		}
 

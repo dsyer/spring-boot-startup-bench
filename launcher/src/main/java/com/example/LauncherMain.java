@@ -41,10 +41,10 @@ public class LauncherMain {
 		Collection<RunResult> result = runner.run();
 		new CsvResultsWriter().write(output, result);
 		if (!ProcessLauncherState.toolsAvailable()) {
-			System.out.println();
 			System.out.println(
 					"JDK not available. Please consider adding tools.jar to your classpath for more ");
 			System.out.println("metrics (e.g. java -Xbootclasspath/a:tools.jar).");
+			System.out.println();
 		}
 	}
 

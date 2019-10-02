@@ -63,7 +63,7 @@ public class ProcessLauncherState {
 
 	private long classes;
 
-	private int beans;
+	private long beans;
 
 	private long memory;
 
@@ -73,7 +73,7 @@ public class ProcessLauncherState {
 		return classes;
 	}
 
-	public int getBeans() {
+	public long getBeans() {
 		return beans;
 	}
 
@@ -235,12 +235,10 @@ public class ProcessLauncherState {
 				System.out.println(line);
 			}
 			if (line.contains(CLASS_COUNT_MARKER)) {
-				classes = Integer
-						.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
+				classes = extractInteger(line);
 			}
 			if (line.contains(BEAN_COUNT_MARKER)) {
-				int count = Integer
-						.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
+				long count = extractInteger(line);
 				beans = count > beans ? count : beans;
 			}
 			for (String marker : markers) {
@@ -261,6 +259,16 @@ public class ProcessLauncherState {
 			sb.append(line + System.getProperty("line.separator"));
 		}
 		System.out.println(sb.toString());
+	}
+
+	private long extractInteger(String line) {
+		try {
+			return Integer.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
+		}
+		catch (Exception e) {
+			Integer.valueOf(line.substring(line.lastIndexOf(":") + 1).trim());
+		}
+		return 0;
 	}
 
 	public void copy(String path, String jar) {

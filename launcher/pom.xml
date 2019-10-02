@@ -76,6 +76,24 @@
 		<start-class>com.example.LauncherMain</start-class>
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>tools.jar</id>
+			<activation>
+				<jdk>[1.8,1.9)</jdk>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>com.sun</groupId>
+					<artifactId>tools</artifactId>
+					<version>${java.version}</version>
+					<scope>system</scope>
+					<systemPath>${java.home}/../lib/tools.jar</systemPath>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
 	<build>
 		<finalName>${uberjar.name}</finalName>
 		<plugins>

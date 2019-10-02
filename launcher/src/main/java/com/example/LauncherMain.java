@@ -15,7 +15,14 @@
  */
 package com.example;
 
-import org.openjdk.jmh.Main;
+import java.util.Collection;
+
+import org.openjdk.jmh.results.RunResult;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.format.OutputFormat;
+import org.openjdk.jmh.runner.format.OutputFormatFactory;
+import org.openjdk.jmh.runner.options.CommandLineOptions;
+import org.openjdk.jmh.runner.options.VerboseMode;
 
 /**
  * @author Dave Syer
@@ -27,7 +34,15 @@ public class LauncherMain {
 		Args cmd = new Args(args);
 		String[] argv = cmd.getJmhArgs();
 		ProcessLauncherState.setLauncherArgs(cmd.getProgArgs());
-		Main.main(argv);
+		CommandLineOptions cmdOptions = new CommandLineOptions(argv);
+		OutputFormat output = OutputFormatFactory.createFormatInstance(System.out, VerboseMode.NORMAL);
+		Runner runner = new Runner(cmdOptions, output);
+		Collection<RunResult> result = runner.run();
+		new CsvResultsWriter().write(output, result);
+		if (!ProcessLauncherState.toolsAvailable()) {
+			System.out.println();
+			System.out.println("JDK not available. Please consider adding tools.jar to your classpath for more metrics (e.g. ava -Xbootclasspath/a:tools.jar");
+		}
 	}
 
 	static class Args {

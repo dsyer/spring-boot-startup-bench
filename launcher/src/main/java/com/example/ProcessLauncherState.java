@@ -22,11 +22,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.Attributes;
@@ -34,13 +37,18 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import com.example.config.StartupApplicationListener;
-
 import org.openjdk.jmh.util.FileUtils;
+
+import org.springframework.lang.Nullable;
 
 public class ProcessLauncherState {
 
 	private static final String CLASSPATH = "BOOT-INF/classes" + File.pathSeparator
 			+ "BOOT-INF/lib/*";
+
+	public static final String CLASS_COUNT_MARKER = "Class count";
+
+	public static final String BEAN_COUNT_MARKER = "Bean count";
 
 	private Process started;
 	private List<String> args = new ArrayList<>();
@@ -52,6 +60,30 @@ public class ProcessLauncherState {
 	private String[] marker = new String[] { StartupApplicationListener.MARKER };
 	private String jar;
 	private String[] globals = new String[0];
+
+	private long classes;
+
+	private int beans;
+
+	private long memory;
+
+	private long heap;
+
+	public long getClasses() {
+		return classes;
+	}
+
+	public int getBeans() {
+		return beans;
+	}
+
+	public double getMemory() {
+		return memory / (1024. * 1024);
+	}
+
+	public double getHeap() {
+		return heap / (1024. * 1024);
+	}
 
 	public ProcessLauncherState(String home, String... args) {
 		this.args.addAll(DEFAULT_JVM_ARGS);
@@ -91,11 +123,56 @@ public class ProcessLauncherState {
 	}
 
 	public void after() throws Exception {
-		if (started != null && started.isAlive()) {
-			started.destroyForcibly().waitFor();
+		if (started != null && started.isAlive() && toolsAvailable()) {
+			Map<String, Long> metrics = VirtualMachineMetrics.fetch(getPid());
+			System.err.println(metrics);
+			this.memory = VirtualMachineMetrics.total(metrics);
+			this.heap = VirtualMachineMetrics.heap(metrics);
+			if (metrics.containsKey("Classes")) {
+				this.classes = metrics.get("Classes");
+			}
+			System.err.println(
+					"Stopping: " + started.destroyForcibly().waitFor());
 		}
 	}
 
+	public String getPid() {
+		String pid = null;
+		try {
+			if (started != null) {
+				Field field = findField(started.getClass(), "pid");
+				makeAccessible(field);
+				pid = "" + field.get(started);
+			}
+		}
+		catch (Throwable e) {
+			e.printStackTrace();
+		}
+		return pid;
+	}
+
+	private static void makeAccessible(Field field) {
+		if ((!Modifier.isPublic(field.getModifiers()) ||
+				!Modifier.isPublic(field.getDeclaringClass().getModifiers()) ||
+				Modifier.isFinal(field.getModifiers())) && !field.isAccessible()) {
+			field.setAccessible(true);
+		}
+	}
+
+	private static Field findField(Class<?> clazz, @Nullable String name) {
+		Class<?> searchType = clazz;
+		while (Object.class != searchType && searchType != null) {
+			Field[] fields = searchType.getDeclaredFields();
+			for (Field field : fields) {
+				if ((name == null || name.equals(field.getName()))) {
+					return field;
+				}
+			}
+			searchType = searchType.getSuperclass();
+		}
+		return null;
+	}
+	
 	public void clean() throws Exception {
 		FileCopyUtils.deleteRecursively(this.home);
 	}
@@ -144,7 +221,7 @@ public class ProcessLauncherState {
 		output(this.buffer, this.marker);
 	}
 
-	protected static void output(BufferedReader br, String... markers)
+	protected void output(BufferedReader br, String... markers)
 			throws IOException {
 		StringBuilder sb = new StringBuilder();
 		String line = null;
@@ -156,6 +233,15 @@ public class ProcessLauncherState {
 			sb.append(line + System.getProperty("line.separator"));
 			if (!"false".equals(System.getProperty("debug", "false"))) {
 				System.out.println(line);
+			}
+			if (line.contains(CLASS_COUNT_MARKER)) {
+				classes = Integer
+						.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
+			}
+			if (line.contains(BEAN_COUNT_MARKER)) {
+				int count = Integer
+						.valueOf(line.substring(line.lastIndexOf("=") + 1).trim());
+				beans = count > beans ? count : beans;
 			}
 			for (String marker : markers) {
 				if (line.contains(marker)) {
@@ -194,6 +280,15 @@ public class ProcessLauncherState {
 			args.add("-jar");
 			args.add(this.jar);
 		}
+	}
+
+	public static boolean toolsAvailable() {
+		try {
+			Class.forName("com.sun.tools.attach.VirtualMachine");
+			return true;
+		} catch (Throwable e) {
+		}
+		return false;
 	}
 
 	public void mainClassFromManifest() {

@@ -16,6 +16,7 @@
 
 package com.example;
 
+import org.openjdk.jmh.annotations.AuxCounters;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Fork;
@@ -26,6 +27,7 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.TearDown;
 import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.annotations.AuxCounters.Type;
 
 @Measurement(iterations = 5)
 @Warmup(iterations = 1)
@@ -53,7 +55,8 @@ public class MainBenchmark {
 		state.run();
 	}
 
-	@State(Scope.Benchmark)
+	@State(Scope.Thread)
+	@AuxCounters(Type.EVENTS)
 	public static class FatState extends ProcessLauncherState {
 		public FatState() {
 			super("target/demo", "--server.port=0");
@@ -61,6 +64,26 @@ public class MainBenchmark {
 			setMarker("started on port");
 		}
 
+		@Override
+		public long getClasses() {
+			return super.getClasses();
+		}
+
+		@Override
+		public int getBeans() {
+			return super.getBeans();
+		}
+
+		@Override
+		public double getMemory() {
+			return super.getMemory();
+		}
+
+		@Override
+		public double getHeap() {
+			return super.getHeap();
+		}
+
 		@TearDown(Level.Iteration)
 		public void stop() throws Exception {
 			super.after();
@@ -73,13 +96,34 @@ public class MainBenchmark {
 
 	}
 
-	@State(Scope.Benchmark)
+	@State(Scope.Thread)
+	@AuxCounters(Type.EVENTS)
 	public static class LauncherState extends ProcessLauncherState {
 		public LauncherState() {
 			super("target/demo", "--server.port=0");
 			mainClassFromManifest();
 		}
 
+		@Override
+		public long getClasses() {
+			return super.getClasses();
+		}
+
+		@Override
+		public int getBeans() {
+			return super.getBeans();
+		}
+
+		@Override
+		public double getMemory() {
+			return super.getMemory();
+		}
+
+		@Override
+		public double getHeap() {
+			return super.getHeap();
+		}
+
 		@TearDown(Level.Iteration)
 		public void stop() throws Exception {
 			super.after();
@@ -91,11 +135,32 @@ public class MainBenchmark {
 		}
 	}
 
-	@State(Scope.Benchmark)
+	@State(Scope.Thread)
+	@AuxCounters(Type.EVENTS)
 	public static class MainState extends ProcessLauncherState {
 		public MainState() {
 			super("target/demo", "--server.port=0");
 			startClassFromManifest();
+		}
+
+		@Override
+		public long getClasses() {
+			return super.getClasses();
+		}
+
+		@Override
+		public int getBeans() {
+			return super.getBeans();
+		}
+
+		@Override
+		public double getMemory() {
+			return super.getMemory();
+		}
+
+		@Override
+		public double getHeap() {
+			return super.getHeap();
 		}
 
 		@TearDown(Level.Iteration)

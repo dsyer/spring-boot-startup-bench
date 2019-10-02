@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.bench;
+package com.example;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -191,7 +191,6 @@ class BufferPools {
 				System.err.println("Unable to load memory pool MBeans: " + name);
 			}
 		}
-		System.err.println(ATTRIBUTES + " * " + gauges);
 		return Collections.unmodifiableMap(gauges);
 	}
 

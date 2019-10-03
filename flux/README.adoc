@@ -3,12 +3,12 @@ In this module we study the effect of Spring and Spring Boot on startup time usi
 
 ```
 class        method sample  beans   classes   heap    memory  median  mean  range
-MainBenchmark  main  empt  24.000   3155.000  5.022  38.395  0.524  0.531  0.012
-MainBenchmark  main  jlog  80.000   3649.000  6.540  44.006  0.685  0.712  0.046
-MainBenchmark  main  demo  93.000   4420.000  8.153  50.333  0.771  0.816  0.042
-MainBenchmark  main  actr  186.000  5183.000  9.208  55.256  0.924  0.941  0.015
-MainBenchmark  main  jdbc  131.000  5077.000  8.633  54.062  0.862  0.877  0.018
-MainBenchmark  main  actj  226.000  5340.000  9.350  56.265  0.988  0.997  0.010
+MainBenchmark  main  empt  25.000   3222.000  5.058  38.559  0.532  0.537  0.006
+MainBenchmark  main  jlog  77.000   3625.000  6.100  43.079  0.661  0.683  0.040
+MainBenchmark  main  demo  90.000   4405.000  8.179  49.914  0.757  0.768  0.010
+MainBenchmark  main  actr  176.000  5192.000  8.438  54.121  0.905  0.929  0.053
+MainBenchmark  main  jdbc  128.000  5118.000  8.015  53.300  0.851  0.862  0.025
+MainBenchmark  main  actj  216.000  5383.000  10.210 56.989  0.978  0.989  0.013
 MiniBenchmark  boot  jlog  28.000   3250.000  6.692  41.158  0.562  0.571  0.013
 MiniBenchmark  boot  demo  28.000   3931.000  6.335  45.057  0.659  0.666  0.007
 MiniBenchmark  mini  jlog  27.000   2986.000  5.421  38.561  0.516  0.524  0.014
@@ -63,13 +63,17 @@ Summary: webflux.fn and @webflux are comparable, and both are faster on Netty th
 Spring 5.1 had some performance improvements.
 
 ```
+class        method sample  beans   classes   heap   memory  median  mean  range
+MainBenchmark  main  empt  23.000   3203.000  5.203   38.715  0.544  0.550  0.009
+MainBenchmark  main  jlog  85.000   4141.000  7.428   47.682  0.816  0.825  0.015
+MainBenchmark  main  demo  100.000  4947.000  8.260   53.504  0.932  0.946  0.014
+MainBenchmark  main  actr  229.000  6329.000  12.773  64.606  1.277  1.290  0.015
+MainBenchmark  main  jdbc  138.000  5749.000  10.184  59.533  1.067  1.087  0.020
+MainBenchmark  main  actj  269.000  6607.000  13.193  66.706  1.431  1.456  0.072
+```
+
+```
 Benchmark            (sample)  Mode  Cnt  Score   Error  Units
-MainBenchmark.main       empt    ss   10  0.596 ± 0.010   s/op
-MainBenchmark.main       jlog    ss   10  0.770 ± 0.022   s/op
-MainBenchmark.main       demo    ss   10  0.939 ± 0.037   s/op
-MainBenchmark.main       actr    ss   10  1.270 ± 0.025   s/op
-MainBenchmark.main       jdbc    ss   10  1.057 ± 0.018   s/op
-MainBenchmark.main       actj    ss   10  1.449 ± 0.059   s/op
 MiniBenchmark.boot       jlog    ss   10  0.458 ± 0.007   s/op
 MiniBenchmark.boot       demo    ss   10  0.572 ± 0.014   s/op
 MiniBenchmark.micro      jlog    ss   10  0.199 ± 0.013   s/op
@@ -87,4 +91,16 @@ MainBenchmark.main       demo    ss   10  0.851 ± 0.026   s/op
 MainBenchmark.main       actr    ss   10  1.231 ± 0.048   s/op
 MainBenchmark.main       jdbc    ss   10  0.973 ± 0.040   s/op
 MainBenchmark.main       actj    ss   10  1.389 ± 0.040   s/op
+```
+
+=== Spring Boot 2.0
+
+```
+class        method sample  beans   classes   heap    memory  median  mean  range
+MainBenchmark  main  empt  17.000   3136.000  5.297   38.537  0.525  0.532  0.007
+MainBenchmark  main  jlog  68.000   3987.000  7.099   47.673  0.813  0.824  0.018
+MainBenchmark  main  demo  85.000   4806.000  9.535   55.215  0.967  0.983  0.016
+MainBenchmark  main  actr  207.000  6195.000  12.394  64.613  1.392  1.412  0.023
+MainBenchmark  main  jdbc  123.000  5594.000  11.182  60.950  1.141  1.168  0.026
+MainBenchmark  main  actj  248.000  6470.000  13.953  67.815  1.578  1.592  0.015
 ```

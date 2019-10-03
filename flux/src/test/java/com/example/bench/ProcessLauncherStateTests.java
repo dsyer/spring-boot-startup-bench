@@ -16,10 +16,12 @@
 
 package com.example.bench;
 
-import com.example.bench.CaptureSystemOutput.OutputCapture;
 import com.example.demo.DemoApplication;
-
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,11 +29,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Dave Syer
  *
  */
+@ExtendWith(OutputCaptureExtension.class)
 public class ProcessLauncherStateTests {
 
 	@Test
-	@CaptureSystemOutput
-	public void vanilla(OutputCapture output) throws Exception {
+	public void vanilla(CapturedOutput output) throws Exception {
 		// System.setProperty("bench.args", "-verbose:class");
 		ProcessLauncherState state = new ProcessLauncherState("target",
 				"--server.port=0");

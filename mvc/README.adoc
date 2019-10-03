@@ -1,0 +1,58 @@
+[.lead]
+In this module we study the effect of Spring and Spring Boot on startup time using the `@MVC` programming model.
+
+```
+class        method sample beans    classes   heap   memory  median  mean  range
+MainBenchmark  main  empt  25.000   3222.000  5.058  38.509  0.528  0.534  0.006
+MainBenchmark  main  jlog  101.000  3818.000  7.070  59.421  0.744  0.762  0.032
+MainBenchmark  main  demo  114.000  4573.000  9.967  66.920  0.844  0.873  0.032
+MainBenchmark  main  actr  208.000  5268.000  10.161 69.840  1.033  1.060  0.048
+MainBenchmark  main  jdbc  149.000  4761.000  8.279  66.265  0.896  0.930  0.037
+MainBenchmark  main  actj  248.000  5518.000  10.967 71.947  1.116  1.145  0.035
+```
+
+.Number of Classes vs. Startup Time
+image::https://docs.google.com/spreadsheets/d/e/2PACX-1vQpSEfx0Y1W9aD3XVyn91-S0jtUp2DRCQSy_W_LMGyMR91YLAQ1mL7MiR1BRd8VzshvtuxzL6WAnlxf/pubchart?oid=1452854557&amp;format=image[]
+
+Notes:
+
+* The `MainBenchmark.main(demo)` is full Boot + Tomcat + autoconfiguration.
+* The `jlog` samples exclude logback as well as Hibernate Validator and Jackson.
+* Memory usage is about 20% higher then with Netty
+* Startup time is about 20-30ms slower than with Netty
+
+Non-heap is really what matters for these smaller apps.
+
+There's a flag in Spring Boot 2.2 that makes all beans lazy by
+default. It is switched on in all the above benchmarks.
+Some of those beans end up being initialized on
+the first HTTP request, but probably most of them are not needed in
+this sample, so they could stay uninitialized and no-one would
+care. We'd need more logic / conditions in `@EnableWebFlux` to
+capitalize on it without cheating
+
+=== Spring Boot 2.1.9
+
+Spring 5.1 had some performance improvements.
+
+```
+class        method sample  beans   classes   heap    memory  median  mean  range
+MainBenchmark  main  empt  23.000   3203.000  5.179   38.655  0.538  0.544  0.006
+MainBenchmark  main  jlog  102.000  4551.000  9.028   65.941  0.893  0.907  0.015
+MainBenchmark  main  demo  117.000  5185.000  11.135  71.880  0.988  1.016  0.037
+MainBenchmark  main  actr  251.000  6008.000  12.975  78.007  1.328  1.342  0.019
+MainBenchmark  main  jdbc  152.000  5465.000  11.595  73.974  1.112  1.126  0.019
+MainBenchmark  main  actj  291.000  6314.000  14.379  81.153  1.490  1.508  0.017
+```
+
+=== Spring Boot 2.0.9
+
+```
+class        method sample  beans  classes    heap    memory  median  mean  range
+MainBenchmark  main  empt  17.000   3135.000  5.277   38.520  0.529  0.534  0.005
+MainBenchmark  main  jlog  94.000   4644.000  12.993  73.568  0.991  1.009  0.023
+MainBenchmark  main  demo  109.000  5279.000  14.121  78.546  1.102  1.137  0.042
+MainBenchmark  main  actr  242.000  6131.000  16.865  85.696  1.585  1.625  0.050
+MainBenchmark  main  jdbc  144.000  5557.000  15.429  81.535  1.263  1.273  0.019
+MainBenchmark  main  actj  283.000  6436.000  18.655  89.350  1.762  1.794  0.036
+```

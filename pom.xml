@@ -24,6 +24,7 @@
 		<module>benchmarks</module>
 		<module>static</module>
 		<module>flux</module>
+		<module>mvc</module>
 		<module>launcher</module>
 	</modules>
 

@@ -7,10 +7,12 @@ $ java -jar target/benchmarks.jar ~/dev/spring/spring-petclinic/target/spring-pe
 ...
 # Run complete. Total time: 00:02:44
 
-Benchmark               Mode  Cnt  Score   Error  Units
-MainBenchmark.jar       avgt   10  4.890 ± 0.055   s/op
-MainBenchmark.launcher  avgt   10  4.976 ± 0.050   s/op
-MainBenchmark.main      avgt   10  3.668 ± 0.095   s/op
+...
+
+class, method, beans, classes, heap, memory, median, mean, range
+com.example.MainBenchmark, jar, ≈ 0, 10775.000, 31.530, 125.987, 5.192, 5.289, 0.129
+com.example.MainBenchmark, launcher, 367.000, 10799.000, 36.254, 130.941, 3.881, 4.025, 0.170
+com.example.MainBenchmark, main, 365.000, 10752.000, 36.751, 130.943, 3.587, 3.679, 0.095
 ```
 
 For the "jar" benchmark the app has to emit a log containing "started on port" (by default) when it is ready. You can change the "marker" that the benchmark looks for with --marker='Foo Bar' (for instance). Multiple values are acceptable, and any will terminate the measurement.

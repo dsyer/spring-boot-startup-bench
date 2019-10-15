@@ -29,9 +29,11 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
@@ -109,8 +111,8 @@ public class ProcessLauncherState {
 			this.globals = StringUtils
 					.commaDelimitedListToStringArray(properties.getProperty("args", ""));
 			if (properties.containsKey("markers")) {
-				this.marker = StringUtils.commaDelimitedListToStringArray(
-						properties.getProperty("markers", ""));
+				setMarker(StringUtils.commaDelimitedListToStringArray(
+						properties.getProperty("markers", "")));
 			}
 			this.progs.addAll(Arrays.asList(this.globals));
 		}
@@ -120,10 +122,14 @@ public class ProcessLauncherState {
 	}
 
 	public void setMarker(String... marker) {
-		this.marker = marker;
+		Set<String> markers = new LinkedHashSet<>(Arrays.asList(this.marker));
+		markers.addAll(Arrays.asList(marker));
+		this.marker = markers.toArray(new String[0]);
 	}
 
 	public void after() throws Exception {
+		// Drain output
+		monitor();
 		if (started != null && started.isAlive()) {
 			if (toolsAvailable()) {
 				Map<String, Long> metrics = VirtualMachineMetrics.fetch(getPid());
@@ -176,7 +182,9 @@ public class ProcessLauncherState {
 	}
 
 	public void clean() throws Exception {
-		FileCopyUtils.deleteRecursively(this.home);
+		if (!System.getProperty("clean", "false").equals("false")) {
+			FileCopyUtils.deleteRecursively(this.home);
+		}
 	}
 
 	public void replace(String pattern, String value) {
@@ -193,9 +201,9 @@ public class ProcessLauncherState {
 		started = exec(jvmArgs.toArray(new String[0]), this.progs.toArray(new String[0]));
 		InputStream stream = started.getInputStream();
 		this.buffer = new BufferedReader(new InputStreamReader(stream));
-		monitor();
+		monitor(this.marker);
 		String uri = System.getProperty("request.uri");
-		if (uri!=null) {
+		if (uri != null) {
 			new URL(uri).getContent();
 		}
 	}
@@ -233,8 +241,8 @@ public class ProcessLauncherState {
 		}
 	}
 
-	protected void monitor() throws IOException {
-		output(this.buffer, this.marker);
+	protected void monitor(String... markers) throws IOException {
+		output(this.buffer, markers);
 	}
 
 	protected void output(BufferedReader br, String... markers) throws IOException {

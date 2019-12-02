@@ -15,6 +15,8 @@ com.example.MainBenchmark, launcher, 367.000, 10799.000, 36.254, 130.941, 3.881,
 com.example.MainBenchmark, main, 365.000, 10752.000, 36.751, 130.943, 3.587, 3.679, 0.095
 ```
 
+NOTE: If you are seeing "≈ 0" values for all the JVM metrics you probably don't have a `tools.jar` on your classpath. You need to either use a full JDK, or supplement the boot classpath, e.g. add `-Xbootclasspath/a:<path-to>/tools.jar` to the command line.
+
 For the "jar" benchmark the app has to emit a log containing "started on port" (by default) when it is ready. You can change the "marker" that the benchmark looks for with --marker='Foo Bar' (for instance). Multiple values are acceptable, and any will terminate the measurement.
 
 For the "main" (exploded jar with main class) and "launcher" (exploded jar with Boot launcher) benchmarks it also installs a listener that prints the number of classes loaded and the number of beans.

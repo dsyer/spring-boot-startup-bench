@@ -20,6 +20,8 @@ import com.example.bench.CaptureSystemOutput.OutputCapture;
 import com.example.bench.CdsBenchmark.CdsState;
 import com.example.bench.StripBenchmark.ApplicationState;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.JRE;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,8 +35,7 @@ public class ProcessLauncherStateTests {
 	@CaptureSystemOutput
 	public void vanilla(OutputCapture output) throws Exception {
 		// System.setProperty("bench.args", "-verbose:class");
-		ProcessLauncherState state = new ProcessLauncherState("target",
-				"--server.port=0");
+		ProcessLauncherState state = new ProcessLauncherState("target", "--server.port=0");
 		state.setProfiles("jlog");
 		state.before();
 		state.run();
@@ -57,6 +58,7 @@ public class ProcessLauncherStateTests {
 
 	@Test
 	@CaptureSystemOutput
+	@EnabledOnJre({ JRE.JAVA_11, JRE.JAVA_14 })
 	public void cds(OutputCapture output) throws Exception {
 		CdsState state = new CdsState();
 		state.sample = CdsState.Sample.demo;

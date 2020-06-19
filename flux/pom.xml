@@ -11,7 +11,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.0.BUILD-SNAPSHOT</version>
+		<version>2.3.1.RELEASE</version>
 	</parent>
 
 	<name>static</name>
@@ -23,10 +23,10 @@
 		<java.version>1.8</java.version>
 		<jmh.version>1.21</jmh.version>
 		<aspectj.version>1.9.1</aspectj.version>
-		<spring-boot.version>2.2.0.BUILD-SNAPSHOT</spring-boot.version>
-		<spring-cloud.version>Hoxton.BUILD-SNAPSHOT</spring-cloud.version>
+		<spring-boot.version>2.3.1.RELEASE</spring-boot.version>
+		<spring-cloud.version>Hoxton.SR5</spring-cloud.version>
 		<locator.version>1.0.0.RELEASE</locator.version>
-		<thin.version>1.0.21.RELEASE</thin.version>
+		<thin.version>1.0.25.RELEASE</thin.version>
 	</properties>
 
 	<dependencyManagement>
